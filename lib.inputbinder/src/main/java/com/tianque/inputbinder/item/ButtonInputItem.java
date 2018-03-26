@@ -1,6 +1,7 @@
 package com.tianque.inputbinder.item;
 
 import android.view.View;
+import android.widget.Button;
 
 
 /**
@@ -18,13 +19,29 @@ public class ButtonInputItem extends TextInputItem {
         this(resourceId);
         setDisplayText(displayText);
     }
-
-    public View.OnClickListener getOnClickListener() {
-        return onClickListener;
-    }
+//
+//    public View.OnClickListener getOnClickListener() {
+//        return onClickListener;
+//    }
 
     public ButtonInputItem setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
         return this;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(getView()!=null&&onClickListener!=null){
+//            if(getView() instanceof ButtonClickSetting){
+//                ((ButtonClickSetting)getView()).setOnClickListener(onClickListener);
+//            }else if(getView() instanceof Button){
+                getView().setOnClickListener(onClickListener);
+//            }
+        }
+    }
+
+//    public interface ButtonClickSetting{
+//        void setOnClickListener(View.OnClickListener onClickListener);
+//    }
 }

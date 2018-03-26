@@ -15,6 +15,11 @@ import java.util.Map;
 
 public abstract class InputItem<T>  {
 
+
+    private final String GONE = "gone";
+    private final String VISIBLE = "visible";
+    private final String INVISIBLE = "invisible";
+
     private int resourceId;
 //    private String resourceName;
 
@@ -127,7 +132,8 @@ public abstract class InputItem<T>  {
      * 给控件设置显示文字、绑定事件后会调用该方法
      */
     public void onStart(){
-
+        if(getViewAttribute()!=null)
+            setViewVisibleStatus(getViewAttribute().visible, view);
     }
 
     public View getView() {
@@ -139,5 +145,17 @@ public abstract class InputItem<T>  {
 //        if(view instanceof ViewBehaviorInterface){
 //            actualViewBehavior = (ViewBehaviorInterface)view;
 //        }
+    }
+
+    private void setViewVisibleStatus(String visible, View view) {
+        if(view==null)
+            return;
+        if (visible.equals(VISIBLE)) {
+            view.setVisibility(View.VISIBLE);
+        } else if (visible.equals(INVISIBLE)) {
+            view.setVisibility(View.INVISIBLE);
+        } else if (visible.equals(GONE)) {
+            view.setVisibility(View.GONE);
+        }
     }
 }

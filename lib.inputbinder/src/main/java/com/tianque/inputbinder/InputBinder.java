@@ -15,6 +15,7 @@ import com.tianque.inputbinder.item.TextInputItem;
 import com.tianque.inputbinder.model.ModelReader;
 import com.tianque.inputbinder.model.XmlReader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,19 +36,19 @@ public class InputBinder {
 
     private Context context;
     private InputBinderEngine engine;
-    Map<String, InputItem> inputItemMap;
+    List<InputItem> inputItems;
 
     public InputBinder(Activity activity) {
         this.context = activity;
         engine = new InputBinderEngine(context);
         setRootView(activity);
-        inputItemMap = new HashMap<>();
+        inputItems = new ArrayList<>();
     }
 
     public InputBinder(Context context) {
         this.context = context;
         engine = new InputBinderEngine(context);
-        inputItemMap = new HashMap<>();
+        inputItems = new ArrayList<>();
     }
 
     public InputBinder addInputItems(InputItem... items) {
@@ -71,7 +72,7 @@ public class InputBinder {
     }
 
     public InputBinder addInputItem(InputItem inputItem) {
-        inputItemMap.put(context.getResources().getResourceName(inputItem.getResourceId()), inputItem);
+        inputItems.add(inputItem);
         return this;
     }
 
@@ -91,7 +92,7 @@ public class InputBinder {
     }
 
     public void start(){
-        engine.setStoreInputItems(inputItemMap);
+        engine.addInputItems(inputItems);
         engine.start();
     }
 

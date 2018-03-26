@@ -14,12 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
+import com.tianque.inputbinder.item.ButtonInputItem;
 import com.tianque.inputbinder.style.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ButtonItemBox extends ItemBoxBase<String> implements View.OnClickListener {
+public class ButtonItemBox extends ItemBoxBase<String> implements View.OnClickListener{
 
     private List<OnClickListener> mOnClick;
     private CallBackChangeText mCallBackEdit;

@@ -38,7 +38,6 @@ public class InputActivity extends Activity {
 
             }
         });
-        inputBinder.getEngine().setDebug(true);
         inputBinder.setRootView(this).setRelationEntity(Student.class);
         ButtonInputItem buttonInputItem = new ButtonInputItem(R.id.input_btn,"点我一下，代码赋值");
         buttonInputItem.setOnClickListener(new View.OnClickListener() {
