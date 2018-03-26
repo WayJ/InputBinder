@@ -1,6 +1,8 @@
 package com.tianque.inputbinder.item;
 
-import com.tianque.inputbinder.inf.ViewBehaviorInterface;
+import android.view.View;
+
+import com.tianque.inputbinder.inf.ViewProxyInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +70,7 @@ public class MultiOptionalInputItem extends InputItem {
     }
 
     @Override
-    public ViewBehaviorInterface getViewPoxy() {
+    public ViewProxyInterface initDefaultViewProxy(View view) {
         return null;
     }
 

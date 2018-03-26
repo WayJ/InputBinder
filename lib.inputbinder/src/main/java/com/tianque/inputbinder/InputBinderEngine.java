@@ -112,6 +112,10 @@ public class InputBinderEngine {
     private void setUp(List<ViewAttribute> attrs) {
         for (ViewAttribute attr : attrs) {
             attr.viewId = ResourceUtil.findIdByName(mContext, attr.viewName);
+            if(attr.viewId<=0){
+                Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
+                continue;
+            }
             inputItems.put(attr.key, handleAttr(attr));
         }
     }
@@ -126,7 +130,7 @@ public class InputBinderEngine {
             if (view != null) {
                 execute(view, attr, item);
             } else {
-                Logging.d(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
+                Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
             }
             item.setView(view);
             item.onStart();

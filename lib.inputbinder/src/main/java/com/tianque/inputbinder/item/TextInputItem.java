@@ -1,12 +1,10 @@
 package com.tianque.inputbinder.item;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.tianque.inputbinder.inf.ViewBehaviorInterface;
+import com.tianque.inputbinder.inf.ViewProxyInterface;
 import com.tianque.inputbinder.util.Logging;
 
 import java.lang.reflect.Method;
@@ -18,12 +16,12 @@ import java.lang.reflect.Method;
 public class TextInputItem extends InputItem<String> {
 
     private String displayText;
-    private ViewProxy viewProxy;
+
     public TextInputItem(int resourceId) {
         super(resourceId);
     }
 
-    public TextInputItem(int resourceId,String displayText) {
+    public TextInputItem(int resourceId, String displayText) {
         this(resourceId);
         setDisplayText(displayText);
     }
@@ -40,42 +38,28 @@ public class TextInputItem extends InputItem<String> {
     @Override
     public String getRequestValue() {
         //try get new requestValue from view
-        String content = getViewPoxy().getContent();
-        if(!TextUtils.isEmpty(content)&&!content.equals(displayText)){
-            displayText=content;
+        String content = getViewProxy().getContent();
+        if (!TextUtils.isEmpty(content) && !content.equals(displayText)) {
+            displayText = content;
         }
         return displayText;
     }
 
     @Override
     public void setRequestValue(String value) {
-        if(value!=null){
+        if (value != null) {
             this.displayText = value;
         }
     }
 
+
     @Override
-    public ViewBehaviorInterface<String> getViewPoxy() {
-        if(viewProxy==null){
-            viewProxy = new ViewProxy(getView());
-        }
-        return viewProxy;
-    }
+    public ViewProxyInterface initDefaultViewProxy(View view) {
+        return new ViewProxyInterface<String>() {
 
-    private class ViewProxy implements ViewBehaviorInterface<String> {
-        ViewBehaviorInterface<String> viewBehavior;
-        public ViewProxy(View view){
-            if(view instanceof ViewBehaviorInterface){
-                viewBehavior = (ViewBehaviorInterface)view;
-            }
-        }
-
-        @Override
-        public void setContent(String content) {
-            if(viewBehavior!=null)
-                viewBehavior.setContent(content);
-            else{
-                if(TextUtils.isEmpty(content)||getView()==null)
+            @Override
+            public void setContent(String content) {
+                if (TextUtils.isEmpty(content) || getView() == null)
                     return;
                 if (getView() instanceof TextView) {
                     ((TextView) getView()).setText(content);
@@ -91,24 +75,18 @@ public class TextInputItem extends InputItem<String> {
                     }
                 }
             }
-        }
 
-        public String getContent(){
-            if(viewBehavior!=null)
-                return viewBehavior.getContent();
-            else{
-                try {
-                    Class cls = getView().getClass();
-                    Method m = cls.getDeclaredMethod("getText");
-                    if(m!=null)
-                        return m.invoke(getView()).toString();
-                } catch (Exception e) {
-                    Logging.e("未找到 getContent 方法");
-                    Logging.e(e);
+            public String getContent() {
+                if (getView() instanceof TextView) {
+                    return ((TextView) getView()).getText().toString();
+                } else {
+                    Logging.e("未找到 getContent or getText 方法");
+                    return null;
                 }
-                return null;
             }
-        }
 
+        };
     }
+
+
 }

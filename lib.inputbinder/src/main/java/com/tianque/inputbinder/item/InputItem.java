@@ -3,7 +3,7 @@ package com.tianque.inputbinder.item;
 import android.view.View;
 
 import com.tianque.inputbinder.model.ViewAttribute;
-import com.tianque.inputbinder.inf.ViewBehaviorInterface;
+import com.tianque.inputbinder.inf.ViewProxyInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,8 @@ public abstract class InputItem<T>  {
     private final String INVISIBLE = "invisible";
 
     private int resourceId;
+
+    private ViewProxyInterface<T> viewProxy;
 //    private String resourceName;
 
     private String requestKey;
@@ -98,13 +100,19 @@ public abstract class InputItem<T>  {
 //        this.mRefreshViewListener = refreshViewListener;
 //    }
 //
-    public void refreshView(){
-        if(getViewPoxy()!=null)
-            getViewPoxy().setContent(getDisplayText());
+
+    public ViewProxyInterface<T> getViewProxy() {
+        return viewProxy;
     }
 
-    public abstract ViewBehaviorInterface<T> getViewPoxy();
+    public void setViewProxy(ViewProxyInterface<T> viewProxy) {
+        this.viewProxy = viewProxy;
+    }
 
+    public void refreshView(){
+        if(getViewProxy()!=null)
+            getViewProxy().setContent(getDisplayText());
+    }
 
     public Map<String, String> getExtMap() {
         return extMap;
@@ -134,7 +142,15 @@ public abstract class InputItem<T>  {
     public void onStart(){
         if(getViewAttribute()!=null)
             setViewVisibleStatus(getViewAttribute().visible, view);
+        if(viewProxy==null){
+            if(getView() instanceof ViewProxyInterface){
+                viewProxy=(ViewProxyInterface<T>) getView();
+            }else
+                viewProxy = initDefaultViewProxy(getView());
+        }
     }
+
+    public abstract ViewProxyInterface<T> initDefaultViewProxy(View view);
 
     public View getView() {
         return view;
@@ -158,4 +174,5 @@ public abstract class InputItem<T>  {
             view.setVisibility(View.GONE);
         }
     }
+
 }

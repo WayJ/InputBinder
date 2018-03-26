@@ -3,7 +3,7 @@ package com.tianque.inputbinder.item;
 import android.view.View;
 import android.widget.CheckBox;
 
-import com.tianque.inputbinder.inf.ViewBehaviorInterface;
+import com.tianque.inputbinder.inf.ViewProxyInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,6 @@ import java.util.List;
 
 public class CheckInputItem extends InputItem<Boolean> {
 
-    private String Tag="";
-
     private CheckBox.OnCheckedChangeListener onCheckedChangeListener;
     private boolean isChecked;
     private boolean isOtherDic;
@@ -25,21 +23,22 @@ public class CheckInputItem extends InputItem<Boolean> {
 
     /**
      * 该inputItem获得提交参数时候，选中不选中各对应的传递的值
-     *  默认： {TRUE.toString(),FALSE.toString()}
+     * 默认： {TRUE.toString(),FALSE.toString()}
      */
     private String[] checkValues;
+
     public CheckInputItem(int resourceId) {
         super(resourceId);
 //        setInputType(BehaviorType.CheckBox);
     }
 
 
-    public CheckInputItem(int resourceId,boolean isChecked) {
+    public CheckInputItem(int resourceId, boolean isChecked) {
         this(resourceId);
         setChecked(isChecked);
     }
 
-    public CheckInputItem(int resourceId,boolean isChecked,boolean isOtherDic,String isOtherCheck) {
+    public CheckInputItem(int resourceId, boolean isChecked, boolean isOtherDic, String isOtherCheck) {
         this(resourceId);
         setChecked(isChecked);
         this.isOtherDic = isOtherDic;
@@ -53,26 +52,26 @@ public class CheckInputItem extends InputItem<Boolean> {
 
     @Override
     public String getRequestValue() {
-        isChecked = getViewPoxy().getContent();
-        if(checkValues!=null){
-            return isChecked?checkValues[0]:checkValues[1];
-        }else
+        isChecked = getViewProxy().getContent();
+        if (checkValues != null) {
+            return isChecked ? checkValues[0] : checkValues[1];
+        } else
             return Boolean.valueOf(isChecked).toString();
     }
 
     @Override
     public void setRequestValue(String value) {
-        if (isOtherDic){
+        if (isOtherDic) {
             setCheckOtherDicByRequestValue(value);
-        }else{
+        } else {
             setCheckedByRequestValue(value);
         }
     }
 
     private void setCheckOtherDicByRequestValue(String value) {
-        if (value.equals("")){
+        if (value.equals("")) {
             setChecked(false);
-        }else if (isOtherCheck.equals(value)){
+        } else if (isOtherCheck.equals(value)) {
             setChecked(true);
         }
 
@@ -84,14 +83,13 @@ public class CheckInputItem extends InputItem<Boolean> {
 
 
     /**
-     *
      * @param value
      */
-    public void setCheckedByRequestValue(String value){
-        if(value.equals("1")||value.equals("0")){
-            setCheckValues("1","0");
+    public void setCheckedByRequestValue(String value) {
+        if (value.equals("1") || value.equals("0")) {
+            setCheckValues("1", "0");
             setChecked(value.equals("1"));
-        }else if(value.equals("true")||value.equals("false")){
+        } else if (value.equals("true") || value.equals("false")) {
             setChecked(Boolean.valueOf(value));
         }
     }
@@ -109,9 +107,9 @@ public class CheckInputItem extends InputItem<Boolean> {
         return this;
     }
 
-    public CheckInputItem setCheckValues(String trueValue,String falseValue){
-        if(checkValues==null)
-            checkValues=new String[2];
+    public CheckInputItem setCheckValues(String trueValue, String falseValue) {
+        if (checkValues == null)
+            checkValues = new String[2];
         this.checkValues[0] = trueValue;
         this.checkValues[1] = falseValue;
         return this;
@@ -122,22 +120,15 @@ public class CheckInputItem extends InputItem<Boolean> {
         return super.getRequestKey();
     }
 
-    ViewPoxy viewPoxy;
-    @Override
-    public ViewBehaviorInterface<Boolean> getViewPoxy() {
-        if(viewPoxy==null)
-            viewPoxy=new ViewPoxy(getView());
-        return viewPoxy;
-    }
 
-    public void addDependedView(View view){
-        if(mDependedOpenView==null){
+    public void addDependedView(View view) {
+        if (mDependedOpenView == null) {
             mDependedOpenView = new ArrayList<>();
         }
         mDependedOpenView.add(view);
     }
 
-    public List<View> getDependedView(){
+    public List<View> getDependedView() {
         return mDependedOpenView;
     }
 
@@ -145,40 +136,30 @@ public class CheckInputItem extends InputItem<Boolean> {
         return mDependedCloseView;
     }
 
-    public void addDependedCloseView(View view){
-        if(mDependedCloseView==null){
+    public void addDependedCloseView(View view) {
+        if (mDependedCloseView == null) {
             mDependedCloseView = new ArrayList<>();
         }
         mDependedCloseView.add(view);
     }
 
-    private class ViewPoxy implements ViewBehaviorInterface<Boolean> {
-        ViewBehaviorInterface<Boolean> viewBehavior;
 
-        public ViewPoxy(View view){
-            if(view instanceof ViewBehaviorInterface){
-                viewBehavior = (ViewBehaviorInterface)view;
-            }
-        }
-        @Override
-        public Boolean getContent() {
-            if(viewBehavior!=null)
-                return viewBehavior.getContent();
-            else{
+    @Override
+    public ViewProxyInterface<Boolean> initDefaultViewProxy(View view) {
+        return new ViewProxyInterface<Boolean>() {
+
+            @Override
+            public Boolean getContent() {
                 return false;
             }
-        }
 
-        @Override
-        public void setContent(Boolean isChecked) {
-            if(viewBehavior!=null)
-                viewBehavior.setContent(isChecked);
-            else{
+            @Override
+            public void setContent(Boolean isChecked) {
                 if (getView() instanceof CheckBox) {
                     ((CheckBox) getView()).setChecked(isChecked);
                 }
             }
-        }
 
+        };
     }
 }

@@ -1,8 +1,9 @@
 package com.tianque.inputbinder.item;
 
 import android.text.TextUtils;
+import android.view.View;
 
-import com.tianque.inputbinder.inf.ViewBehaviorInterface;
+import com.tianque.inputbinder.inf.ViewProxyInterface;
 
 
 /**
@@ -48,9 +49,10 @@ public class OptionalInputItem extends InputItem {
     }
 
     @Override
-    public ViewBehaviorInterface getViewPoxy() {
+    public ViewProxyInterface initDefaultViewProxy(View view) {
         return null;
     }
+
 
     public String[] getSelectTexts() {
         return selectTexts;
