@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:background="@color/keyboark_bg"  
+    >
+
+    <ListView
+        android:id="@+id/op_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       android:divider="@null"
+         android:background="@drawable/frameork_black"
+      android:cacheColorHint="@android:color/transparent"
+        android:dividerHeight="0.5dp" >
+    </ListView>
+
+
+</LinearLayout>

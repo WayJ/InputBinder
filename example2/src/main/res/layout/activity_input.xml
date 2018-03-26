@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.wayj.inputbinder.style.itembox.EditItemBox
+            android:id="@+id/name"
+            android:text="学生姓名"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.wayj.inputbinder.style.itembox.SwitchItemBox
+            android:id="@+id/isBoy"
+            android:text="是男孩吗"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </com.wayj.inputbinder.style.itembox.SwitchItemBox>
+        <com.wayj.inputbinder.style.itembox.ButtonItemBox
+            android:id="@+id/birthday"
+            android:text="出生日期"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="print"/>
+        <TextView
+            android:id="@+id/print"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

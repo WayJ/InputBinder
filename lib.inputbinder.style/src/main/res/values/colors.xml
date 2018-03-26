@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="keyboark_bg">#bb000000</color>
+
+    <color name="btn_style_white_color_pressed">#881f82c6</color>
+
+</resources>

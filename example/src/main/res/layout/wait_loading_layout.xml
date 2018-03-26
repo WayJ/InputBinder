@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@drawable/wait_loading_bg"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="5dp"
+              android:paddingLeft="20dp"
+              android:paddingRight="20dp">
+
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/wait_loading"
+        android:indeterminateDuration="1000"/>
+
+    <TextView
+        android:id="@+id/tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="请稍等..."
+        android:textColor="@android:color/black"/>
+
+
+</LinearLayout>

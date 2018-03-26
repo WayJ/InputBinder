@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">InputBinder</string>
+
+    <string name="cancel">cancel</string>
+</resources>

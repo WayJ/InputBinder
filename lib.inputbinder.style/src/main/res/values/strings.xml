@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">lib.viewcontrol</string>
+
+
+    <string name="text_length_warning_less_msg">不能低于%1$d个字符</string>
+    <string name="text_length_warning_more_msg">不能超过%1$d个字符</string>
+</resources>

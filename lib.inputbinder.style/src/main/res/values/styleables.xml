@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ItemBox">
+        <attr name="iconInfoType" format="integer" />
+        <attr name="useButton" format="boolean" /><!-- 是否是按钮 -->
+        <attr name="editType" format="integer" /><!-- 输入状态，文本，数字，密码 -->
+        <attr name="lines" format="boolean" /><!-- 是否多行 -->
+        <attr name="iconSrc" format="reference" /><!-- 图片路径 -->
+        <attr name="require" format="boolean" /><!-- 是否必填 -->
+        <attr name="titleSize" format="reference|dimension" /><!-- 标题大小 -->
+        <attr name="boxHint" format="reference|string" /><!-- 提示信息 -->
+        <attr name="haveMoreLine" format="boolean" /><!-- 是否可以多行 -->
+        <attr name="editLength" format="integer" /><!-- 输入的最大长度 -->
+        <attr name="isVisibleColon" format="boolean" /><!-- 是否在标题右边显示冒号 -->
+        <attr name="isVisibleRightArrow" format="boolean" /><!-- 是否在右边显示向右的箭头 -->
+        <attr name="rightArrow" format="reference" /><!-- button右边显示的箭头 -->
+        <attr name="boxContent" format="reference|string" />
+        <attr name="isVisibleButton" format="boolean" />
+        <attr name="isVisibleDrownArrow" format="boolean"/><!--是否显示右边向下的箭头-->
+    </declare-styleable>
+</resources>

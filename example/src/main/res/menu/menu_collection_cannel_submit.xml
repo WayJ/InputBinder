@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ecommunity="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_collection_id_cancel"
+        android:orderInCategory="1"
+        android:title="@string/cancel"
+        android:visible="false"
+        ecommunity:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_collection_id_edit"
+        android:orderInCategory="2"
+        android:title="编辑"
+        android:visible="false"
+        ecommunity:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_collection_id_submit"
+        android:orderInCategory="3"
+        android:title="保存"
+        ecommunity:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_event_handle"
+        android:orderInCategory="3"
+        android:title="办理"
+        android:visible="false"
+        ecommunity:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_issue_process"
+        android:orderInCategory="2"
+        android:title="事件流程"
+        android:visible="false"
+        ecommunity:showAsAction="always"/>
+
+
+</menu>
