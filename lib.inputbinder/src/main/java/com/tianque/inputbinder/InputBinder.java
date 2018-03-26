@@ -80,15 +80,18 @@ public class InputBinder {
         return this;
     }
 
-    public void setRelationXmlNode(int redId,String nodeName){
+    public InputBinder setRelationXmlNode(int redId,String nodeName){
         engine.setInputReader(new XmlReader(redId,nodeName));
+        return this;
     }
 
-    public void setRelationEntity(Class modelCls){
+    public InputBinder setRelationEntity(Class modelCls){
         engine.setInputReader(new ModelReader(modelCls));
+        return this;
     }
 
     public void start(){
+        engine.setStoreInputItems(inputItemMap);
         engine.start();
     }
 
@@ -100,14 +103,15 @@ public class InputBinder {
         return engine;
     }
 
-    public void setRootView(Activity activity){
-        setRootView(activity.getWindow());
+    public InputBinder setRootView(Activity activity){
+        return setRootView(activity.getWindow());
     }
-    public void setRootView(Window window){
-        setRootView(window.getDecorView());
+    public InputBinder setRootView(Window window){
+        return setRootView(window.getDecorView());
     }
-    public void setRootView(View rootView){
+    public InputBinder setRootView(View rootView){
         engine.setRootView(rootView);
+        return this;
     }
 
     public void setViewObserver(ViewObserver viewObserver) {

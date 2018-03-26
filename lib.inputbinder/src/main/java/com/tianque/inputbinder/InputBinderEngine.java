@@ -10,9 +10,7 @@ import android.widget.Toast;
 import com.tianque.inputbinder.inf.ViewObserver;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.model.InputReaderInf;
-import com.tianque.inputbinder.model.ModelReader;
 import com.tianque.inputbinder.model.ViewAttribute;
-import com.tianque.inputbinder.model.XmlReader;
 import com.tianque.inputbinder.util.ResourceUtil;
 
 import java.lang.reflect.Constructor;
@@ -66,6 +64,7 @@ public class InputBinderEngine {
         this.mContext = context;
         if (!TextUtils.isEmpty(prefix))
             this.mTempPrefix = prefix;
+        mStoreInputItems = new HashMap<>();
     }
 
     public void setRootView(View rootView){
@@ -97,7 +96,7 @@ public class InputBinderEngine {
     }
 
     public void setStoreInputItems(Map<String, InputItem> itemMap) {
-        this.mStoreInputItems = itemMap;
+        this.mStoreInputItems.putAll(itemMap);
     }
 
     public void setStoreInputItem(String key, InputItem inputItem) {
@@ -126,7 +125,7 @@ public class InputBinderEngine {
                 e.printStackTrace();
             }
         }
-        if(isDebug())
+        if(isDebug()&&mStoreInputItems!=null)
             Log.d(Tag,mStoreInputItems.toString());
     }
 
@@ -264,21 +263,12 @@ public class InputBinderEngine {
         inputValidateHelper.put(attr.requestKey, attr);
     }
 
-    /**
-     * Get the request parameters.The difference from
-     * {@link #getRequestParams()} is this method supports get the request
-     * parameters without rebuilding if you pass true into the method.
-     *
-     * @param rebuild true to return the parameters map if it has built previous.
-     * @return
-     */
+
     public Map<String, String> getRequestParams(boolean rebuild) {
         return (!rebuild && (mRequestParams != null)) ? mRequestParams : getRequestParams();
     }
 
-    /**
-     * Get the request parameters.
-     */
+
     public Map<String, String> getRequestParams() {
         if (mRequestParams == null) {
             mRequestParams = new HashMap<>();
@@ -384,143 +374,7 @@ public class InputBinderEngine {
 //        return true;
 //    }
 
-//    private boolean isLengthLegal(String str, ViewAttribute attr) {
-//        boolean result = true;
-//        if (str.length() > attr.maxLength) {
-//            showTip(String.format(mContext.getString(R.string.text_length_warning_more_msg), attr.maxLength));
-//            result = false;
-//        } else if (str.length() < attr.minLength) {
-//            showTip(String.format(mContext.getString(R.string.text_length_warning_less_msg), attr.minLength));
-//            result = false;
-//        }
-//        if (!result) {
-//            focusView(attr.viewId);
-//            View view = rootView.findViewById(attr.viewId);
-//            ViewShakeUtil.newInstance(mContext).shake(view);
-//        }
-//        return result;
-//    }
 
-//    private boolean execValidateMethod(View view, String name, String validatedString) {
-//        try {
-//            Method m = Validate.class.getDeclaredMethod(name, String.class);
-//            Result result = (Result) m.invoke(Validate.class.newInstance(), validatedString);
-//            if (!result.isLegal()) {
-//                Tip.show(result.getError());
-//                ViewShakeUtil.newInstance(mContext).shake(view);
-//            }
-//            return result.isLegal();
-//        } catch (Exception e) {
-//            TQLogUtils.e("Can not found the method to validate the data, the method name is " + name);
-//            TQLogUtils.e(e);
-//        }
-//        return true;
-//    }
-
-//    private void focusView(int viewId) {
-//        View view = rootView.findViewById(viewId);
-//        if (view != null) {
-//            if (view instanceof EditText) {
-//                view.requestFocus();
-//            } else if (view instanceof EditItemBox) {
-//                ((EditItemBox) view).getEditText().requestFocus();
-//            }
-//        }
-//    }
-
-//    public void addRequestParameter(String key, String value) {
-//        mExtraRequestParams.put(key, value);
-//    }
-//
-//    public void addRequestParameter(int viewId, String value) {
-//        ViewAttribute attr = mAttrs.get(viewId);
-//        if (attr != null && Util.isLegal(attr.requestKey)) {
-//            mExtraRequestParams.put(attr.requestKey, value);
-//        }
-//    }
-
-//    /**
-//     * Clear the pending removing parameter queue.
-//     */
-//    public void resetPendingRemoveQueue() {
-//        mPendingRemoveParams.clear();
-//    }
-//
-//    public void removeFromPendingRemoveQueue(int viewId) {
-//        if (mPendingRemoveParams != null) {
-//            ViewAttribute attr = mAttrs.get(viewId);
-//            if (attr != null && attr.requestKey != null) {
-//                mPendingRemoveParams.remove(attr.requestKey);
-//            }
-//        }
-//    }
-//
-//    public void removeFromPendingRemoveQueue(String requestKey) {
-//        if (mPendingRemoveParams != null) {
-//            mPendingRemoveParams.remove(requestKey);
-//        }
-//    }
-
-    /**
-     * The same as the {@link #removeRequestParameter(String)}.
-     *
-     * @param viewID The id to find the ViewAttribute to find the key of the
-     *               request parameter.
-     */
-//    public void removeRequestParameter(int viewID) {
-//        ViewAttribute config = mAttrs.get(viewID);
-//
-//        if (config != null && Util.isLegal(config.requestKey)) {
-//            removeRequestParameter(config.requestKey);
-//        }
-//    }
-
-    /**
-     * Remove the request parameter from the map, if the request parameter has
-     * not been put into the map, the key of the request parameter will be put
-     * into a pending remove queue, which will be a refer to remove the request
-     * while the final request parameter map has been generated.
-     *
-     * @param key The key of the request parameter.
-     */
-//    public void removeRequestParameter(String key) {
-//        if (mExtraRequestParams.remove(key) == null) {
-//            mPendingRemoveParams = mPendingRemoveParams == null ? new ArrayList<String>()
-//                    : mPendingRemoveParams;
-//            mPendingRemoveParams.add(key);
-//        }
-//    }
-
-//    /**
-//     * Get the key of the request parameter by the given view id in current
-//     * configuration.
-//     *
-//     * @param viewID
-//     * @return
-//     */
-//    public String getRequestKey(int viewID) {
-//        ViewAttribute config = mAttrs.get(viewID);
-//        return config == null ? null : config.requestKey;
-//    }
-
-//    /**
-//     * Get the key of the request parameter by the given view id in the special
-//     * configuration.
-//     *
-//     * @param configName
-//     * @param viewID
-//     * @return
-//     */
-//    public String getRequestKey(String configName, int viewID) {
-//        LinkedHashMap<Integer, ViewAttribute> attrs = mModelLoader.read(mContext, configName);
-//        if (attrs != null) {
-//            ViewAttribute attr = attrs.get(viewID);
-//            if (attr != null) {
-//                return attr.requestKey;
-//            }
-//        }
-//        return null;
-//    }
     public void refreshViewById(int viewId) {
         InputItem item = itemsPutByViewId.get(viewId);
         item.refreshView();
@@ -552,22 +406,7 @@ public class InputBinderEngine {
         return inputValidateHelper.ignoreRequired.remove(requestKey);
     }
 
-    /**
-     * Same as {@link #ignoreRequired(String)}
-     *
-     * @param viewID The id of the view which is refer to the ViewAttribute
-     */
-//    public void ignoreRequired(int viewID) {
-//        ViewAttribute attr = mAttrs.get(viewID);
-//        if (attr != null && Util.isLegal(attr.requestKey)) {
-//            ignoreRequired(attr.requestKey);
-//        }
-//    }
-//
-//    public boolean restoreRequired(int viewID) {
-//        ViewAttribute attr = mAttrs.get(viewID);
-//        return (attr != null && Util.isLegal(attr.requestKey) && restoreRequired(attr.requestKey));
-//    }
+
     public SparseArray<Object> getSparseArrayData() {
         return null;
     }

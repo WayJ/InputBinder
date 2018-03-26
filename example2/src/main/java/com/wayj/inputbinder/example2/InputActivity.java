@@ -6,11 +6,11 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.InputBinderEngine;
-import com.tianque.inputbinder.inf.ViewObserver;
-import com.tianque.inputbinder.item.InputItem;
+import com.tianque.inputbinder.item.ButtonInputItem;
 
 /**
  * Created by way on 2018/3/7.
@@ -38,21 +38,16 @@ public class InputActivity extends Activity {
 
             }
         });
-//        inputBinder.setViewObserver(new ViewObserver() {
-//
-//            @Override
-//            public void onButtonClick(View view, InputItem inputItem) {
-//
-//            }
-//
-//            @Override
-//            public void onCheckedChanged(View view, InputItem inputItem) {
-//
-//            }
-//        });
         inputBinder.getEngine().setDebug(true);
-        inputBinder.setRootView(this);
-        inputBinder.setRelationEntity(Student.class);
+        inputBinder.setRootView(this).setRelationEntity(Student.class);
+        ButtonInputItem buttonInputItem = new ButtonInputItem(R.id.input_btn,"点我一下，代码赋值");
+        buttonInputItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(InputActivity.this,"点击了一下",Toast.LENGTH_SHORT).show();
+            }
+        });
+        inputBinder.addInputItem(buttonInputItem);
         inputBinder.start();
     }
 }
