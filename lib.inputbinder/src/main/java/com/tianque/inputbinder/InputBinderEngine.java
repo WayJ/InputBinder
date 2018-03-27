@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 
+import com.tianque.inputbinder.inf.InputItemHand;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.model.InputReaderInf;
 import com.tianque.inputbinder.model.ViewAttribute;
@@ -129,6 +130,7 @@ public class InputBinderEngine {
                 Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
             }
             item.setView(view);
+            item.setInputItemHand(inputItemHand);
             item.onStart();
             //添加缓存数据
             putRequestParams(item);
@@ -402,4 +404,16 @@ public class InputBinderEngine {
     public interface CallBack {
         void onStart(InputBinderEngine engine);
     }
+
+    protected InputItemHand inputItemHand=new InputItemHand() {
+        @Override
+        public InputItem findInputItemByViewName(String viewName) {
+            return inputItems.get(viewName);
+        }
+
+        @Override
+        public View findViewById(int id) {
+            return rootView.findViewById(id);
+        }
+    };
 }

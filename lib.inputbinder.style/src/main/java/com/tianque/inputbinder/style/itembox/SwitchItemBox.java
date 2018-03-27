@@ -19,7 +19,7 @@ public class SwitchItemBox extends ItemBoxBase<Boolean> {
 
     //	private List<OnClickListener> mOnClick;
     private boolean switchable = true;
-    private List<OnCheckedChangeListener> onCheckedChangeListener;
+    private List<CompoundButton.OnCheckedChangeListener> onCheckedChangeListener;
 
     public SwitchItemBox(Context context) {
         super(context);
@@ -66,7 +66,7 @@ public class SwitchItemBox extends ItemBoxBase<Boolean> {
             @Override
             public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
                 if (onCheckedChangeListener != null)
-                    for (OnCheckedChangeListener iterable_element : onCheckedChangeListener) {
+                    for (CompoundButton.OnCheckedChangeListener iterable_element : onCheckedChangeListener) {
                         iterable_element.onCheckedChanged(getButton(), arg1);
                     }
             }
@@ -171,9 +171,9 @@ public class SwitchItemBox extends ItemBoxBase<Boolean> {
         getButton().setEnabled(able);
     }
 
-    public void setOnCheckedChangeListener(OnCheckedChangeListener checkedChangeListener) {
+    public void setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener checkedChangeListener) {
         if (onCheckedChangeListener == null)
-            onCheckedChangeListener = new ArrayList<OnCheckedChangeListener>();
+            onCheckedChangeListener = new ArrayList<CompoundButton.OnCheckedChangeListener>();
         onCheckedChangeListener.add(checkedChangeListener);
     }
 
@@ -184,9 +184,5 @@ public class SwitchItemBox extends ItemBoxBase<Boolean> {
         setSwitchAble(enabled);
     }
 
-    public static interface OnCheckedChangeListener {
-
-        public void onCheckedChanged(CheckSwitchButton buttonView, boolean isChecked);
-    }
 
 }

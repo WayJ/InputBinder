@@ -3,6 +3,7 @@ package com.tianque.inputbinder.item;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tianque.inputbinder.inf.InputItemHand;
 import com.tianque.inputbinder.model.ViewAttribute;
 import com.tianque.inputbinder.inf.ViewProxyInterface;
 import com.tianque.inputbinder.util.Logging;
@@ -19,8 +20,9 @@ import java.util.Map;
  * Created by way on 17/5/18.
  */
 
-public abstract class InputItem<T>  {
+public abstract class InputItem<T> {
 
+    public static final String SEPARATOR = ",";
     private final String GONE = "gone";
     private final String VISIBLE = "visible";
     private final String INVISIBLE = "invisible";
@@ -29,6 +31,7 @@ public abstract class InputItem<T>  {
     private int resourceId;
 
     private ViewProxyInterface<T> viewProxy;
+    private InputItemHand inputItemHand;
 //    private String resourceName;
 
     private String requestKey;
@@ -170,4 +173,11 @@ public abstract class InputItem<T>  {
         }
     }
 
+    public InputItemHand getInputItemHand() {
+        return inputItemHand;
+    }
+
+    public void setInputItemHand(InputItemHand inputItemHand) {
+        this.inputItemHand = inputItemHand;
+    }
 }

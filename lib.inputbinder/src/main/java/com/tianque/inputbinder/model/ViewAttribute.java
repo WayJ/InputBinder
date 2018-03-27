@@ -24,7 +24,7 @@ public class ViewAttribute {
     public String requiredRemind = "";
     public String validateMethoid = "";
     public Boolean addClearSelection = false;
-    public String visible = "visible";
+    public String visible = "";
     public Integer maxLength;
     public Integer minLength;
     public String dependent;//依赖的控件，目前只做了checkbox的依赖，例如checkA选中后显示EditB，则为editB依赖了checkA

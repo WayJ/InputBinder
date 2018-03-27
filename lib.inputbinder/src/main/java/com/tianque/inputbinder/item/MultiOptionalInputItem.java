@@ -12,7 +12,6 @@ public class MultiOptionalInputItem extends ButtonInputItem {
     public static final String ParmTag_keys="optionalKeys";
     public static final String ParmTag_values="optionalValues";
 
-    public final String SEPARATOR = ",";
     private String[] optionalTexts;
     private String[] optionalValues;
     private boolean[] selectedIndex;

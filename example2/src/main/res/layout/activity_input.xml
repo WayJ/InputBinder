@@ -44,6 +44,22 @@
             android:text="选择课程"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <com.tianque.inputbinder.style.itembox.SwitchItemBox
+            android:id="@+id/hasRoom"
+            android:text="是否寄宿"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </com.tianque.inputbinder.style.itembox.SwitchItemBox>
+        <com.tianque.inputbinder.style.itembox.EditItemBox
+            android:id="@+id/roomNumber"
+            android:text="宿舍房间号"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.tianque.inputbinder.style.itembox.EditItemBox
+            android:id="@+id/address"
+            android:text="住址"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
