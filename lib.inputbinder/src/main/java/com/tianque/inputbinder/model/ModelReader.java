@@ -51,6 +51,7 @@ public class ModelReader implements InputReaderInf{
 
                 viewAttribute.requestKey = TextUtils.isEmpty(input.requestKey())?f.getName():input.requestKey();
                 viewAttribute.viewName = TextUtils.isEmpty(input.viewName())?f.getName():input.viewName();
+                viewAttribute.parm = input.parm();
                 attributes.add(viewAttribute);
             }
         }

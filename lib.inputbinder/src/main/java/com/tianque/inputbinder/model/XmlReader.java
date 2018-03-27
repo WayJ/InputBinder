@@ -90,7 +90,7 @@ public class XmlReader implements InputReaderInf{
                 String validateMethod = element.getAttribute("validate-method");
                 String visible = element.getAttribute("visible");
                 String dependent = element.getAttribute("dependent");
-                String extmap = element.getAttribute("extmap");
+                String parm = element.getAttribute("parm");
 
                 int maxLength = convertToInt(element.getAttribute("maxLength"), 10000);
                 int minLength = convertToInt(element.getAttribute("minLength"), 0);
@@ -112,7 +112,7 @@ public class XmlReader implements InputReaderInf{
                 config.maxLength = maxLength;
                 config.minLength = minLength;
                 config.dependent = dependent;
-                config.extmap = extmap;
+                config.parm = parm;
 
                 if(config.viewId<=0){
                     Logging.e("找不到R.id."+config.key);

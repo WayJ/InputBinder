@@ -42,13 +42,13 @@ public class OptionalDialog implements OnItemClickListener {
 
     }
 
-    public void showPopWindow(View showView, List<String> list, onOptionalItemSelect monOptionalItemSelect) {
+    public void showPopWindow(View showView, List<String> list, onOptionalItemSelect onOptionalItemSelect) {
         onDismiss();
         InputMethodManager imm = (InputMethodManager) mContext
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(showView.getWindowToken(), 0); //强制隐藏键盘
         if (list != null) {
-            this.monOptionalItemSelect = monOptionalItemSelect;
+            this.monOptionalItemSelect = onOptionalItemSelect;
             SelectAdapter selectAdapter = new SelectAdapter(list);
             op_list.setAdapter(selectAdapter);
 

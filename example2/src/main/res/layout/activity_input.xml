@@ -29,6 +29,16 @@
             android:text="点击按钮"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <com.tianque.inputbinder.style.itembox.ButtonItemBox
+            android:id="@+id/vision"
+            android:text="视力选择项"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.tianque.inputbinder.style.itembox.ButtonItemBox
+            android:id="@+id/vision2"
+            android:text="视力2_带value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

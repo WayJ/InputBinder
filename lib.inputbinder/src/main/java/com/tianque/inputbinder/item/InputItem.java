@@ -1,11 +1,18 @@
 package com.tianque.inputbinder.item;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tianque.inputbinder.model.ViewAttribute;
 import com.tianque.inputbinder.inf.ViewProxyInterface;
+import com.tianque.inputbinder.util.ContextUtils;
+import com.tianque.inputbinder.util.Logging;
+import com.tianque.inputbinder.util.ToastUtils;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -28,7 +35,7 @@ public abstract class InputItem<T>  {
     private String requestKey;
 //    protected ViewBehaviorInterface<T> actualViewBehavior;
     protected ViewAttribute viewAttribute;
-    private Map<String,String> extMap;
+    private Map<String,String> configParmMap;//配置的参数的map
     private View view;
 
     public InputItem() {
@@ -114,26 +121,26 @@ public abstract class InputItem<T>  {
             getViewProxy().setContent(getDisplayText());
     }
 
-    public Map<String, String> getExtMap() {
-        return extMap;
+    public Map<String, String> getConfigParmMap() {
+        return configParmMap;
     }
 
-    public void setExtMap(Map<String, String> extMap) {
-        this.extMap = extMap;
+    public void setConfigParmMap(Map<String, String> extMap) {
+        this.configParmMap = extMap;
     }
 
-    public void addExtConfig(String key,String value){
-        if(extMap==null){
-            extMap=new HashMap<>();
+    public void addConfigParm(String key,String value){
+        if(configParmMap==null){
+            configParmMap=new HashMap<>();
         }
-        extMap.put(key,value);
+        configParmMap.put(key,value);
     }
 
-    public String getExtConfig(String key){
-        if(extMap==null)
+    public String getConfigParm(String key){
+        if(configParmMap==null)
             return null;
         else
-            return extMap.get(key);
+            return configParmMap.get(key);
     }
 
     /**
@@ -147,6 +154,20 @@ public abstract class InputItem<T>  {
                 viewProxy=(ViewProxyInterface<T>) getView();
             }else
                 viewProxy = initDefaultViewProxy(getView());
+        }
+        if(getViewAttribute()!=null&& !TextUtils.isEmpty(getViewAttribute().parm)){
+            String  parmStr = getViewAttribute().parm;
+            try{
+                JSONObject jsonObject=new JSONObject(parmStr);
+                Iterator<String> keys =  jsonObject.keys();
+                while (keys.hasNext()){
+                    String key = keys.next();
+                    addConfigParm(key,jsonObject.getString(key));
+                }
+            }catch (Exception e){
+                Logging.e(e);
+                ToastUtils.showDebugToast(ContextUtils.getApplicationContext(),"转换JSON出错："+parmStr);
+            }
         }
     }
 

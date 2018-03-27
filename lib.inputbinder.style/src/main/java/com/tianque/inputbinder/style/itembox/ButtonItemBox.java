@@ -20,7 +20,7 @@ import com.tianque.inputbinder.style.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ButtonItemBox extends ItemBoxBase<String> implements View.OnClickListener{
+public class ButtonItemBox extends ItemBoxBase<String> implements View.OnClickListener {
 
     private List<OnClickListener> mOnClick;
     private CallBackChangeText mCallBackEdit;
@@ -134,7 +134,7 @@ public class ButtonItemBox extends ItemBoxBase<String> implements View.OnClickLi
             return;
         for (OnClickListener listener : mOnClick) {
             try {
-            listener.onClick(ButtonItemBox.this);
+                listener.onClick(ButtonItemBox.this);
             } catch (Exception e) {
                 e.printStackTrace();
             }

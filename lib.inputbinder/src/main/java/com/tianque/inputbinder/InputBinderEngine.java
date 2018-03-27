@@ -13,6 +13,7 @@ import com.tianque.inputbinder.model.InputReaderInf;
 import com.tianque.inputbinder.model.ViewAttribute;
 import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.ResourceUtil;
+import com.tianque.inputbinder.util.ToastUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -130,6 +131,7 @@ public class InputBinderEngine {
             if (view != null) {
                 execute(view, attr, item);
             } else {
+                ToastUtils.showDebugToast(mContext,"item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
                 Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
             }
             item.setView(view);
@@ -212,23 +214,23 @@ public class InputBinderEngine {
         }
         addValidateData(attr);
 
-        if (!TextUtils.isEmpty(attr.extmap)) {
-            String[] extmap;
-            if (attr.extmap.contains(";")) {
-                extmap = attr.extmap.split(";");
-            } else {
-                extmap = new String[1];
-                extmap[0] = attr.extmap;
-            }
-            for (String mapStr : extmap) {
-                if (!mapStr.contains(":")) {
-//                    TQLogUtils.e("extmap 配置的key和value必须以 : 符号间隔，多个配置之间以 ; 符号分割");
-                    continue;
-                }
-                String[] keyValue = mapStr.split(":");
-                item.addExtConfig(keyValue[0], keyValue[1]);
-            }
-        }
+//        if (!TextUtils.isEmpty(attr.parm)) {
+//            String[] extmap;
+//            if (attr.parm.contains(";")) {
+//                extmap = attr.parm.split(";");
+//            } else {
+//                extmap = new String[1];
+//                extmap[0] = attr.parm;
+//            }
+//            for (String mapStr : extmap) {
+//                if (!mapStr.contains(":")) {
+////                    TQLogUtils.e("extmap 配置的key和value必须以 : 符号间隔，多个配置之间以 ; 符号分割");
+//                    continue;
+//                }
+//                String[] keyValue = mapStr.split(":");
+//                item.addExtConfig(keyValue[0], keyValue[1]);
+//            }
+//        }
 
 //        if (!TextUtils.isEmpty(attr.dependent)) {
 //            String viewName = attr.dependent;

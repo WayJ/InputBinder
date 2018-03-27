@@ -28,7 +28,7 @@ public class ViewAttribute {
     public Integer maxLength;
     public Integer minLength;
     public String dependent;//依赖的控件，目前只做了checkbox的依赖，例如checkA选中后显示EditB，则为editB依赖了checkA
-    public String extmap;//扩展参数配置
+    public String parm;//扩展参数配置
 //    public HashMap<String, HashMap<String, String>> method = new HashMap<String, HashMap<String, String>>();
 
     @Override

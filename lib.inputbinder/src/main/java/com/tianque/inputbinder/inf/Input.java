@@ -32,4 +32,10 @@ public @interface Input {
     String viewName() default "";
 
     String requestKey() default "";
+
+    /**
+     * 附加参数，jsonObj格式，这里会进行转换成jsonObj
+     * @return
+     */
+    String parm() default "";
 }

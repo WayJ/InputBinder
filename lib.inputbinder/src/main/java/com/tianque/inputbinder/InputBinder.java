@@ -5,12 +5,14 @@ import android.content.Context;
 import android.view.View;
 import android.view.Window;
 
+import com.tianque.inputbinder.inf.InputBinderStyleAction;
 import com.tianque.inputbinder.inf.ViewObserver;
 import com.tianque.inputbinder.item.ButtonInputItem;
 import com.tianque.inputbinder.item.CheckInputItem;
 import com.tianque.inputbinder.item.DateInputItem;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.item.InputItemType;
+import com.tianque.inputbinder.item.OptionalInputItem;
 import com.tianque.inputbinder.item.TextInputItem;
 import com.tianque.inputbinder.model.ModelReader;
 import com.tianque.inputbinder.model.XmlReader;
@@ -26,12 +28,14 @@ import java.util.Map;
 
 public class InputBinder {
     public static Map<String,Class<? extends InputItem>> inputTypeStoreMap;
+    private static InputBinderStyleAction inputBinderStyleAction;
     static{
         inputTypeStoreMap=new HashMap<>();
         inputTypeStoreMap.put(InputItemType.Text.getValue(), TextInputItem.class);
         inputTypeStoreMap.put(InputItemType.Button.getValue(), ButtonInputItem.class);
         inputTypeStoreMap.put(InputItemType.CheckBox.getValue(), CheckInputItem.class);
         inputTypeStoreMap.put(InputItemType.Date.getValue(), DateInputItem.class);
+        inputTypeStoreMap.put(InputItemType.Optional.getValue(), OptionalInputItem.class);
     }
 
     private Context context;
@@ -115,7 +119,11 @@ public class InputBinder {
         return this;
     }
 
-    public void setViewObserver(ViewObserver viewObserver) {
-        engine.setViewObserver(viewObserver);
+    public static InputBinderStyleAction getInputBinderStyleAction() {
+        return inputBinderStyleAction;
+    }
+
+    public static void setInputBinderStyleAction(InputBinderStyleAction inputBinderStyleAction) {
+        InputBinder.inputBinderStyleAction = inputBinderStyleAction;
     }
 }

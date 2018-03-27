@@ -46,6 +46,7 @@ public class InputActivity extends Activity {
                 Toast.makeText(InputActivity.this,"点击了一下",Toast.LENGTH_SHORT).show();
             }
         });
+        buttonInputItem.setDisplayText("点一下试试看");
         inputBinder.addInputItem(buttonInputItem);
         inputBinder.start();
     }
