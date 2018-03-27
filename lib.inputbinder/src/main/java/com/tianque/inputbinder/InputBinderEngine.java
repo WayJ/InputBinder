@@ -2,21 +2,16 @@ package com.tianque.inputbinder;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.Toast;
 
-import com.tianque.inputbinder.inf.ViewObserver;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.model.InputReaderInf;
 import com.tianque.inputbinder.model.ViewAttribute;
 import com.tianque.inputbinder.util.Logging;
-import com.tianque.inputbinder.util.ResourceUtil;
+import com.tianque.inputbinder.util.ResourceUtils;
 import com.tianque.inputbinder.util.ToastUtils;
-
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +29,6 @@ public class InputBinderEngine {
     // mAttrs 对象的key是 viewId
     private LinkedHashMap<Integer, InputItem> itemsPutByViewId;
 
-    private ViewObserver viewObserver;
 
     //    private Map<String, InputItem> mAutoInputItems;//
     private InputValidateHelper inputValidateHelper = new InputValidateHelper();
@@ -112,7 +106,7 @@ public class InputBinderEngine {
 
     private void setUp(List<ViewAttribute> attrs) {
         for (ViewAttribute attr : attrs) {
-            attr.viewId = ResourceUtil.findIdByName(mContext, attr.viewName);
+            attr.viewId = ResourceUtils.findIdByName(mContext, attr.viewName);
             if(attr.viewId<=0){
                 Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
                 continue;
@@ -167,13 +161,7 @@ public class InputBinderEngine {
 //                        } else {
 //                            throw new RuntimeException("类型警告：" + key + " 的控件类型未找到");
 //                        }
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -214,51 +202,8 @@ public class InputBinderEngine {
         }
         addValidateData(attr);
 
-//        if (!TextUtils.isEmpty(attr.parm)) {
-//            String[] extmap;
-//            if (attr.parm.contains(";")) {
-//                extmap = attr.parm.split(";");
-//            } else {
-//                extmap = new String[1];
-//                extmap[0] = attr.parm;
-//            }
-//            for (String mapStr : extmap) {
-//                if (!mapStr.contains(":")) {
-////                    TQLogUtils.e("extmap 配置的key和value必须以 : 符号间隔，多个配置之间以 ; 符号分割");
-//                    continue;
-//                }
-//                String[] keyValue = mapStr.split(":");
-//                item.addExtConfig(keyValue[0], keyValue[1]);
-//            }
-//        }
-
-//        if (!TextUtils.isEmpty(attr.dependent)) {
-//            String viewName = attr.dependent;
-//            InputItem inputItem;
-//            if (viewName.startsWith("-")) {
-//                inputItem = mAutoInputItems.get(viewName.substring(1));
-//            } else {
-//                inputItem = mAutoInputItems.get(viewName);
-//            }
-//            if (inputItem == null) {
-//                throw new RuntimeException("R.id." + attr.key + " 控件所依赖的 R.id." + attr.dependent + "未找到，必须先定义被依赖控件，请检查layout文件和viewconfig文件");
-//            } else if (!(inputItem instanceof CheckInputItem)) {
-//                throw new RuntimeException("R.id." + attr.key + " 控件所依赖的 R.id." + attr.dependent + " 只能是CheckInputItem");
-//            }
-//            if (viewName.startsWith("-")) {
-//                ((CheckInputItem) inputItem).addDependedCloseView(view);
-//                view.setVisibility(((CheckInputItem) inputItem).isChecked() ? View.GONE : View.VISIBLE);
-//            } else {
-//                ((CheckInputItem) inputItem).addDependedView(view);
-//                view.setVisibility(((CheckInputItem) inputItem).isChecked() ? View.VISIBLE : View.GONE);
-//            }
-//        }
-
         item.refreshView();
     }
-
-
-
 
     /**
      * 添加表单提交时验证的参数
@@ -339,18 +284,7 @@ public class InputBinderEngine {
             return;
         if (temRequest.containsKey(inputItem.getRequestKey())) {
             String value = temRequest.get(inputItem.getRequestKey());
-//            if (inputItem instanceof OptionalInputItem) {
-//                OptionalInputItem optionalInputItem = (OptionalInputItem) inputItem;
-//                optionalInputItem.setRequestValue(value);
-//            } else if (inputItem instanceof MultiOptionalInputItem) {
-//                MultiOptionalInputItem multiOptionalInputItem = (MultiOptionalInputItem) inputItem;
-//                multiOptionalInputItem.setRequestValue(value);
-//            } else if (inputItem instanceof CheckInputItem) {
-//                CheckInputItem checkInputItem = (CheckInputItem) inputItem;
-//                checkInputItem.setRequestValue(value);
-//            } else {
             inputItem.setRequestValue(value);
-//            }
         }
     }
 
@@ -439,27 +373,9 @@ public class InputBinderEngine {
     }
 
     public void setViewEnabled(View view, boolean enable) {
-//        if (view instanceof ButtonItemBox) {
-//            ((ButtonItemBox) view).setEnabled(enable);
-//        } else if (view instanceof EditItemBox) {
-//            ((EditItemBox) view).setEnabled(enable);
-//        } else if (view instanceof SwitchItemBox) {
-//            ((SwitchItemBox) view).setEnabled(enable);
-//        } else if (view instanceof ItemBoxBase) {
-//            ((ItemBoxBase) view).setEnabled(enable);
-//        } else if (view instanceof LinearLayout) {
-//            LinearLayout linearLayout = (LinearLayout) view;
-//            if (linearLayout.getChildCount() > 0) {
-//                for (int i = 0; i < linearLayout.getChildCount(); i++) {
-//                    setViewEnabled(linearLayout.getChildAt(i), enable);
-//                }
-//            }
-//        } else {
         view.setFocusable(enable);
         view.setEnabled(enable);
         view.setClickable(enable);
-//        }
-
     }
 
 //    public String getTempPrefix() {
@@ -474,61 +390,6 @@ public class InputBinderEngine {
 //        return mModelLoader.getPrefix();
 //    }
 
-    public void showTip(int resId) {
-        showTip(mContext.getResources().getString(resId));
-    }
-
-    public void showTip(String tip) {
-        Toast.makeText(mContext, tip, Toast.LENGTH_SHORT).show();
-    }
-
-//    public BehaviorMultiOptional.MultiOptionalClickListener getOnMultiOptionalClickListener() {
-//        return mMultiOptionalClickListener;
-//    }
-//
-//    public void setOnMultiOptionalClickListener(BehaviorMultiOptional.MultiOptionalClickListener l) {
-//        mMultiOptionalClickListener = l;
-//    }
-//
-//    public BehaviorOptional.OnOptionClickListener getOnOptionClickListener() {
-//        return mOnOptionClick;
-//    }
-//
-//    public void setOnOptionClickListener(BehaviorOptional.OnOptionClickListener l) {
-//        mOnOptionClick = l;
-//    }
-//
-//    public BehaviorButton.OnButtonClickListener getOnButtonClickListener() {
-//        return mOnButtonClickListener;
-//    }
-//
-//    public void setOnButtonClickListener(BehaviorButton.OnButtonClickListener onButtonClickListener) {
-//        this.mOnButtonClickListener = onButtonClickListener;
-//    }
-//
-//    public void setOnViewFoundListener(OnViewFoundListener l) {
-//        this.mOnViewFound = l;
-//    }
-//
-//    public void setOnCheckBoxStateListener(BehaviorCheckBox.OnCheckStatusChanged l) {
-//        mOnCheckedChangedListener = l;
-//    }
-//
-//    public BehaviorCheckBox.OnCheckStatusChanged getOnCheckStatusChangedListener() {
-//        return mOnCheckedChangedListener;
-//    }
-//
-//    public interface OnViewFoundListener {
-//        void onFound(View view, ViewAttribute config);
-//    }
-
-    public ViewObserver getViewObserver() {
-        return viewObserver;
-    }
-
-    public void setViewObserver(ViewObserver viewObserver) {
-        this.viewObserver = viewObserver;
-    }
 
     public CallBack getCallBack() {
         return callBack;

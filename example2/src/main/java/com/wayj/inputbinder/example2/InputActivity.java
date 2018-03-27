@@ -3,6 +3,7 @@ package com.wayj.inputbinder.example2;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,6 +12,9 @@ import android.widget.Toast;
 import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.InputBinderEngine;
 import com.tianque.inputbinder.item.ButtonInputItem;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by way on 2018/3/7.
@@ -48,6 +52,26 @@ public class InputActivity extends Activity {
         });
         buttonInputItem.setDisplayText("点一下试试看");
         inputBinder.addInputItem(buttonInputItem);
+
+        String action =getIntent().getStringExtra("action");
+        if(!TextUtils.isEmpty(action)&&action.equals("edit")){
+            //模拟请求接口获得数据并显示
+            doRequestAndShow();
+        }
         inputBinder.start();
+    }
+
+    private void doRequestAndShow() {
+        //request
+        //get data
+        //转换成实体类
+        Map<String,String> data=new HashMap<>();
+        data.put("name","hanmeimei");
+        data.put("isBoy","1");
+        data.put("birthday","1999-1-1");
+        data.put("vision","0.6");
+        data.put("student.vision2","8");
+        data.put("multi","数学");
+        inputBinder.addSavedRequestMap(data);
     }
 }

@@ -71,7 +71,7 @@ public class MultiOptionalInputItem extends ButtonInputItem {
     }
 
     @Override
-    public String getDisplayText() {
+    public String getContent() {
         return getData(optionalTexts,selectedIndex);
     }
 

@@ -9,10 +9,6 @@ import com.tianque.inputbinder.util.Logging;
 
 import java.lang.reflect.Method;
 
-/**
- * Created by way on 17/5/18.
- */
-
 public class TextInputItem extends InputItem<String> {
 
     private String displayText;
@@ -33,7 +29,7 @@ public class TextInputItem extends InputItem<String> {
     }
 
     @Override
-    public String getDisplayText() {
+    public String getContent() {
         return displayText;
     }
 
@@ -49,9 +45,9 @@ public class TextInputItem extends InputItem<String> {
 
     @Override
     public void setRequestValue(String value) {
-        if (value != null) {
-            this.displayText = value;
-        }
+        this.displayText = value;
+        if(isStarted)
+            refreshView();
     }
 
     @Override

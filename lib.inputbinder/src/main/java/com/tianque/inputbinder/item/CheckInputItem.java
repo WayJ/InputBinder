@@ -1,5 +1,6 @@
 package com.tianque.inputbinder.item;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -8,23 +9,21 @@ import com.tianque.inputbinder.inf.ViewProxyInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by way on 17/5/18.
- */
-
 public class CheckInputItem extends InputItem<Boolean> {
 
     private CheckBox.OnCheckedChangeListener onCheckedChangeListener;
     private boolean isChecked;
-    private boolean isOtherDic;
-    private String isOtherCheck;
     private List<View> mDependedOpenView;//依赖该inputItem来控制是否显示的view的集合,该控件为true时，这个集合中控件都显示
     private List<View> mDependedCloseView;//依赖该inputItem来控制是否显示的view的集合，该控件为true时，这个集合中控件都不显示
 
     /**
      * 该inputItem获得提交参数时候，选中不选中各对应的传递的值
-     * 默认： {TRUE.toString(),FALSE.toString()}
+     * 默认： {FALSE,TRUE}即 checkValues[0]= false,checkValues[1]=true
      */
+    private static final String SEPARATOR = ",";
+    private static final String defaultCheckValues1="0"+SEPARATOR+"1";
+    private static final String defaultCheckValues2="false"+SEPARATOR+"true";
+    private static final String defaultCheckValues3="FALSE"+SEPARATOR+"TRUE";
     private String[] checkValues;
 
     public CheckInputItem(int resourceId) {
@@ -36,63 +35,80 @@ public class CheckInputItem extends InputItem<Boolean> {
         setChecked(isChecked);
     }
 
-    public CheckInputItem(int resourceId, boolean isChecked, boolean isOtherDic, String isOtherCheck) {
-        this(resourceId);
-        setChecked(isChecked);
-        this.isOtherDic = isOtherDic;
-        this.isOtherCheck = isOtherCheck;
+    @Override
+    public void onStart() {
+        super.onStart();
+        //        if (!TextUtils.isEmpty(attr.dependent)) {
+//            String viewName = attr.dependent;
+//            InputItem inputItem;
+//            if (viewName.startsWith("-")) {
+//                inputItem = mAutoInputItems.get(viewName.substring(1));
+//            } else {
+//                inputItem = mAutoInputItems.get(viewName);
+//            }
+//            if (inputItem == null) {
+//                throw new RuntimeException("R.id." + attr.key + " 控件所依赖的 R.id." + attr.dependent + "未找到，必须先定义被依赖控件，请检查layout文件和viewconfig文件");
+//            } else if (!(inputItem instanceof CheckInputItem)) {
+//                throw new RuntimeException("R.id." + attr.key + " 控件所依赖的 R.id." + attr.dependent + " 只能是CheckInputItem");
+//            }
+//            if (viewName.startsWith("-")) {
+//                ((CheckInputItem) inputItem).addDependedCloseView(view);
+//                view.setVisibility(((CheckInputItem) inputItem).isChecked() ? View.GONE : View.VISIBLE);
+//            } else {
+//                ((CheckInputItem) inputItem).addDependedView(view);
+//                view.setVisibility(((CheckInputItem) inputItem).isChecked() ? View.VISIBLE : View.GONE);
+//            }
+//        }
     }
 
     @Override
-    public Boolean getDisplayText() {
-        return null;
+    public Boolean getContent() {
+        return isChecked();
     }
 
     @Override
     public String getRequestValue() {
         isChecked = getViewProxy().getContent();
         if (checkValues != null) {
-            return isChecked ? checkValues[0] : checkValues[1];
+            return isChecked ? checkValues[1] : checkValues[0];
         } else
             return Boolean.valueOf(isChecked).toString();
     }
 
     @Override
     public void setRequestValue(String value) {
-        if (isOtherDic) {
-            setCheckOtherDicByRequestValue(value);
-        } else {
-            setCheckedByRequestValue(value);
+        if(TextUtils.isEmpty(value))
+            return;
+        if(checkValues==null){
+            initDefaultCheckValuesWithValue(value);
         }
-    }
+        if(checkValues!=null){
+            if(value.equals(checkValues[0]))
+                setChecked(false);
+            else if(value.equals(checkValues[1]))
+                setChecked(true);
 
-    private void setCheckOtherDicByRequestValue(String value) {
-        if (value.equals("")) {
-            setChecked(false);
-        } else if (isOtherCheck.equals(value)) {
-            setChecked(true);
         }
-
     }
 
     public boolean isChecked() {
         return isChecked;
     }
 
-    /**
-     * @param value
-     */
-    public void setCheckedByRequestValue(String value) {
-        if (value.equals("1") || value.equals("0")) {
-            setCheckValues("1", "0");
-            setChecked(value.equals("1"));
-        } else if (value.equals("true") || value.equals("false")) {
-            setChecked(Boolean.valueOf(value));
+    private void initDefaultCheckValuesWithValue(String value) {
+        if(defaultCheckValues1.contains(value)){
+            checkValues=defaultCheckValues1.split(SEPARATOR);
+        }else if(defaultCheckValues2.contains(value)){
+            checkValues=defaultCheckValues2.split(SEPARATOR);
+        }else if(defaultCheckValues3.contains(value)){
+            checkValues=defaultCheckValues3.split(SEPARATOR);
         }
     }
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+        if(isStarted)
+            refreshView();
     }
 
     public CheckBox.OnCheckedChangeListener getOnCheckedChangeListener() {

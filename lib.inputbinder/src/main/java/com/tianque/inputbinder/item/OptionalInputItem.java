@@ -30,7 +30,7 @@ public class OptionalInputItem extends ButtonInputItem {
 
 
     @Override
-    public String getDisplayText() {
+    public String getContent() {
         return displayText;
     }
 
@@ -106,7 +106,6 @@ public class OptionalInputItem extends ButtonInputItem {
     public ViewProxyInterface initDefaultViewProxy(View view) {
         return null;
     }
-
 
     public String[] getOptionalTexts() {
         return optionalTexts;

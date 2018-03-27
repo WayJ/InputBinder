@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.Window;
 
 import com.tianque.inputbinder.inf.InputBinderStyleAction;
-import com.tianque.inputbinder.inf.ViewObserver;
 import com.tianque.inputbinder.item.ButtonInputItem;
 import com.tianque.inputbinder.item.CheckInputItem;
 import com.tianque.inputbinder.item.DateInputItem;

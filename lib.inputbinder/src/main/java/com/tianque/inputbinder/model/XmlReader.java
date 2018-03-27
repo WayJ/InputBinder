@@ -1,31 +1,18 @@
 package com.tianque.inputbinder.model;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.nfc.Tag;
-import android.text.InputType;
 import android.text.TextUtils;
-
 import com.tianque.inputbinder.item.InputItemType;
 import com.tianque.inputbinder.util.ContextUtils;
 import com.tianque.inputbinder.util.Logging;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 
 public class XmlReader implements InputReaderInf{
 

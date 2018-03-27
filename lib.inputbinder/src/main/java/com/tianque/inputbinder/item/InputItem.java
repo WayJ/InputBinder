@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.tianque.inputbinder.model.ViewAttribute;
 import com.tianque.inputbinder.inf.ViewProxyInterface;
-import com.tianque.inputbinder.util.ContextUtils;
 import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.ToastUtils;
 
@@ -61,7 +60,7 @@ public abstract class InputItem<T>  {
 //        this.resourceName = resourceName;
 //    }
 
-    public abstract T getDisplayText();
+    public abstract T getContent();
 
     public abstract String getRequestValue();
 
@@ -94,7 +93,7 @@ public abstract class InputItem<T>  {
 
     public void refreshView(){
         if(getViewProxy()!=null)
-            getViewProxy().setContent(getDisplayText());
+            getViewProxy().setContent(getContent());
     }
 
     public Map<String, String> getConfigParmMap() {
@@ -146,6 +145,7 @@ public abstract class InputItem<T>  {
             }
         }
         isStarted=true;
+        refreshView();
     }
 
     public abstract ViewProxyInterface<T> initDefaultViewProxy(View view);

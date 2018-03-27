@@ -4,12 +4,10 @@ import android.text.TextUtils;
 
 import com.tianque.inputbinder.inf.Input;
 import com.tianque.inputbinder.item.InputItemType;
-import com.tianque.inputbinder.util.ResourceUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
