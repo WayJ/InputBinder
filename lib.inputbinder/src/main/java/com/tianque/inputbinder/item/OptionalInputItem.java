@@ -18,8 +18,8 @@ public class OptionalInputItem extends ButtonInputItem {
     public static final String ParmTag_values="optionalValues";
     protected String displayText = "";
 
-    private String[] selectTexts;
-    private String[] selectValues;
+    private String[] optionalTexts;
+    private String[] optionalValues;
     //设置默认值
     private int selectedIndex = -1;
 
@@ -36,17 +36,17 @@ public class OptionalInputItem extends ButtonInputItem {
 
     @Override
     public String getRequestValue() {
-        if (selectValues == null || selectValues.length == 0 || selectedIndex == -1) {
+        if (optionalValues == null || optionalValues.length == 0 || selectedIndex == -1) {
             return null;
         } else
-            return selectValues[selectedIndex];
+            return optionalValues[selectedIndex];
     }
 
     @Override
     public void setRequestValue(String value) {
-        if (!TextUtils.isEmpty(value) && selectValues != null) {
-            for (int i = 0; i < selectValues.length; i++) {
-                if (selectValues[i].equals(value)) {
+        if (!TextUtils.isEmpty(value) && optionalValues != null) {
+            for (int i = 0; i < optionalValues.length; i++) {
+                if (optionalValues[i].equals(value)) {
                     setSelectedIndex(i);
                     break;
                 }
@@ -62,20 +62,20 @@ public class OptionalInputItem extends ButtonInputItem {
         if(!TextUtils.isEmpty(optionalKeys)){
             try{
                 JSONArray jsonArray=new JSONArray(optionalKeys);
-                selectTexts = new String[jsonArray.length()];
+                optionalTexts = new String[jsonArray.length()];
                 for(int i=0;i<jsonArray.length();i++){
-                    selectTexts[i]=jsonArray.getString(i);
+                    optionalTexts[i]=jsonArray.getString(i);
                 }
                 if(!TextUtils.isEmpty(optionalValues)){
                     jsonArray=new JSONArray(optionalValues);
-                    selectValues = new String[jsonArray.length()];
+                    this.optionalValues = new String[jsonArray.length()];
                     for(int i=0;i<jsonArray.length();i++){
-                        selectValues[i]=jsonArray.getString(i);
+                        this.optionalValues[i]=jsonArray.getString(i);
                     }
-                    if(selectTexts.length!=selectValues.length)
+                    if(optionalTexts.length!= this.optionalValues.length)
                         throw new RuntimeException("keys values 的个数不同");
                 }else{
-                    selectValues=selectTexts;
+                    this.optionalValues = optionalTexts;
                 }
             }catch (Exception e){
                 Logging.e(e);
@@ -108,20 +108,20 @@ public class OptionalInputItem extends ButtonInputItem {
     }
 
 
-    public String[] getSelectTexts() {
-        return selectTexts;
+    public String[] getOptionalTexts() {
+        return optionalTexts;
     }
 
-    public void setSelectTexts(String[] selectTexts) {
-        this.selectTexts = selectTexts;
+    public void setOptionalTexts(String[] optionalTexts) {
+        this.optionalTexts = optionalTexts;
     }
 
-    public String[] getSelectValues() {
-        return selectValues;
+    public String[] getOptionalValues() {
+        return optionalValues;
     }
 
-    public void setSelectValues(String[] selectValues) {
-        this.selectValues = selectValues;
+    public void setOptionalValues(String[] optionalValues) {
+        this.optionalValues = optionalValues;
     }
 
     public int getSelectedIndex() {
@@ -132,16 +132,18 @@ public class OptionalInputItem extends ButtonInputItem {
         if (selectedIndex < 0)
             return;
         this.selectedIndex = selectedIndex;
-        if (selectTexts == null || selectTexts.length == 0) {
+        if (optionalTexts == null || optionalTexts.length == 0) {
             return;
         } else {
-            this.displayText = selectTexts[selectedIndex];
+            this.displayText = optionalTexts[selectedIndex];
         }
+        if(isStarted)
+            refreshView();
     }
 
     public void setSimpleOptional(String[] selectTexts) {
-        this.selectTexts = selectTexts;
-        this.selectValues = selectTexts;
+        this.optionalTexts = selectTexts;
+        this.optionalValues = selectTexts;
     }
 
     OptionalDialogAction optionalDialogAction;

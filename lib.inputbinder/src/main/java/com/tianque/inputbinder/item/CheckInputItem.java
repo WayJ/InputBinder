@@ -29,9 +29,7 @@ public class CheckInputItem extends InputItem<Boolean> {
 
     public CheckInputItem(int resourceId) {
         super(resourceId);
-//        setInputType(BehaviorType.CheckBox);
     }
-
 
     public CheckInputItem(int resourceId, boolean isChecked) {
         this(resourceId);
@@ -80,7 +78,6 @@ public class CheckInputItem extends InputItem<Boolean> {
     public boolean isChecked() {
         return isChecked;
     }
-
 
     /**
      * @param value

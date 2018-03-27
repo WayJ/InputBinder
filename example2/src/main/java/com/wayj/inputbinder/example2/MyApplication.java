@@ -4,7 +4,11 @@ import android.app.Application;
 
 import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.inf.InputBinderStyleAction;
+import com.tianque.inputbinder.item.DateInputItem;
+import com.tianque.inputbinder.item.MultiOptionalInputItem;
 import com.tianque.inputbinder.item.OptionalInputItem;
+import com.tianque.inputbinder.style.DatePickerWidget;
+import com.tianque.inputbinder.style.MultiOptionalDialog;
 import com.tianque.inputbinder.style.OptionalDialog;
 
 import java.util.ArrayList;
@@ -19,28 +23,40 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         InputBinderStyleAction inputBinderStyleAction=new InputBinderStyleAction();
-        inputBinderStyleAction.setOptionalDialogAction(new OptionalDialogAction());
+        inputBinderStyleAction.setOptionalDialogAction(new OptionalInputItem.OptionalDialogAction(){
+
+            @Override
+            public void showDialog(final OptionalInputItem inputItem) {
+                List<String> textList = new ArrayList<>();
+                for (String str : inputItem.getOptionalTexts()) {
+                    textList.add(str+"  ");
+                }
+                OptionalDialog optionalDialog = new OptionalDialog(inputItem.getView().getContext());
+                optionalDialog.showPopWindow(inputItem.getView(), textList, new OptionalDialog.onOptionalItemSelect() {
+
+                    @Override
+                    public void getPosition(int position) {
+                        inputItem.setSelectedIndex(position);
+                    }
+                });
+            }
+        }).setDateDialogAction(new DateInputItem.DateDialogAction() {
+            @Override
+            public void showDialog(DateInputItem inputItem) {
+                DatePickerWidget datePicker = new DatePickerWidget(inputItem.getView().getContext());
+                datePicker.notAllowTodayAfter().setPickerCaller(inputItem.getView()).onlyShowDay();
+                datePicker.showDatePicker();
+            }
+        }).setMultiOptionalDialogAction(new MultiOptionalInputItem.MultiOptionalDialogAction() {
+            @Override
+            public void showDialog(MultiOptionalInputItem inputItem) {
+
+                MultiOptionalDialog muDialog = new MultiOptionalDialog(inputItem.getView().getContext(), inputItem, inputItem.getView(), inputItem.getViewAttribute());
+                muDialog.show();
+            }
+        });
         InputBinder.setInputBinderStyleAction(inputBinderStyleAction);
     }
 
 
-    public class OptionalDialogAction implements OptionalInputItem.OptionalDialogAction{
-
-        @Override
-        public void showDialog(final OptionalInputItem inputItem) {
-            List<String> textList = new ArrayList<>();
-            for (String str : inputItem.getSelectTexts()) {
-                textList.add(str+"  ");
-            }
-            OptionalDialog optionalDialog = new OptionalDialog(inputItem.getView().getContext());
-            optionalDialog.showPopWindow(inputItem.getView(), textList, new OptionalDialog.onOptionalItemSelect() {
-
-                @Override
-                public void getPosition(int position) {
-                    inputItem.setSelectedIndex(position);
-                    inputItem.refreshView();
-                }
-            });
-        }
-    }
 }

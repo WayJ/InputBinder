@@ -4,4 +4,18 @@
 
     <string name="text_length_warning_less_msg">不能低于%1$d个字符</string>
     <string name="text_length_warning_more_msg">不能超过%1$d个字符</string>
+
+
+
+    <string name="year_after_error">所选年份不能在当年之后</string>
+    <string name="month_after_error">所选月份不能在当月之后</string>
+
+    <string name="day_after_error">所选日期不能在今天之后</string>
+    <string name="day_before_error">所选日期不能在今天之前</string>
+    <string name="after_today">所选日期要在今天之后</string>
+    <string name="before_today">所选日期要在今天之前</string>
+    <string name="date_in_error">所选日期要在</string>
+    <string name="only_today">所选日期只能在今天！</string>
+    <string name="before_error">之前</string>
+    <string name="after_error">之后</string>
 </resources>

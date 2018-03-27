@@ -131,7 +131,7 @@ public class InputBinderEngine {
             if (view != null) {
                 execute(view, attr, item);
             } else {
-                ToastUtils.showDebugToast(mContext,"item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
+                ToastUtils.showDebugToast("item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
                 Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
             }
             item.setView(view);

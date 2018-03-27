@@ -22,10 +22,10 @@ import java.util.Map;
 
 public abstract class InputItem<T>  {
 
-
     private final String GONE = "gone";
     private final String VISIBLE = "visible";
     private final String INVISIBLE = "invisible";
+    protected boolean isStarted;
 
     private int resourceId;
 
@@ -33,7 +33,6 @@ public abstract class InputItem<T>  {
 //    private String resourceName;
 
     private String requestKey;
-//    protected ViewBehaviorInterface<T> actualViewBehavior;
     protected ViewAttribute viewAttribute;
     private Map<String,String> configParmMap;//配置的参数的map
     private View view;
@@ -63,7 +62,9 @@ public abstract class InputItem<T>  {
 //    }
 
     public abstract T getDisplayText();
+
     public abstract String getRequestValue();
+
     public abstract void setRequestValue(String value);
 
     public String getRequestKey() {
@@ -74,13 +75,6 @@ public abstract class InputItem<T>  {
         this.requestKey = requestKey;
     }
 
-//    public ViewBehaviorInterface<T> getViewBehavior() {
-//        return actualViewBehavior;
-//    }
-//
-//    public void setViewBehavior(ViewBehaviorInterface<T> viewBehavior) {
-//        this.actualViewBehavior = viewBehavior;
-//    }
 
     public ViewAttribute getViewAttribute() {
         return viewAttribute;
@@ -89,24 +83,6 @@ public abstract class InputItem<T>  {
     public void setViewAttribute(ViewAttribute viewAttribute) {
         this.viewAttribute = viewAttribute;
     }
-
-    //    protected void setInputType(BehaviorType inputType) {
-//        this.inputType = inputType;
-//    }
-//
-//    public BehaviorType getInputType() {
-//        return inputType;
-//    }
-//
-//
-//    public IRefreshViewListener getRefreshViewListener() {
-//        return mRefreshViewListener;
-//    }
-//
-//    public void setRefreshViewListener(IRefreshViewListener refreshViewListener) {
-//        this.mRefreshViewListener = refreshViewListener;
-//    }
-//
 
     public ViewProxyInterface<T> getViewProxy() {
         return viewProxy;
@@ -166,9 +142,10 @@ public abstract class InputItem<T>  {
                 }
             }catch (Exception e){
                 Logging.e(e);
-                ToastUtils.showDebugToast(ContextUtils.getApplicationContext(),"转换JSON出错："+parmStr);
+                ToastUtils.showDebugToast("转换JSON出错："+parmStr);
             }
         }
+        isStarted=true;
     }
 
     public abstract ViewProxyInterface<T> initDefaultViewProxy(View view);
@@ -179,9 +156,6 @@ public abstract class InputItem<T>  {
 
     public void setView(View view) {
         this.view = view;
-//        if(view instanceof ViewBehaviorInterface){
-//            actualViewBehavior = (ViewBehaviorInterface)view;
-//        }
     }
 
     private void setViewVisibleStatus(String visible, View view) {

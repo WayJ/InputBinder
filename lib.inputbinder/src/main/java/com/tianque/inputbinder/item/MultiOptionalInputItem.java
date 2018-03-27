@@ -1,34 +1,83 @@
 package com.tianque.inputbinder.item;
 
+import android.text.TextUtils;
 import android.view.View;
-
+import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.inf.ViewProxyInterface;
-
-import java.util.ArrayList;
+import com.tianque.inputbinder.util.Logging;
+import org.json.JSONArray;
 import java.util.List;
 
-/**
- * Created by way on 17/5/18.
- */
+public class MultiOptionalInputItem extends ButtonInputItem {
+    public static final String ParmTag_keys="optionalKeys";
+    public static final String ParmTag_values="optionalValues";
 
-public class MultiOptionalInputItem extends InputItem {
     public final String SEPARATOR = ",";
-    private List<String> selectTexts=new ArrayList<>();
-    private List<String> selectValues=new ArrayList<>();
-    private List<String> selectedIndex=new ArrayList<>();
+    private String[] optionalTexts;
+    private String[] optionalValues;
+    private boolean[] selectedIndex;
 
     public MultiOptionalInputItem(int resourceId) {
         super(resourceId);
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        String keysStr = getConfigParm(ParmTag_keys);
+        String valuesStr = getConfigParm(ParmTag_values);
+        if(!TextUtils.isEmpty(keysStr)){
+            try{
+                JSONArray jsonArray=new JSONArray(keysStr);
+                optionalTexts = new String[jsonArray.length()];
+                for(int i=0;i<jsonArray.length();i++){
+                    optionalTexts[i]=jsonArray.getString(i);
+                }
+                if(!TextUtils.isEmpty(valuesStr)){
+                    jsonArray=new JSONArray(valuesStr);
+                    optionalValues = new String[jsonArray.length()];
+                    for(int i=0;i<jsonArray.length();i++){
+                        optionalValues[i]=jsonArray.getString(i);
+                    }
+                    if(optionalTexts.length!=optionalValues.length)
+                        throw new RuntimeException("keys values 的个数不同");
+                }else{
+                    optionalValues=optionalTexts;
+                }
+                selectedIndex=new boolean[optionalTexts.length];
+            }catch (Exception e){
+                Logging.e(e);
+            }
+        }
+
+        if(multiOptionalDialogAction==null){
+            if(InputBinder.getInputBinderStyleAction()!=null) {
+                multiOptionalDialogAction = InputBinder.getInputBinderStyleAction().getMultiOptionalDialogAction();
+            }else{
+                throw new RuntimeException("InputBinder.getInputBinderStyleAction() is null");
+            }
+        }
+
+        getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(multiOptionalDialogAction!=null)
+                    multiOptionalDialogAction.showDialog(MultiOptionalInputItem.this);
+                else{
+                    Logging.e(new Exception("optionalDialogAction is null"));
+                }
+            }
+        });
+    }
+
+    @Override
     public String getDisplayText() {
-        return getData(selectedIndex, selectTexts);
+        return getData(optionalTexts,selectedIndex);
     }
 
     @Override
     public String getRequestValue() {
-        return getData(selectedIndex, selectValues);
+        return getData(optionalValues,selectedIndex);
     }
 
     @Override
@@ -37,36 +86,23 @@ public class MultiOptionalInputItem extends InputItem {
             return;
         }
         String[] ids = value.split(SEPARATOR);
-        if (ids == null || ids.length == 0 || selectValues == null || selectValues.size() == 0) {
+        if (ids == null || ids.length == 0 || optionalValues == null || optionalValues.length == 0) {
             return;
         }
 
-        if (selectedIndex == null) {
-            selectedIndex = new ArrayList<>();
-        }else{
-            //每次设置值需要清空原来的缓存数据
-            selectedIndex.clear();
-        }
-//        int j=0;
-//        for (int i = 0; i < selectValues.size(); i++) {
-//            //遍历selectValues和ids
-//            if(j<ids.length) {
-//                if (selectValues.get(i).equals(ids[j])) {
-//                    selectedIndex.add(i + "");
-//                    j++;
-//                }
-//            }
-//        }
+        //每次设置值需要清空原来的缓存数据
+        selectedIndex=new boolean[optionalValues.length];
 
         for(int j=0;j<ids.length;j++){
-            for(int i=0;i<selectValues.size();i++){
-                if(selectValues.get(i).equals(ids[j])){
-                    selectedIndex.add(i+"");
+            for(int i=0;i<optionalValues.length;i++){
+                if(optionalValues[i].equals(ids[j])){
+                    selectedIndex[i]=true;
                     break;
                 }
             }
         }
-
+        if(isStarted)
+            refreshView();
     }
 
     @Override
@@ -74,51 +110,60 @@ public class MultiOptionalInputItem extends InputItem {
         return null;
     }
 
-    public List<String> getSelectTexts() {
-        return selectTexts;
+    public String[] getSelectTexts() {
+        return optionalTexts;
     }
 
-    public void setSelectTexts(List<String> selectTexts) {
-        this.selectTexts = selectTexts;
+    public void setOptionalTexts(String[] optionalTexts) {
+        this.optionalTexts = optionalTexts;
     }
 
-    public List<String> getSelectValues() {
-        return selectValues;
+    public String[] getOptionalValues() {
+        return optionalValues;
     }
 
-    public void setSelectValues(List<String> selectValues) {
-        this.selectValues = selectValues;
+    public void setOptionalValues(String[] optionalValues) {
+        this.optionalValues = optionalValues;
     }
 
-    public List<String> getSelectedIndex() {
+    public void setOptionalTexts(List<String> texts) {
+        setOptionalTexts(texts.toArray(new String[texts.size()]));
+    }
+
+    public void setOptionalValues(List<String> values) {
+        setOptionalValues(values.toArray(new String[values.size()]));
+    }
+
+    public void setSelectedIndex(int index){
+        selectedIndex[index]=true;
+    }
+
+    public void setSelectedIndexes(boolean[] indexs){
+        if(optionalTexts.length!=indexs.length)
+            throw new RuntimeException("error size");
+        selectedIndex = indexs;
+        if(isStarted)
+            refreshView();
+    }
+
+    public void setUnSelectedIndex(int index){
+        selectedIndex[index]=false;
+    }
+
+    public boolean[] getSelectedIndex() {
         return selectedIndex;
     }
 
-    public void setSelectedIndex(List<String> selectedIndex) {
-        this.selectedIndex = selectedIndex;
-    }
 
-    public void upDateSelectedIndex(List<String> upSelectedIndex) {
-        if (upSelectedIndex == null || upSelectedIndex.size() == 0) {
-            return;
-        }
-
-        if (selectedIndex != null && selectedIndex.size() > 0) {
-            selectedIndex.clear();
-        }
-        selectedIndex=upSelectedIndex;
-    }
-
-
-    private String getData(List<String> postions, List<String> s) {
+    private String getData(String[] selectTexts,boolean[] selectedIndexs) {
         StringBuffer stringBuffer = new StringBuffer();
-        if (s == null || s.size() == 0
-                || postions == null || postions.size() == 0) {
+        if (selectTexts == null || selectTexts.length == 0
+                || selectedIndexs == null || selectedIndexs.length == 0) {
             return null;
         } else {
-            for (String position : postions) {
-                if (!"-1".equals(position)) {
-                    stringBuffer.append(s.get(Integer.valueOf(position)) + SEPARATOR);
+            for (int i=0;i < selectedIndexs.length;i++) {
+                if (selectedIndexs[i]) {
+                    stringBuffer.append(selectTexts[i] + SEPARATOR);
                 }
             }
             String value = stringBuffer.toString();
@@ -133,4 +178,9 @@ public class MultiOptionalInputItem extends InputItem {
         }
     }
 
+
+    MultiOptionalDialogAction multiOptionalDialogAction;
+    public interface MultiOptionalDialogAction{
+        void showDialog(MultiOptionalInputItem inputItem);
+    }
 }

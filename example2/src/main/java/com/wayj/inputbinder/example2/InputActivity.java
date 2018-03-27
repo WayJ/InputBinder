@@ -28,7 +28,7 @@ public class InputActivity extends Activity {
         ((Button)findViewById(R.id.button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                printTxt.setText(inputBinder.getRequestMap().toString());
+                printTxt.setText(inputBinder.getRequestMap().toString().replaceAll(",",",\n"));
             }
         });
         inputBinder=new InputBinder(this);

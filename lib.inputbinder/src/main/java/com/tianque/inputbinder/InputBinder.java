@@ -12,6 +12,7 @@ import com.tianque.inputbinder.item.CheckInputItem;
 import com.tianque.inputbinder.item.DateInputItem;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.item.InputItemType;
+import com.tianque.inputbinder.item.MultiOptionalInputItem;
 import com.tianque.inputbinder.item.OptionalInputItem;
 import com.tianque.inputbinder.item.TextInputItem;
 import com.tianque.inputbinder.model.ModelReader;
@@ -36,6 +37,7 @@ public class InputBinder {
         inputTypeStoreMap.put(InputItemType.CheckBox.getValue(), CheckInputItem.class);
         inputTypeStoreMap.put(InputItemType.Date.getValue(), DateInputItem.class);
         inputTypeStoreMap.put(InputItemType.Optional.getValue(), OptionalInputItem.class);
+        inputTypeStoreMap.put(InputItemType.MultiOptional.getValue(), MultiOptionalInputItem.class);
     }
 
     private Context context;

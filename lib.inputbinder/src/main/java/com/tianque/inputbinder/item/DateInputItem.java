@@ -1,6 +1,10 @@
 package com.tianque.inputbinder.item;
 
 import android.text.TextUtils;
+import android.view.View;
+
+import com.tianque.inputbinder.InputBinder;
+import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.TimeUtils;
 import java.util.Date;
 
@@ -34,6 +38,28 @@ public class DateInputItem extends ButtonInputItem {
         setDisplayText(date);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(dateDialogAction==null){
+            if(InputBinder.getInputBinderStyleAction()!=null) {
+                dateDialogAction = InputBinder.getInputBinderStyleAction().getDateDialogAction();
+            }else{
+                throw new RuntimeException("InputBinder.getInputBinderStyleAction() is null");
+            }
+        }
+
+        getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(dateDialogAction!=null)
+                    dateDialogAction.showDialog(DateInputItem.this);
+                else{
+                    Logging.e(new Exception("optionalDialogAction is null"));
+                }
+            }
+        });
+    }
 
     public String getFormat() {
         return format!=null?format:DefaultFormat;
@@ -75,5 +101,10 @@ public class DateInputItem extends ButtonInputItem {
             return null;
         }
 
+    }
+
+    DateDialogAction dateDialogAction;
+    public interface DateDialogAction{
+        void showDialog(DateInputItem inputItem);
     }
 }

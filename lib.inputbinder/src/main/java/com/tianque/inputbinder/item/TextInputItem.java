@@ -28,6 +28,8 @@ public class TextInputItem extends InputItem<String> {
 
     public void setDisplayText(String displayText) {
         this.displayText = displayText;
+        if(isStarted)
+            refreshView();
     }
 
     @Override
@@ -52,6 +54,13 @@ public class TextInputItem extends InputItem<String> {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!TextUtils.isEmpty(displayText)){
+            refreshView();
+        }
+    }
 
     @Override
     public ViewProxyInterface initDefaultViewProxy(View view) {

@@ -10,8 +10,17 @@ import com.tianque.inputbinder.BuildConfig;
  */
 
 public class ToastUtils {
-    public static void showDebugToast(Context context,String message){
-        if(BuildConfig.DEBUG)
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    public static void showDebugToast(String message) {
+        if (BuildConfig.DEBUG)
+            Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+
+    public static void show(int stringResId) {
+        Toast.makeText(ContextUtils.getApplicationContext(), ContextUtils.getApplicationContext().getResources().getString(stringResId), Toast.LENGTH_SHORT).show();
+    }
+
+    public static void show(String message) {
+        Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

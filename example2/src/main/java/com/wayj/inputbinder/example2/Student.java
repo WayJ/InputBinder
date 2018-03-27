@@ -22,8 +22,11 @@ public class Student {
     Date comeDay;
     @Input
     String more;
-    @Input(type = InputItemType.Optional,parm = "{'optionalKeys':['key1','key2','key3']}",requestKey = "student.vision")
+    @Input(type = InputItemType.Optional,parm = "{'optionalKeys':['0.6','0.8','1.0']}",requestKey = "student.vision")
     String vision;//视力
-    @Input(type = InputItemType.Optional,parm = "{'optionalKeys':['key1','key2','key3'],'optionalValues':['value1','value2','value3']}",requestKey = "student.vision2")
+    @Input(type = InputItemType.Optional,parm = "{'optionalKeys':['0.6','0.8','1.0'],'optionalValues':['6','8','10']}",requestKey = "student.vision2")
     String vision2;//视力
+
+    @Input(type = InputItemType.MultiOptional,parm = "{'optionalKeys':['语文','数学','英语']}")
+    String multi;
 }
