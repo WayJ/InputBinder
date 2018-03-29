@@ -11,10 +11,12 @@ import android.widget.Toast;
 
 import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.InputBinderEngine;
+import com.tianque.inputbinder.function.QueryMapFunc;
 import com.tianque.inputbinder.item.ButtonInputItem;
+import com.wayj.inputbinder.example2.model.StudentModel;
 
-import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * Created by way on 2018/3/7.
@@ -65,13 +67,34 @@ public class InputActivity extends Activity {
         //request
         //get data
         //转换成实体类
-        Map<String,String> data=new HashMap<>();
-        data.put("name","hanmeimei");
-        data.put("isBoy","1");
-        data.put("birthday","1999-1-1");
-        data.put("vision","0.6");
-        data.put("student.vision2","8");
-        data.put("multi","数学");
-        inputBinder.addSavedRequestMap(data);
+//        Map<String,String> data=new HashMap<>();
+//        data.put("name","hanmeimei");
+//        data.put("isBoy","1");
+//        data.put("birthday","1999-1-1");
+//        data.put("vision","0.6");
+//        data.put("student.vision2","8");
+//        data.put("multi","数学");
+//        inputBinder.addSavedRequestMap(data);
+
+
+        inputBinder.doQuery(new QueryMapFunc() {
+            @Override
+            public Map doQuery() {
+                return new StudentModel().getSimpleStudent();
+            }
+        });
+
+//        inputBinder.doUpdate(new UpdateFunction<Student>() {
+//            @Override
+//            public void doUpdate(@IBQueryObject Student o) {
+//                try {
+//                    new StudentModel().createStudentByObj(o);
+//                    //if else
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+
     }
 }

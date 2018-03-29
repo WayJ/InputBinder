@@ -1,5 +1,6 @@
 # InputBinder
 manager form activity(View,Model,WebApi),quick develop.
+MVVM模式中的VM层框架。
 一个能够快速开发form表单页面的工具，实现了多层关系绑定。且自带了基础样式，快速搭建复杂且数目较多的form表单页面。
 
 - input  :  layout,实体类注解配置/xml配置,数据
@@ -19,5 +20,5 @@ manager form activity(View,Model,WebApi),quick develop.
 ---------
 
 #### ToDoList
-1. DataBinding部分功能集成
+1. DataBinding部分功能、思路实现
 2. 功能完善
