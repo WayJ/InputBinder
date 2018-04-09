@@ -14,10 +14,10 @@ import java.util.List;
  * Created by way on 2018/3/5.
  */
 
-public class ModelReader implements InputReaderInf{
+public class BeanReader implements InputReaderInf{
     private Class targetEntity;
 
-    public ModelReader(Class entity) {
+    public BeanReader(Class entity) {
         this.targetEntity = entity;
     }
 

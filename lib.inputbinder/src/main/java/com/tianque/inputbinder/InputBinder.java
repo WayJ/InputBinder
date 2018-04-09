@@ -18,7 +18,7 @@ import com.tianque.inputbinder.item.InputItemType;
 import com.tianque.inputbinder.item.MultiOptionalInputItem;
 import com.tianque.inputbinder.item.OptionalInputItem;
 import com.tianque.inputbinder.item.TextInputItem;
-import com.tianque.inputbinder.model.ModelReader;
+import com.tianque.inputbinder.model.BeanReader;
 import com.tianque.inputbinder.model.XmlReader;
 import com.tianque.inputbinder.util.Logging;
 
@@ -97,7 +97,7 @@ public class InputBinder {
     }
 
     public InputBinder setRelationEntity(Class modelCls){
-        engine.setInputReader(new ModelReader(modelCls));
+        engine.setInputReader(new BeanReader(modelCls));
         return this;
     }
 
