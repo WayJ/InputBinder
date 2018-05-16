@@ -5,10 +5,10 @@ import android.content.Context;
 import android.view.View;
 import android.view.Window;
 
-import com.tianque.inputbinder.function.QueryMapFunc;
-import com.tianque.inputbinder.function.QueryObjFunc;
-import com.tianque.inputbinder.function.UpdateMapFunc;
-import com.tianque.inputbinder.function.UpdateObjFunc;
+import com.tianque.inputbinder.function.PullMapFunc;
+import com.tianque.inputbinder.function.PullObjFunc;
+import com.tianque.inputbinder.function.PushMapFunc;
+import com.tianque.inputbinder.function.PushObjFunc;
 import com.tianque.inputbinder.inf.InputBinderStyleAction;
 import com.tianque.inputbinder.item.ButtonInputItem;
 import com.tianque.inputbinder.item.CheckInputItem;
@@ -133,21 +133,21 @@ public class InputBinder {
         InputBinder.inputBinderStyleAction = inputBinderStyleAction;
     }
 
-    public void doQuery(QueryMapFunc func){
+    public void doQuery(PullMapFunc func){
         addSavedRequestMap(func.doQuery());
     }
 
-    public void doQuery(QueryObjFunc func){
+    public void doQuery(PullObjFunc func){
         Object object = func.doQuery();
         Logging.d(object.toString());
 //        addSavedRequestMap(queryFunction.doQuery());
     }
 
-    public void doUpdate(UpdateMapFunc func){
+    public void doUpdate(PushMapFunc func){
         func.doUpdate(getRequestMap());
     }
 
-    public void doUpdate(UpdateObjFunc func){
+    public void doUpdate(PushObjFunc func){
         func.doUpdate(getRequestMap());
     }
 

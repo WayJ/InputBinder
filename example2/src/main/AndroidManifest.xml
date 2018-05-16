@@ -17,7 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InputActivity"></activity>
+        <activity android:name=".InputActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".InputXmlActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
     </application>
 
 </manifest>

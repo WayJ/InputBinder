@@ -1,6 +1,7 @@
 package com.wayj.inputbinder.example2;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.inf.InputBinderStyleAction;

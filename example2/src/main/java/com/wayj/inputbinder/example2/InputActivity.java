@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.InputBinderEngine;
-import com.tianque.inputbinder.function.QueryMapFunc;
+import com.tianque.inputbinder.function.PullMapFunc;
 import com.tianque.inputbinder.item.ButtonInputItem;
 import com.wayj.inputbinder.example2.model.StudentModel;
 
@@ -77,7 +77,7 @@ public class InputActivity extends Activity {
 //        inputBinder.addSavedRequestMap(data);
 
 
-        inputBinder.doQuery(new QueryMapFunc() {
+        inputBinder.doQuery(new PullMapFunc() {
             @Override
             public Map doQuery() {
                 return new StudentModel().getSimpleStudent();

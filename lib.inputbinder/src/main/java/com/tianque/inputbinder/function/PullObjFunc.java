@@ -1,6 +1,6 @@
 package com.tianque.inputbinder.function;
 
 @FunctionalInterface
-public interface QueryObjFunc<Out> {
+public interface PullObjFunc<Out> {
     Out doQuery();
 }
