@@ -16,5 +16,15 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("action", "edit")
             startActivity(intent)
         }
+        findViewById<View>(R.id.button3).setOnClickListener {
+            startActivity(android.content.Intent(this@MainActivity, com.wayj.inputbinder.example2.InputXmlActivity::class.java)) }
+
+        findViewById<View>(R.id.button4).setOnClickListener {
+            val intent = Intent(this@MainActivity, InputXmlActivity::class.java)
+            intent.putExtra("action", "edit")
+            startActivity(intent)
+        }
+
+
     }
 }

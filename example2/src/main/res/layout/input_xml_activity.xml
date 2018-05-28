@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,83 +17,85 @@
 
             <com.tianque.inputbinder.style.itembox.EditItemBox
                 android:id="@+id/name"
+                android:text="学生姓名"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="学生姓名" />
+                app:require="true"/>
 
             <com.tianque.inputbinder.style.itembox.SwitchItemBox
                 android:id="@+id/isBoy"
+                android:text="是男孩吗"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="是男孩吗">
+                android:layout_height="wrap_content">
             </com.tianque.inputbinder.style.itembox.SwitchItemBox>
 
             <com.tianque.inputbinder.style.itembox.ButtonItemBox
                 android:id="@+id/birthday"
+                android:text="出生日期"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="出生日期" />
+                app:require="true"/>
 
             <com.tianque.inputbinder.style.itembox.ButtonItemBox
                 android:id="@+id/input_btn"
+                android:text="点击按钮"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="点击按钮" />
+                android:layout_height="wrap_content" />
 
             <com.tianque.inputbinder.style.itembox.ButtonItemBox
                 android:id="@+id/vision"
+                android:text="视力选择项"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="视力选择项" />
+                android:layout_height="wrap_content" />
 
             <com.tianque.inputbinder.style.itembox.ButtonItemBox
                 android:id="@+id/vision2"
+                android:text="视力2_带value"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="视力2_带value" />
+                android:layout_height="wrap_content" />
 
             <com.tianque.inputbinder.style.itembox.ButtonItemBox
                 android:id="@+id/multi"
+                android:text="选择课程"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="选择课程" />
+                android:layout_height="wrap_content" />
 
             <com.tianque.inputbinder.style.itembox.SwitchItemBox
                 android:id="@+id/hasRoom"
+                android:text="是否寄宿"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="是否寄宿">
+                android:layout_height="wrap_content">
             </com.tianque.inputbinder.style.itembox.SwitchItemBox>
 
             <com.tianque.inputbinder.style.itembox.EditItemBox
                 android:id="@+id/roomNumber"
+                android:text="宿舍房间号"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="宿舍房间号" />
+                android:layout_height="wrap_content" />
 
             <com.tianque.inputbinder.style.itembox.EditItemBox
                 android:id="@+id/address"
+                android:text="住址"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="住址" />
-        </LinearLayout>
+                android:layout_height="wrap_content" />
 
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="print" />
-
+                android:text="print"/>
             <TextView
                 android:id="@+id/print"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:padding="5dp"/>
         </LinearLayout>
 
     </LinearLayout>
+
 </ScrollView>

@@ -14,10 +14,17 @@
         tools:layout_editor_absoluteY="8dp"
         tools:ignore="MissingConstraints">
 
+        <TextView
+            android:text="实体类注解方式"
+            android:textSize="18dp"
+            android:layout_marginLeft="5dp"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="跳转新增表单" />
 
@@ -26,6 +33,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="跳转查看、编辑表单" />
+
+        <TextView
+            android:text="读取XML方式"
+            android:textSize="18dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="跳转新增表单" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="跳转查看、编辑表单" />
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

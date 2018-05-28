@@ -18,24 +18,26 @@ public enum InputItemType {
         return value;
     }
 
-//    public static InputItemType get(String type){
-//        switch (type){
-//            case "text":
-//                return Text;
-//            case "button":
-//                return Button;
-//            case "checkbox":
-//                return CheckBox;
-//            case "optional":
-//                return Optional;
-//            case "multioptional":
-//                return MultiOptional;
-//            case "extend":
-//                return Extend;
-//            default:
-//                return Text;
-//        }
-//    }
+    public static InputItemType get(String type){
+        switch (type){
+            case "text":
+                return Text;
+            case "button":
+                return Button;
+            case "checkbox":
+                return CheckBox;
+            case "optional":
+                return Optional;
+            case "multioptional":
+                return MultiOptional;
+            case "extend":
+                return Extend;
+            case "date":
+                return Date;
+            default:
+                return Text;
+        }
+    }
 
 
 }

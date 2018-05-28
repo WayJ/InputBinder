@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
-
+import java.util.Map.Entry;
 import com.tianque.inputbinder.inf.InputItemHand;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.model.InputReaderInf;
@@ -107,7 +107,7 @@ public class InputBinderEngine {
 
     private void setUp(List<ViewAttribute> attrs) {
         for (ViewAttribute attr : attrs) {
-            attr.viewId = ResourceUtils.findIdByName(mContext, attr.viewName);
+            attr.viewId = ResourceUtils.findIdByName(mContext, attr.viewName!=null?attr.viewName:attr.key);
             if(attr.viewId<=0){
                 Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
                 continue;
@@ -359,14 +359,14 @@ public class InputBinderEngine {
      * @param isEnable 是否可编辑
      */
     public void setAllViewEnable(boolean isEnable) {
-//        Iterator<Entry<String, ViewAttribute>> eIterator = mValidateMap.entrySet().iterator();
-//        while (eIterator.hasNext()) {
-//            Entry<String, ViewAttribute> entry = eIterator.next();
-//            View view = rootView.findViewById(entry.getValue().viewId);
-//            if (view.getVisibility() != View.VISIBLE)
-//                continue;
-//            setViewEnabled(view, isEnable);
-//        }
+        Iterator<Entry<String, ViewAttribute>> eIterator = InputValidateHelper.getmValidateMap().entrySet().iterator();
+        while (eIterator.hasNext()) {
+            Entry<String, ViewAttribute> entry = eIterator.next();
+            View view = rootView.findViewById(entry.getValue().viewId);
+            if (view.getVisibility() != View.VISIBLE)
+                continue;
+            setViewEnabled(view, isEnable);
+        }
     }
 
     public void setViewEnable(int resourceId, boolean isEnable) {

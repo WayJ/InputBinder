@@ -11,22 +11,24 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class XmlReader implements InputReaderInf{
 
     private final String TAG="inputbinder.XMLReader";
-
+    private static final String resFileName_id = "id";
     private static String mParamPrefix;
     private XmlParser mConfiguration;
     private String nodeName;
+    private String mResourcePre;
+    private static boolean mFirst = true;
 
     public XmlReader(int viewConfigXmlResId,String nodeName) {
         init(viewConfigXmlResId);
         this.nodeName = nodeName;
     }
-
 
     public void init(int viewConfigXmlResId) {
         try {
@@ -47,8 +49,16 @@ public class XmlReader implements InputReaderInf{
         mParamPrefix = prefix;
     }
 
-    public List<ViewAttribute> read() {
+    public  String getmResourcePre() {
+        return mResourcePre==null?"":mResourcePre;
+    }
 
+    public  void setmResourcePre(String mResourcePre) {
+        this.mResourcePre = mResourcePre;
+    }
+
+    public List<ViewAttribute> read() {
+        mFirst = true;
         List<ViewAttribute> viewAttributeList=new ArrayList<>();
 
         List<NodeList> allParentNodes = new ArrayList<NodeList>();
@@ -85,11 +95,12 @@ public class XmlReader implements InputReaderInf{
                 NodeList cNodes = element.getChildNodes();
 
                 config.key = key;
-//                config.viewId = findIdByName(key);
+                config.viewId = findIdByName(key);
                 config.requestKey = (noPrefix || uploadKey.trim().length() == 0) ? uploadKey
                         : mParamPrefix + uploadKey;
                 config.requestDefault = requestDefault.trim().length() == 0 ? null : requestDefault;
-                config.type = TextUtils.isEmpty(type)? InputItemType.Text.getValue():type;//fixme 这里扩展type未处理
+//                config.type = TextUtils.isEmpty(type)? InputItemType.Text.getValue():type;//fixme 这里扩展type未处理
+                config.type = InputItemType.get(TextUtils.isEmpty(type)?"text":type).getValue();
                 config.required = required;
                 config.requiredRemind = requiredRemind;
                 config.validateMethoid = validateMethod;
@@ -130,15 +141,13 @@ public class XmlReader implements InputReaderInf{
         if (rootNode.getNodeType() != Node.ELEMENT_NODE) {
             return;
         }
-
-//        if (mFirst) {
-//            mParamPrefix = mParamPrefix == null ? ((Element) rootNode).getAttribute("key-prefix")
-//                    : mParamPrefix;
+        if (mFirst) {
+            mParamPrefix = mParamPrefix == null ? ((Element) rootNode).getAttribute("key-prefix")
+                    : mParamPrefix;
 //            mResourcePre = mResourcePre == null ? ((Element) rootNode).getAttribute("packageName")
 //                    : mResourcePre;
-//            mFirst = false;
-//        }
-
+            mFirst = false;
+        }
         String parentName = ((Element) rootNode).getAttribute("parent");
         getConfigNodes(parentName, nodes);
 
@@ -149,12 +158,12 @@ public class XmlReader implements InputReaderInf{
         return;
     }
 
-//    private int findIdByName(String name) {
-//        if(mResourcePre!=null)
-//            return ContextUtils.getApplicationContext().getResources().getIdentifier(mResourcePre+":id/"+name,null,null);
-//        else
-//            return ContextUtils.getApplicationContext().getResources().getIdentifier(name,resFileName_id,ContextUtils.getApplicationContext().getPackageName());
-//    }
+    private int findIdByName(String name) {
+        if(mResourcePre!=null)
+            return ContextUtils.getApplicationContext().getResources().getIdentifier(mResourcePre+":id/"+name,null,null);
+        else
+            return ContextUtils.getApplicationContext().getResources().getIdentifier(name,resFileName_id,ContextUtils.getApplicationContext().getPackageName());
+    }
 
     private int convertToInt(String text,int defaultInt){
         if(TextUtils.isEmpty(text))

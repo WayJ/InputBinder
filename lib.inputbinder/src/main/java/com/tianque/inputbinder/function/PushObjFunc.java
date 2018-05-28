@@ -1,6 +1,6 @@
 package com.tianque.inputbinder.function;
 
 @FunctionalInterface
-public interface UpdateObjFunc<In> {
+public interface PushObjFunc<In> {
     void doUpdate(In in);
 }
