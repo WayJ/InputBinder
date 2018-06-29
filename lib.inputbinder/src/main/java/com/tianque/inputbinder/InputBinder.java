@@ -164,8 +164,8 @@ public class InputBinder {
 
     private Map<String,String> removedRequestParameters;
     public void removeRequestParameter(String key) {
-        if(addedRequestParameters==null)
-            addedRequestParameters=new HashMap<>();
+        if(removedRequestParameters==null)
+            removedRequestParameters=new HashMap<>();
         removedRequestParameters.put(key,null);
     }
 
