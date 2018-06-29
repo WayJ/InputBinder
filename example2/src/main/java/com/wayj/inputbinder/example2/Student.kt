@@ -11,7 +11,7 @@ import java.util.Date
  */
 class Student {
     var studentId: Int = 0
-    @Input
+    @Input(viewId = R.id.edit_name)
     var name: String? = null
     @Input
     var isBoy: Boolean = false
@@ -42,5 +42,16 @@ class Student {
 
     @Input
     var address: String? = null
+
+    //@Input 对于复杂对象，这里暂时不错处理
+    var master: Teacher? = null
+
+    @Input(requestKey="master.id")
+    var masterId: Int =0
+
+    //@Input 对于复杂对象，这里暂时不错处理
+    var teachers: List<Teacher>? = null
+
+
 
 }

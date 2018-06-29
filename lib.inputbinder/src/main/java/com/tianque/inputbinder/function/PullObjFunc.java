@@ -1,6 +1,6 @@
 package com.tianque.inputbinder.function;
 
-@FunctionalInterface
-public interface PullObjFunc<Out> {
-    Out doQuery();
+public abstract class PullObjFunc<Out> implements PullMapFunc{
+    public abstract Out getObj();
+
 }

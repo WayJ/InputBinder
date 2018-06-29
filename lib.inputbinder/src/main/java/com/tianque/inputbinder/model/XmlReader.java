@@ -17,7 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class XmlReader implements InputReaderInf{
 
-    private final String TAG="inputbinder.XMLReader";
+    private static final String TAG="inputbinder.XMLReader";
     private static final String resFileName_id = "id";
     private static String mParamPrefix;
     private XmlParser mConfiguration;

@@ -24,6 +24,7 @@ import com.tianque.inputbinder.util.Logging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -133,22 +134,42 @@ public class InputBinder {
         InputBinder.inputBinderStyleAction = inputBinderStyleAction;
     }
 
-    public void doQuery(PullMapFunc func){
-        addSavedRequestMap(func.doQuery());
+    public void doPull(PullMapFunc func){
+        addSavedRequestMap(func.doPull());
     }
 
-    public void doQuery(PullObjFunc func){
-        Object object = func.doQuery();
-        Logging.d(object.toString());
-//        addSavedRequestMap(queryFunction.doQuery());
+    public void doPush(PushMapFunc func){
+        Map<String,String> map=getRequestMap();
+        if(removedRequestParameters!=null&&removedRequestParameters.size()>0){
+            Iterator<String> iterator= removedRequestParameters.keySet().iterator();
+            while (iterator.hasNext()){
+                String key = iterator.next();
+                if(map.containsKey(key))
+                    map.remove(key);
+            }
+        }
+        if(addedRequestParameters!=null && addedRequestParameters.size()>0){
+            map.putAll(addedRequestParameters);
+        }
+        func.doUpdate(map);
     }
 
-    public void doUpdate(PushMapFunc func){
-        func.doUpdate(getRequestMap());
+
+    private Map<String,String> addedRequestParameters;
+    public void addRequestParameter(String key, String value) {
+        if(addedRequestParameters==null)
+            addedRequestParameters=new HashMap<>();
+        addedRequestParameters.put(key,value);
     }
 
-    public void doUpdate(PushObjFunc func){
-        func.doUpdate(getRequestMap());
+    private Map<String,String> removedRequestParameters;
+    public void removeRequestParameter(String key) {
+        if(addedRequestParameters==null)
+            addedRequestParameters=new HashMap<>();
+        removedRequestParameters.put(key,null);
     }
 
+    public boolean validateInputs() {
+        return getEngine().validateRequestParams();
+    }
 }
