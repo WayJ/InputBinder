@@ -31,6 +31,8 @@ public @interface Input {
      */
     String viewName() default "";
 
+    int viewId() default 0;
+
     String requestKey() default "";
 
     /**

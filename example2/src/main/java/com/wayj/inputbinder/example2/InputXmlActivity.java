@@ -35,23 +35,23 @@ public class InputXmlActivity  extends AppCompatActivity implements View.OnClick
         mInputBinder = new InputBinder(this);
         mInputBinder.setRootView(this).setRelationXmlNode(R.raw.student_info_view_config,
                 "Student");
-        mInputBinder.addInputItems(makeViewData());
-        String action =getIntent().getStringExtra("action");
-        if(!TextUtils.isEmpty(action)&&action.equals("edit")){
-            //模拟请求接口获得数据并显示
-            doRequestAndShow();
-        }
+//        mInputBinder.addInputItems(makeViewData());
+//        String action =getIntent().getStringExtra("action");
+//        if(!TextUtils.isEmpty(action)&&action.equals("edit")){
+//            //模拟请求接口获得数据并显示
+//            doRequestAndShow();
+//        }
         mInputBinder.start();
-        if (!TextUtils.isEmpty(action)&&action.equals("view")){
-            mInputBinder.getEngine().setAllViewEnable(false);
-        }
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               TextView print = (TextView)findViewById(R.id.print);
-               print.setText(mInputBinder.getRequestMap().toString().replaceAll(",",",\n"));
-            }
-        });
+//        if (!TextUtils.isEmpty(action)&&action.equals("view")){
+//            mInputBinder.getEngine().setAllViewEnable(false);
+//        }
+//        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//               TextView print = (TextView)findViewById(R.id.print);
+//               print.setText(mInputBinder.getRequestMap().toString().replaceAll(",",",\n"));
+//            }
+//        });
 
     }
 
@@ -88,9 +88,9 @@ public class InputXmlActivity  extends AppCompatActivity implements View.OnClick
     }
 
     private void doRequestAndShow() {
-        mInputBinder.doQuery(new PullMapFunc() {
+        mInputBinder.doPull(new PullMapFunc() {
             @Override
-            public Map doQuery() {
+            public Map<String, String> doPull() {
                 return new StudentModel().getSimpleStudent();
             }
         });

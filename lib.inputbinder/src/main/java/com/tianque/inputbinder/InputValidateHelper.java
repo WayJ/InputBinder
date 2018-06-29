@@ -14,14 +14,14 @@ import java.util.Map;
  */
 
 public class InputValidateHelper {
-    private static HashMap<String, ViewAttribute> mValidateMap = new HashMap<>();
+    private HashMap<String, ViewAttribute> mValidateMap = new HashMap<>();
     protected ArrayList<String> ignoreRequired = new ArrayList<>();
 
     public void put(String key,ViewAttribute attr){
         mValidateMap.put(key,attr);
     }
 
-    public static HashMap<String, ViewAttribute> getmValidateMap() {
+    public HashMap<String, ViewAttribute> getValidateMap() {
         return mValidateMap;
     }
 

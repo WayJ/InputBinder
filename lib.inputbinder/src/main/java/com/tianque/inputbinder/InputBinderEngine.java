@@ -28,7 +28,7 @@ public class InputBinderEngine {
 
     private Map<String, InputItem> inputItems;//用户主动添加的inputItem，主要用户查看表单时候和用户主动控制
     // mAttrs 对象的key是 viewId
-    private LinkedHashMap<Integer, InputItem> itemsPutByViewId;
+//    private LinkedHashMap<Integer, InputItem> itemsPutByViewId;
 
 
     //    private Map<String, InputItem> mAutoInputItems;//
@@ -180,13 +180,13 @@ public class InputBinderEngine {
     }
 
 
-    public InputItem getInputItemByViewId(int viewId) {
-        return itemsPutByViewId.get(viewId);
-    }
+//    public InputItem getInputItemByViewId(int viewId) {
+//        return itemsPutByViewId.get(viewId);
+//    }
 
-    public InputItem getInputItemByViewAttr(ViewAttribute config) {
-        return inputItems.get(config.key);
-    }
+//    public InputItem getInputItemByViewAttr(ViewAttribute config) {
+//        return inputItems.get(config.key);
+//    }
 
     /**
      * 为View设置显示信息
@@ -290,8 +290,8 @@ public class InputBinderEngine {
         }
     }
 
-    public boolean validateRequestParams(Map<String, String> params) {
-        return inputValidateHelper.validateRequestParams(params);
+    public boolean validateRequestParams() {
+        return inputValidateHelper.validateRequestParams(getRequestParams());
     }
 
 //    /**
@@ -317,20 +317,20 @@ public class InputBinderEngine {
 //    }
 
 
-    public void refreshViewById(int viewId) {
-        InputItem item = itemsPutByViewId.get(viewId);
-        item.refreshView();
-    }
-
-    public void refreshView() {
-        Iterator<Map.Entry<Integer, InputItem>> i = itemsPutByViewId.entrySet().iterator();
-        inputItems = new HashMap<>();
-        while (i.hasNext()) {
-            Map.Entry<Integer, InputItem> entry = i.next();
-            InputItem item = entry.getValue();
-            item.refreshView();
-        }
-    }
+//    public void refreshViewById(int viewId) {
+//        InputItem item = itemsPutByViewId.get(viewId);
+//        item.refreshView();
+//    }
+//
+//    public void refreshView() {
+//        Iterator<Map.Entry<Integer, InputItem>> i = itemsPutByViewId.entrySet().iterator();
+//        inputItems = new HashMap<>();
+//        while (i.hasNext()) {
+//            Map.Entry<Integer, InputItem> entry = i.next();
+//            InputItem item = entry.getValue();
+//            item.refreshView();
+//        }
+//    }
 
 
     /**
@@ -359,7 +359,7 @@ public class InputBinderEngine {
      * @param isEnable 是否可编辑
      */
     public void setAllViewEnable(boolean isEnable) {
-        Iterator<Entry<String, ViewAttribute>> eIterator = InputValidateHelper.getmValidateMap().entrySet().iterator();
+        Iterator<Entry<String, ViewAttribute>> eIterator = inputValidateHelper.getValidateMap().entrySet().iterator();
         while (eIterator.hasNext()) {
             Entry<String, ViewAttribute> entry = eIterator.next();
             View view = rootView.findViewById(entry.getValue().viewId);

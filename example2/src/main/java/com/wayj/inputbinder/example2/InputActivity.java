@@ -76,13 +76,13 @@ public class InputActivity extends Activity {
 //        data.put("multi","数学");
 //        inputBinder.addSavedRequestMap(data);
 
-
-        inputBinder.doQuery(new PullMapFunc() {
+        inputBinder.doPull(new PullMapFunc() {
             @Override
-            public Map doQuery() {
+            public Map<String, String> doPull() {
                 return new StudentModel().getSimpleStudent();
             }
         });
+
 
 //        inputBinder.doUpdate(new UpdateFunction<Student>() {
 //            @Override
