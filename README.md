@@ -8,6 +8,15 @@ MVVM模式中的VM层框架。
 
 ---------
 
+### Import
+
+ [ ![Download](https://api.bintray.com/packages/wayj/maven/inputbinder/images/download.svg) ](https://bintray.com/wayj/maven/inputbinder/_latestVersion) 
+
+```
+    api 'com.wayj.inputbinder:inputbinder:+'
+    api 'com.wayj.inputbinder:inputbinder-style:+'
+```
+
 #### 支持的form表单的input类型
 * 文本输入框
 * 按钮
