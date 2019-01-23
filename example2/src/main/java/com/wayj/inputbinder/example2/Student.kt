@@ -49,8 +49,8 @@ class Student {
     @Input(requestKey="master.id")
     var masterId: Int =0
 
-    //@Input 对于复杂对象，这里暂时不错处理
-    var teachers: List<Teacher>? = null
+    @Input(type = InputItemType.Extend, requestKey="teacher.id",parm = "{'dicName':'教师名字'}")
+    var teacher:Teacher? = null
 
 
 

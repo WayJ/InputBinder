@@ -1,5 +1,6 @@
 package com.wayj.inputbinder.example2;
 
+
 public class Teacher {
 
     private int id;
@@ -18,6 +19,11 @@ public class Teacher {
     }
 
     public void setName(String name) {
+        this.name = name;
+    }
+
+    public Teacher(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 }

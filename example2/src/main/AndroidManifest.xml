@@ -20,6 +20,9 @@
         <activity android:name=".InputActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".Input2Activity"
+            android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".InputXmlActivity"
             android:screenOrientation="portrait">
         </activity>

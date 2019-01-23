@@ -76,6 +76,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="住址" />
+            <com.tianque.inputbinder.style.itembox.ButtonItemBox
+                android:id="@+id/teacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="任课老师" />
         </LinearLayout>
 
         <LinearLayout

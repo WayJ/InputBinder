@@ -10,9 +10,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        findViewById<View>(R.id.button).setOnClickListener { startActivity(Intent(this@MainActivity, InputActivity::class.java)) }
+        findViewById<View>(R.id.button).setOnClickListener { startActivity(Intent(this@MainActivity, Input2Activity::class.java)) }
         findViewById<View>(R.id.button2).setOnClickListener {
-            val intent = Intent(this@MainActivity, InputActivity::class.java)
+            val intent = Intent(this@MainActivity, Input2Activity::class.java)
             intent.putExtra("action", "edit")
             startActivity(intent)
         }

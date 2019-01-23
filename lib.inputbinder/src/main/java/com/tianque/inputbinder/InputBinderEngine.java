@@ -4,14 +4,21 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
+
+import java.util.ArrayList;
 import java.util.Map.Entry;
+
+import com.tianque.inputbinder.convert.ItemTypeConvert;
 import com.tianque.inputbinder.inf.InputItemHand;
 import com.tianque.inputbinder.item.InputItem;
+import com.tianque.inputbinder.model.BeanReader;
 import com.tianque.inputbinder.model.InputReaderInf;
+import com.tianque.inputbinder.model.ItemConvertHelper;
 import com.tianque.inputbinder.model.ViewAttribute;
 import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.ResourceUtils;
 import com.tianque.inputbinder.util.ToastUtils;
+
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,7 +33,7 @@ public class InputBinderEngine {
     private View rootView;
     private Context mContext;
 
-    private Map<String, InputItem> inputItems;//用户主动添加的inputItem，主要用户查看表单时候和用户主动控制
+    private Map<String, InputItem> inputItems = new HashMap<>();//用户主动添加的inputItem，主要用户查看表单时候和用户主动控制
     // mAttrs 对象的key是 viewId
 //    private LinkedHashMap<Integer, InputItem> itemsPutByViewId;
 
@@ -37,6 +44,7 @@ public class InputBinderEngine {
     private InputReaderInf inputReader;
     private CallBack callBack;
 
+    private ItemConvertHelper convertHelper = new ItemConvertHelper();
 
     /**
      * The map to store the request parameters.
@@ -44,27 +52,13 @@ public class InputBinderEngine {
     private Map<String, String> mRequestParams;
     private HashMap<String, String> mExtraRequestParams = new HashMap<>();
 
-    /**
-     * 这里的key是控件对应的requestKey
-     */
-
-    private String mTempPrefix;
-
     public InputBinderEngine(Context context) {
-        this(context, null);
-    }
-
-    public InputBinderEngine(Context context, String prefix) {
         this.mContext = context;
-        if (!TextUtils.isEmpty(prefix))
-            this.mTempPrefix = prefix;
-        inputItems = new HashMap<>();
     }
 
-    public void setRootView(View rootView) {
+    public void attachView(View rootView) {
         this.rootView = rootView;
     }
-
 
     public void start() {
         if (rootView == null) {
@@ -73,14 +67,18 @@ public class InputBinderEngine {
         if (inputReader == null) {
             throw new RuntimeException("inputReader is null");
         }
-
         if (callBack != null)
             callBack.onStart(this);
-        binderView(inputReader.read());
+        setUp(inputReader.read());
+        binderView();
     }
 
     public void setInputReader(InputReaderInf reader) {
         this.inputReader = reader;
+    }
+
+    public InputReaderInf getInputReader() {
+        return inputReader;
     }
 
     private Map<String, String> temRequest;
@@ -89,14 +87,18 @@ public class InputBinderEngine {
         this.temRequest = temRequest;
     }
 
-    public void addInputItems(Map<String, InputItem> itemMap) {
-        this.inputItems.putAll(itemMap);
-    }
+//    public void addInputItems(Map<String, InputItem> itemMap) {
+//        this.inputItems.putAll(itemMap);
+//    }
 
     public void addInputItems(List<InputItem> items) {
         if (items != null) {
             for (InputItem item : items) {
-                this.inputItems.put(mContext.getResources().getResourceName(item.getResourceId()), item);
+                String resName = mContext.getResources().getResourceName(item.getResourceId());
+                if (resName.contains("id/")) {
+                    resName = resName.substring(resName.lastIndexOf("id/") + 3);
+                }
+                this.inputItems.put(resName, item);
             }
         }
     }
@@ -106,19 +108,18 @@ public class InputBinderEngine {
     }
 
     private void setUp(List<ViewAttribute> attrs) {
+        Logging.d(Tag, attrs.toString());
         for (ViewAttribute attr : attrs) {
-            attr.viewId = ResourceUtils.findIdByName(mContext, attr.viewName!=null?attr.viewName:attr.key);
-            if(attr.viewId<=0){
+            attr.viewId = ResourceUtils.findIdByName(mContext, attr.viewName != null ? attr.viewName : attr.key);
+            if (attr.viewId <= 0) {
                 Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
                 continue;
             }
-            inputItems.put(attr.key, handleAttr(attr));
+            inputItems.put(attr.key, convertHelper.convert(attr, inputItems.get(attr.key)));
         }
     }
 
-    private void binderView(List<ViewAttribute> attrs) {
-        Logging.d(Tag, attrs.toString());
-        setUp(attrs);
+    private void binderView() {
         for (Map.Entry<String, InputItem> entry : inputItems.entrySet()) {
             InputItem item = entry.getValue();
             ViewAttribute attr = item.getViewAttribute();
@@ -137,46 +138,6 @@ public class InputBinderEngine {
         }
         if (inputItems != null)
             Logging.d(Tag, inputItems.toString());
-    }
-
-    private InputItem handleAttr(ViewAttribute attr) {
-        InputItem item = null;
-        //包名+属性key
-        String key = attr.key;
-
-//        String key = mModelLoader.getResourcePre() + ":id/" + attr.key;
-        if (inputItems != null && inputItems.containsKey(key)) {
-            item = inputItems.get(key);
-//            if (item.getInputType() != attr.type) {
-//                throw new RuntimeException("类型警告：" + key + "控件类型不匹配");
-//            }
-        } else {
-            if (attr.type != null) {
-                Class<? extends InputItem> cla = InputBinder.inputTypeStoreMap.get(attr.type);
-                if (cla != null) {
-                    try {
-                        Constructor c = cla.getConstructor(int.class);//获取有参构造
-                        item = (InputItem) c.newInstance(attr.viewId);    //通过有参构造创建对象
-//                        item = cla.newInstance();
-//                        if (item != null) {
-//                            item.setResourceId(attr.viewId);
-//                        } else {
-//                            throw new RuntimeException("类型警告：" + key + " 的控件类型未找到");
-//                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        if (item == null) {
-            return item;
-        }
-//        item.setResourceName(attr.viewName);
-        item.setRequestKey(attr.requestKey);
-        item.setViewAttribute(attr);
-        return item;
-
     }
 
 
@@ -199,7 +160,7 @@ public class InputBinderEngine {
             Logging.d("", "View with key " + attr.key + " is not found");
             return;
         }
-        if(attr==null){
+        if (attr == null) {
             return;
         }
         addValidateData(attr);
@@ -263,7 +224,7 @@ public class InputBinderEngine {
         mRequestParams.putAll(mExtraRequestParams);
         /*
          * Remove the parameter which user wants to remove.
-		 */
+         */
 //        if (mPendingRemoveParams != null) {
 //            for (String requestKey : mPendingRemoveParams) {
 //                mRequestParams.remove(requestKey);
@@ -317,20 +278,20 @@ public class InputBinderEngine {
 //    }
 
 
-//    public void refreshViewById(int viewId) {
+    //    public void refreshViewById(int viewId) {
 //        InputItem item = itemsPutByViewId.get(viewId);
 //        item.refreshView();
 //    }
-//
-//    public void refreshView() {
-//        Iterator<Map.Entry<Integer, InputItem>> i = itemsPutByViewId.entrySet().iterator();
-//        inputItems = new HashMap<>();
-//        while (i.hasNext()) {
-//            Map.Entry<Integer, InputItem> entry = i.next();
-//            InputItem item = entry.getValue();
-//            item.refreshView();
-//        }
-//    }
+
+    public void refreshView() {
+        Iterator<Map.Entry<String, InputItem>> i = inputItems.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, InputItem> entry = i.next();
+            InputItem item = entry.getValue();
+            item.refreshView();
+        }
+        rootView.invalidate();
+    }
 
 
     /**
@@ -401,11 +362,22 @@ public class InputBinderEngine {
         this.callBack = callBack;
     }
 
+    public void addTypeConvert(ItemTypeConvert itemTypeConvert) {
+        convertHelper.addTypeConvert(itemTypeConvert);
+    }
+
+    public <T> void readStore(T obj) {
+        if (getInputReader() instanceof BeanReader) {
+            ((BeanReader) getInputReader()).readStore(obj, inputItems, convertHelper);
+        }
+    }
+
+
     public interface CallBack {
         void onStart(InputBinderEngine engine);
     }
 
-    protected InputItemHand inputItemHand=new InputItemHand() {
+    protected InputItemHand inputItemHand = new InputItemHand() {
         @Override
         public InputItem findInputItemByViewName(String viewName) {
             return inputItems.get(viewName);
@@ -416,4 +388,6 @@ public class InputBinderEngine {
             return rootView.findViewById(id);
         }
     };
+
+
 }

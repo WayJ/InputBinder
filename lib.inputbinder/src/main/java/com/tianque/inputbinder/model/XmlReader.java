@@ -123,6 +123,11 @@ public class XmlReader implements InputReaderInf{
 
     }
 
+    @Override
+    public boolean isSafe(Object obj) {
+        return true;
+    }
+
     private void getConfigNodes(String rootNodeName, List<NodeList> nodes) {
         if (TextUtils.isEmpty(rootNodeName)) {
             return;

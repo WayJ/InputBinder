@@ -39,8 +39,8 @@ ext {
     userOrg = 'wayj'
     groupId = 'com.wayj.inputbinder'
     uploadName = 'inputbinder'
-    publishVersion = '0.1.1'
-    desc = 'aaaaaa,oooooo'
+    publishVersion = '0.2.2'
+    desc = '添加自定义item转换'
     website = 'https://github.com/WayJ/InputBinder'
     licences = ['Apache-2.0']
 }
