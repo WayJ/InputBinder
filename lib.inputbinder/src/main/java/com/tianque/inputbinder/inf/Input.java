@@ -19,7 +19,6 @@ public @interface Input {
      */
     InputItemType type() default InputItemType.NULL;
 
-
     /**
      * input扩展类型
      * @return
@@ -40,4 +39,10 @@ public @interface Input {
      * @return
      */
     String parm() default "";
+
+    /**
+     * 该项参数是否必填
+     * @return
+     */
+    boolean required() default false;
 }

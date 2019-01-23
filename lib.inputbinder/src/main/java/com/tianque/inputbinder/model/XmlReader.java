@@ -98,17 +98,17 @@ public class XmlReader implements InputReaderInf{
                 config.viewId = findIdByName(key);
                 config.requestKey = (noPrefix || uploadKey.trim().length() == 0) ? uploadKey
                         : mParamPrefix + uploadKey;
-                config.requestDefault = requestDefault.trim().length() == 0 ? null : requestDefault;
+//                config.requestDefault = requestDefault.trim().length() == 0 ? null : requestDefault;
 //                config.type = TextUtils.isEmpty(type)? InputItemType.Text.getValue():type;//fixme 这里扩展type未处理
                 config.type = InputItemType.get(TextUtils.isEmpty(type)?"text":type).getValue();
                 config.required = required;
-                config.requiredRemind = requiredRemind;
-                config.validateMethoid = validateMethod;
-                config.optionalCallback = optionalCallback;
-                config.addClearSelection = clearSelection;
-                config.visible = visible;
-                config.maxLength = maxLength;
-                config.minLength = minLength;
+//                config.requiredRemind = requiredRemind;
+//                config.validateMethoid = validateMethod;
+//                config.optionalCallback = optionalCallback;
+//                config.addClearSelection = clearSelection;
+//                config.visible = visible;
+//                config.maxLength = maxLength;
+//                config.minLength = minLength;
                 config.dependent = dependent;
                 config.parm = parm;
 

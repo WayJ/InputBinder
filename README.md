@@ -90,6 +90,7 @@ class Student {
   * InputItemType.Extend：自定义扩展类型，如果标记这个类型，将会讲一些处理过程交由ItemTypeConvert来做，需要开发者自己继承ItemTypeConvert类来实现功能
 * requestKey：发送请求时的输入项请求参数名，默认与变量名相同，可配置
 * viewName：关联View的依据，默认与变量名相同，可配置
+* required: 是否必填，可通过validateRequestParams 方法来验证必填项是否全部填写
 * parm：不同输入项类型有不同的参数配置，必须是JSON类型字符串
   * Optional：单选项（多选一）
     * optionalKeys：选项显示的文字

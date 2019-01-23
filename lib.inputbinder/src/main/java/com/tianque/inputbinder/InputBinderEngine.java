@@ -39,12 +39,13 @@ public class InputBinderEngine {
 
 
     //    private Map<String, InputItem> mAutoInputItems;//
-    private InputValidateHelper inputValidateHelper = new InputValidateHelper();
+
 
     private InputReaderInf inputReader;
     private CallBack callBack;
 
     private ItemConvertHelper convertHelper = new ItemConvertHelper();
+    private InputValidateHelper inputValidateHelper = new InputValidateHelper();
 
     /**
      * The map to store the request parameters.
@@ -125,16 +126,19 @@ public class InputBinderEngine {
             ViewAttribute attr = item.getViewAttribute();
             View view = rootView.findViewById(item.getResourceId());
             if (view != null) {
-                execute(view, attr, item);
+//                execute(view, attr, item);
+//                item.refreshView();
+                item.setView(view);
+                item.setInputItemHand(inputItemHand);
+                item.onStart();
+                //添加缓存数据
+                putRequestParams(item);
+                if(attr!=null&&attr.required)
+                    inputValidateHelper.add(item);
             } else {
                 ToastUtils.showDebugToast("item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
                 Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
             }
-            item.setView(view);
-            item.setInputItemHand(inputItemHand);
-            item.onStart();
-            //添加缓存数据
-            putRequestParams(item);
         }
         if (inputItems != null)
             Logging.d(Tag, inputItems.toString());
@@ -149,33 +153,33 @@ public class InputBinderEngine {
 //        return inputItems.get(config.key);
 //    }
 
-    /**
-     * 为View设置显示信息
-     *
-     * @param view
-     * @param attr
-     */
-    public void execute(View view, ViewAttribute attr, InputItem item) {
-        if (view == null) {
-            Logging.d("", "View with key " + attr.key + " is not found");
-            return;
-        }
-        if (attr == null) {
-            return;
-        }
-        addValidateData(attr);
+//    /**
+//     * 为View设置显示信息
+//     *
+//     * @param view
+//     * @param attr
+//     */
+//    public void execute(View view, ViewAttribute attr, InputItem item) {
+//        if (view == null) {
+//            Logging.d("", "View with key " + attr.key + " is not found");
+//            return;
+//        }
+//        if (attr == null) {
+//            return;
+//        }
+//        addValidateData(attr);
+//
+//        item.refreshView();
+//    }
 
-        item.refreshView();
-    }
-
-    /**
-     * 添加表单提交时验证的参数
-     *
-     * @param attr view的相关属性对象
-     */
-    private void addValidateData(ViewAttribute attr) {
-        inputValidateHelper.put(attr.requestKey, attr);
-    }
+//    /**
+//     * 添加表单提交时验证的参数
+//     *
+//     * @param attr view的相关属性对象
+//     */
+//    private void addValidateData(ViewAttribute attr) {
+//        inputValidateHelper.put(attr.requestKey, attr);
+//    }
 
 
     public Map<String, String> getRequestParams(boolean rebuild) {
@@ -208,6 +212,8 @@ public class InputBinderEngine {
 //                }
 //                inputItem.setRequestValue(value.trim());
 //            }
+            if(inputItem.getView()==null)
+                continue;
             String requestValue = inputItem.getRequestValue();
             String requestKey = inputItem.getRequestKey();
             //以防止某些参数值为空时不传,导致后台报错,例如出租房的证件类型
@@ -293,22 +299,14 @@ public class InputBinderEngine {
         rootView.invalidate();
     }
 
-
-    /**
-     * If you want the required request parameter to be ignore in some cases,
-     * call this method.
-     *
-     * @param requestKey The request parameter key.
-     */
-    public void ignoreRequired(String requestKey) {
-        if (!inputValidateHelper.ignoreRequired.contains(requestKey))
-            inputValidateHelper.ignoreRequired.add(requestKey);
-    }
-
-    public boolean restoreRequired(String requestKey) {
-        return inputValidateHelper.ignoreRequired.remove(requestKey);
-    }
-
+//    public void ignoreRequired(String requestKey) {
+//        if (!inputValidateHelper.ignoreRequired.contains(requestKey))
+//            inputValidateHelper.ignoreRequired.add(requestKey);
+//    }
+//
+//    public boolean restoreRequired(String requestKey) {
+//        return inputValidateHelper.ignoreRequired.remove(requestKey);
+//    }
 
     public SparseArray<Object> getSparseArrayData() {
         return null;
@@ -320,22 +318,22 @@ public class InputBinderEngine {
      * @param isEnable 是否可编辑
      */
     public void setAllViewEnable(boolean isEnable) {
-        Iterator<Entry<String, ViewAttribute>> eIterator = inputValidateHelper.getValidateMap().entrySet().iterator();
-        while (eIterator.hasNext()) {
-            Entry<String, ViewAttribute> entry = eIterator.next();
-            View view = rootView.findViewById(entry.getValue().viewId);
-            if (view.getVisibility() != View.VISIBLE)
-                continue;
-            setViewEnabled(view, isEnable);
+        Iterator<Map.Entry<String, InputItem>> i = inputItems.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, InputItem> entry = i.next();
+            InputItem item = entry.getValue();
+            setViewEnabled(item.getView(), isEnable);
         }
     }
 
-    public void setViewEnable(int resourceId, boolean isEnable) {
-        View view = rootView.findViewById(resourceId);
-        setViewEnabled(view, isEnable);
-    }
+//    public void setViewEnable(int resourceId, boolean isEnable) {
+//        View view = rootView.findViewById(resourceId);
+//        setViewEnabled(view, isEnable);
+//    }
 
     public void setViewEnabled(View view, boolean enable) {
+        if(view==null)
+            return;
         view.setFocusable(enable);
         view.setEnabled(enable);
         view.setClickable(enable);

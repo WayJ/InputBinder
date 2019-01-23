@@ -51,7 +51,7 @@ class Input2Activity : AppCompatActivity() {
         inputBinder.engine.callBack = InputBinderEngine.CallBack { }
         inputBinder.addInputItem(buttonInputItem)
                 .start()
-//        inputBinder.engine.setAllViewEnable(false)
+        inputBinder.engine.setAllViewEnable(true)
         //模拟请求接口获得数据并显示
         doRequestAndShow()
 

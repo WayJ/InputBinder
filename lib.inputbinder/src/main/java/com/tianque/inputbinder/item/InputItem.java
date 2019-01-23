@@ -125,8 +125,8 @@ public abstract class InputItem<T> {
      * 给控件设置显示文字、绑定事件后会调用该方法
      */
     public void onStart(){
-        if(getViewAttribute()!=null)
-            setViewVisibleStatus(getViewAttribute().visible, view);
+//        if(getViewAttribute()!=null)
+//            setViewVisibleStatus(getViewAttribute().visible, view);
         if(viewProxy==null){
             if(getView() instanceof ViewProxyInterface){
                 viewProxy=(ViewProxyInterface<T>) getView();
