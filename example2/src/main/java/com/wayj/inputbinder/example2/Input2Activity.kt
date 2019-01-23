@@ -68,6 +68,8 @@ class Input2Activity : AppCompatActivity() {
         inputBinder.doPull(student)
 
         inputBinder.updateView()
+
+        inputBinder.requestMap
     }
 
 
