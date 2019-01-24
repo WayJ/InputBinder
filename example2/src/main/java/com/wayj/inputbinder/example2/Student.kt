@@ -38,7 +38,7 @@ class Student {
     var hasRoom: Boolean = false
 
     @Input
-    var roomNumber: String? = null
+    var roomNumber: Int? = null
 
     @Input
     var address: String? = null

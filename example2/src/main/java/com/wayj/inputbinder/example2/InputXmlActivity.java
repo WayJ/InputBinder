@@ -77,7 +77,7 @@ public class InputXmlActivity extends AppCompatActivity implements View.OnClickL
 //            multi.setSelectedIndex(1);
             itemList.add(multi);
             itemList.add(new CheckInputItem(R.id.hasRoom, mStudent.getHasRoom()));
-            itemList.add(new TextInputItem(R.id.roomNumber, mStudent.getRoomNumber()));
+            itemList.add(new TextInputItem(R.id.roomNumber, mStudent.getRoomNumber().toString()));
             itemList.add(new TextInputItem(R.id.address, mStudent.getAddress()));
         }
     }

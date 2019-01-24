@@ -51,7 +51,7 @@ class Input2Activity : AppCompatActivity() {
         inputBinder.engine.callBack = InputBinderEngine.CallBack { }
         inputBinder.addInputItem(buttonInputItem)
                 .start()
-        inputBinder.engine.setAllViewEnable(true)
+//        inputBinder.engine.setAllViewEnable(true)
         //模拟请求接口获得数据并显示
         doRequestAndShow()
 
@@ -64,6 +64,7 @@ class Input2Activity : AppCompatActivity() {
 
         var student = Student()
         student.address="sadas"
+        student.roomNumber=21412
         student.teacher = Teacher(2,"zhang san")
         inputBinder.doPull(student)
 

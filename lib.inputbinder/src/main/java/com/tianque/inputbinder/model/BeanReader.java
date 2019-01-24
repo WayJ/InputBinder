@@ -45,7 +45,9 @@ public class BeanReader<T> implements InputReaderInf<T> {
             viewAttribute.type = TextUtils.isEmpty(input.type().getValue()) ? input.typeExt() : input.type().getValue();
             if (TextUtils.isEmpty(viewAttribute.type)) {
                 // set type by field type
-                if (f.getType() == String.class) {
+                if (f.getType() == String.class || f.getType() == double.class || f.getType() == Double.class
+                        || f.getType() == long.class || f.getType() == Long.class
+                        || f.getType() == int.class || f.getType() == Integer.class) {
                     viewAttribute.type = InputItemType.Text.getValue();
                 } else if (f.getType() == boolean.class || f.getType() == Boolean.class) {
                     viewAttribute.type = InputItemType.CheckBox.getValue();
@@ -69,20 +71,20 @@ public class BeanReader<T> implements InputReaderInf<T> {
         return true;
     }
 
-    public void readStore(T obj, Map<String, InputItem> inputItems,ItemConvertHelper convertHelper){
+    public void readStore(T obj, Map<String, InputItem> inputItems, ItemConvertHelper convertHelper) {
         for (Map.Entry<String, InputItem> entry : inputItems.entrySet()) {
             InputItem item = entry.getValue();
             ViewAttribute attr = item.getViewAttribute();
 
             try {
-                if(attr==null||attr.field==null)
+                if (attr == null || attr.field == null)
                     continue;
                 attr.field.setAccessible(true);
                 Object value = attr.field.get(obj);
-                if(value!=null){
-                    if (TextUtils.isEmpty(attr.type)||attr.type.equals(InputItemType.Extend.getValue())) {
-                        convertHelper.setExtendItemValue(item,value);
-                    }else{
+                if (value != null) {
+                    if (TextUtils.isEmpty(attr.type) || attr.type.equals(InputItemType.Extend.getValue())) {
+                        convertHelper.setExtendItemValue(item, value);
+                    } else {
                         item.setRequestValue(value.toString());
                     }
                 }
