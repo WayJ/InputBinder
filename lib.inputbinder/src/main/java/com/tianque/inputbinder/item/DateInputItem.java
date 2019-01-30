@@ -1,5 +1,6 @@
 package com.tianque.inputbinder.item;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tianque.inputbinder.InputBinder;
@@ -72,14 +73,14 @@ public class DateInputItem extends ButtonInputItem {
     @Override
     public String getContent() {
         String displayText=super.getContent();
-//        if(TextUtils.isEmpty(displayText)){
-//            return null;
-//        }
+        if(TextUtils.isEmpty(displayText)){
+            return "";
+        }
 //        Date date = checkTextIsDateStr(displayText);
 //        if(date!=null){
 //           super.setDisplayText(TimeUtils.getDateAsString(date,getFormat()));
 //        }
-        return super.getContent();
+        return displayText;
     }
 
     @Override

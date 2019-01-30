@@ -37,7 +37,9 @@ public class TextInputItem extends InputItem<String> {
     public String getRequestValue() {
         //try get new requestValue from view
         String content = getViewProxy().getContent();
-        if (!TextUtils.isEmpty(content) && !content.equals(displayText)) {
+        if(TextUtils.isEmpty(content)){
+            displayText="";
+        }else if (!content.equals(displayText)) {
             displayText = content;
         }
         return displayText;

@@ -39,8 +39,8 @@ ext {
     userOrg = 'wayj'
     groupId = 'com.wayj.inputbinder'
     uploadName = 'inputbinder'
-    publishVersion = '0.3.1'
-    desc = 'hotfix：修复int、long、double 类型时候自动赋值的错误'
+    publishVersion = '0.3.2'
+    desc = 'hotfix：修复无法正确的清空textInput输入值的问题'
     website = 'https://github.com/WayJ/InputBinder'
     licences = ['Apache-2.0']
 }
