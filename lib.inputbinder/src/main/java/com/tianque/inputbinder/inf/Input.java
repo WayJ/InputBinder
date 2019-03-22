@@ -58,16 +58,16 @@ public @interface Input {
      * @return
      */
     int verify() default 0;
-    /**
-     * 该项参数校验失败后的提示语
-     *
-     * @return
-     */
-    String verifyWarning() default "";
+//    /**
+//     * 该项参数校验失败后的提示语
+//     *
+//     * @return
+//     */
+//    String verifyWarning() default "";
 
-    int Verify_AllowNull = 0;
-    int Verify_NotNull = 1;
-    int Verify_Mobile = 2;
-    int Verify_Email = 3;
-    int Verify_IDCard18 = 4;
+    int Verify_AllowNull = 0x00;
+    int Verify_NotNull = 0x01;
+    int Verify_Mobile = 0x03;
+    int Verify_Email = 0x05;
+    int Verify_IDCard18 = 0x07;
 }

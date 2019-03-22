@@ -9,4 +9,6 @@ public interface ViewProxyInterface<T> {
     T getContent();
 
     void setContent(T content);
+
+    void onVerifyFailed(InputVerifyFailedException verifyError);
 }

@@ -5,11 +5,9 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.Map.Entry;
-
 import com.tianque.inputbinder.convert.ItemTypeConvert;
 import com.tianque.inputbinder.inf.InputItemHand;
+import com.tianque.inputbinder.inf.InputVerifyFailedException;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.model.BeanReader;
 import com.tianque.inputbinder.model.InputReaderInf;
@@ -19,11 +17,9 @@ import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.ResourceUtils;
 import com.tianque.inputbinder.util.ToastUtils;
 
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -255,7 +251,7 @@ public class InputBinderEngine {
         }
     }
 
-    public boolean verifyIsRegular() {
+    public List<InputVerifyFailedException> verifyIsRegular() {
         return inputValidateHelper.validateRequestParams(inputItems.values());
     }
 

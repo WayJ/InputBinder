@@ -222,6 +222,17 @@ InputBinder.findInputByViewName(String viewName)
 #### TodoList
 
 * 完善数据校验功能
-  * 校验支持逻辑运算-与，譬如   手机号码，不为空（必填）且手机号码格式正确
+
+  * （已支持）校验支持逻辑运算-与，譬如   手机号码，不为空（必填）且手机号码格式正确
+
+  * ```
+    //kotlin
+    verify= Input.Verify_NotNull and Input.Verify_Mobile
+    //java 
+    verify= Input.Verify_NotNull & Input.Verify_Mobile
+    ```
+
+  * 
+
     * 但是不支持逻辑运算-或，譬如 身份证件，或为15位老身份证或为18位老身份证
 

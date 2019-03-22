@@ -60,7 +60,7 @@ public class BeanReader<T> implements InputReaderInf<T> {
             viewAttribute.viewName = TextUtils.isEmpty(input.viewName()) ? f.getName() : input.viewName();
             viewAttribute.parm = input.parm();
             viewAttribute.verify = input.verify();
-            viewAttribute.verifyWarning = input.verifyWarning();
+//            viewAttribute.verifyWarning = input.verifyWarning();
             viewAttribute.field = f;
             attributes.add(viewAttribute);
         }

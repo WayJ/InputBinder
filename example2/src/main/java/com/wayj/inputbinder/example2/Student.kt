@@ -12,7 +12,8 @@ import java.util.Date
 class Student {
     var studentId: Int = 0
 
-    @Input(requestKey="student.name",viewId = R.id.edit_name,verify= Input.Verify_AllowNull,verifyWarning="")
+
+    @Input(requestKey="student.name",viewId = R.id.edit_name,verify= Input.Verify_NotNull and Input.Verify_Mobile)
     var name: String? = null
 
     @Input(type = InputItemType.CheckBox)

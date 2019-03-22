@@ -8,6 +8,7 @@ import android.view.Window;
 import com.tianque.inputbinder.convert.ItemTypeConvert;
 import com.tianque.inputbinder.function.ContainerFunc;
 import com.tianque.inputbinder.inf.InputBinderStyleAction;
+import com.tianque.inputbinder.inf.InputVerifyFailedException;
 import com.tianque.inputbinder.item.ButtonInputItem;
 import com.tianque.inputbinder.item.CheckInputItem;
 import com.tianque.inputbinder.item.DateInputItem;
@@ -150,8 +151,9 @@ public class InputBinder {
 
 
     public void putOut(ContainerFunc func) {
-        if(!verifyIsRegular()) {
-//          func.onVerifyFailed();
+        List<InputVerifyFailedException> exceptionList=verifyIsRegular();
+        if(exceptionList!=null&&exceptionList.size()>0) {
+          func.onVerifyFailed(exceptionList);
             return;
         }
 
@@ -192,7 +194,7 @@ public class InputBinder {
         getEngine().refreshView();
     }
 
-    public boolean verifyIsRegular() {
+    public List<InputVerifyFailedException> verifyIsRegular() {
         return getEngine().verifyIsRegular();
     }
 

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tianque.inputbinder.inf.Input;
+import com.tianque.inputbinder.inf.InputVerifyFailedException;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.model.ViewAttribute;
 import com.tianque.inputbinder.util.ToastUtils;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by way on 2018/3/5.
@@ -29,8 +32,8 @@ class InputValidateHelper {
 ////        return mValidateMap;
 ////    }
 
-    public boolean validateRequestParams(Collection<InputItem> items) {
-
+    public List<InputVerifyFailedException> validateRequestParams(Collection<InputItem> items) {
+        List<InputVerifyFailedException> exceptionList=new ArrayList<>();
         for (InputItem inputItem : items) {
             if (TextUtils.isEmpty(inputItem.getRequestKey()))
                 continue;
@@ -38,16 +41,53 @@ class InputValidateHelper {
                 continue;
             View view = inputItem.getView();
             if (view.getVisibility() != View.VISIBLE) continue;
-            String requestValue = inputItem.getRequestValue();
 
             ViewAttribute attr = inputItem.getViewAttribute();
 
-            if(attr.verify!= Input.Verify_AllowNull){
-                if (TextUtils.isEmpty(requestValue))
-                    return false;
-            }
-
+            InputVerifyFailedException exception=verifyInput(attr.verify,inputItem);
+            if(exception!=null)
+                exceptionList.add(exception);
         }
-        return true;
+        return exceptionList;
+    }
+
+    private static boolean checkEqual(int target,int checkStandard){
+        return ((target&checkStandard) ^ checkStandard)==0;
+    }
+
+    private static final String RULE_EMAIL = "^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$";
+    private static final String RULE_MOBILE = "^1(3|4|5|7|8)\\d{9}$";
+
+
+
+    private static InputVerifyFailedException verifyInput(int verifyTarget,InputItem inputItem){
+        String requestValue = inputItem.getRequestValue();
+        if(checkEqual(verifyTarget,Input.Verify_AllowNull)&&TextUtils.isEmpty(requestValue)){
+            return null;
+        }
+        if(checkEqual(verifyTarget,Input.Verify_NotNull)&&TextUtils.isEmpty(requestValue)) {
+            return new InputVerifyFailedException(Input.Verify_NotNull,inputItem);
+        }
+        if(checkEqual(verifyTarget,Input.Verify_Email)) {
+            if(!matched(requestValue,RULE_EMAIL))
+                return new InputVerifyFailedException(Input.Verify_Email,inputItem);
+        }
+
+        if(checkEqual(verifyTarget,Input.Verify_Mobile)) {
+            if(!matched(requestValue,RULE_MOBILE))
+                return new InputVerifyFailedException(Input.Verify_Mobile,inputItem);
+        }
+
+        if(checkEqual(verifyTarget,Input.Verify_IDCard18)) {
+        }
+
+        return null;
+    }
+
+
+    private static boolean matched(String target,String rule){
+        Pattern p = Pattern.compile(rule);
+        Matcher m = p.matcher(target);
+        return m.matches();
     }
 }
