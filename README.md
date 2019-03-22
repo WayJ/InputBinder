@@ -135,7 +135,7 @@ var student = Student()
 student.address="sadas"
 student.teacher = Teacher(2,"zhang san")
 //导入
-inputBinder.doPull(student)
+inputBinder.putIn(student)
 ```
 
 导出数据
@@ -156,7 +156,7 @@ inputBinder.updateView()
 inputBinder.getEngine().setAllViewEnable(false)
 ```
 
-自定义类型示例
+自定义类型示例：类型转换器 将对应的复杂类型的输入项的数据转换成对应的InputItem
 
 ```kotlin
 class TeacherItemConvert : ItemTypeConvert<Teacher, OptionalInputItem>() {
@@ -173,9 +173,55 @@ class TeacherItemConvert : ItemTypeConvert<Teacher, OptionalInputItem>() {
 }
 ```
 
+自己创建InputItem添加入控制链中
+
+```
+inputBinder.addInputItem(buttonInputItem)
+```
+
+放入数据
+
+```
+val student = Student()
+student.address="sadas"
+student.roomNumber=21412
+student.teacher = Teacher(2,"zhang san")
+inputBinder.putIn(student)
+```
+
+取出数据，会先进行数据合格校验，验证必填项、手机号码、身份证号码是否合格等
+
+```
+inputBinder.putOut(object :ContainerFunc{
+	//数据合格校验成功的回调
+    override fun onPutOut(map: MutableMap<String, String>?) {
+
+    }
+	//数据合格校验失败的回调
+    override fun onVerifyFailed(inputItems: MutableList<InputItem<Any>>?) {
+
+    }
+})
+```
+
+找到某个InputItem进行操作
+
+```
+InputBinder.findInputByViewId(int viewId)
+InputBinder.findInputByViewName(String viewName)
+```
 
 
 
+#### 不包含的功能
+
+* 统一设置参数前缀
 
 
+
+#### TodoList
+
+* 完善数据校验功能
+  * 校验支持逻辑运算-与，譬如   手机号码，不为空（必填）且手机号码格式正确
+    * 但是不支持逻辑运算-或，譬如 身份证件，或为15位老身份证或为18位老身份证
 

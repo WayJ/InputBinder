@@ -17,6 +17,7 @@ import com.tianque.inputbinder.item.TextInputItem;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class InputXmlActivity extends AppCompatActivity implements View.OnClickListener {
 
     private InputBinder mInputBinder;

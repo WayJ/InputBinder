@@ -12,5 +12,8 @@ import com.tianque.inputbinder.item.InputItem;
 public interface InputItemHand {
     public InputItem findInputItemByViewName(String viewName);
 
+
+    public InputItem findInputItemByViewId(int viewId);
+
     public View findViewById(int id);
 }

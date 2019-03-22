@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by way on 2018/3/7.
  */
-
+@Deprecated
 public class InputActivity extends Activity {
     TextView printTxt;
     InputBinder inputBinder;
@@ -40,12 +40,7 @@ public class InputActivity extends Activity {
         inputBinder = new InputBinder.Build(this)
                 .bindBean(Student.class)
                 .create();
-        inputBinder.getEngine().setCallBack(new InputBinderEngine.CallBack() {
-            @Override
-            public void onStart(InputBinderEngine engine) {
 
-            }
-        });
         ButtonInputItem buttonInputItem = new ButtonInputItem(R.id.input_btn, "点我一下，代码赋值");
         buttonInputItem.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -59,7 +59,8 @@ public class BeanReader<T> implements InputReaderInf<T> {
             viewAttribute.requestKey = TextUtils.isEmpty(input.requestKey()) ? f.getName() : input.requestKey();
             viewAttribute.viewName = TextUtils.isEmpty(input.viewName()) ? f.getName() : input.viewName();
             viewAttribute.parm = input.parm();
-            viewAttribute.required = input.required();
+            viewAttribute.verify = input.verify();
+            viewAttribute.verifyWarning = input.verifyWarning();
             viewAttribute.field = f;
             attributes.add(viewAttribute);
         }

@@ -17,7 +17,8 @@ public class ViewAttribute {
     public String viewName = null;
     public Integer viewId;//resource id
 
-    public boolean required = false;
+    public int verify = 0;
+    public String verifyWarning = "";
     public String requestKey = null;
 //    public String requestDefault = null;
 

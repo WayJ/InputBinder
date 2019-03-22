@@ -15,17 +15,21 @@ import java.lang.annotation.Target;
 public @interface Input {
     /**
      * input类型
+     *
      * @return
      */
     InputItemType type() default InputItemType.NULL;
 
     /**
      * input扩展类型
+     *
      * @return
      */
-    String typeExt()  default "";
+    String typeExt() default "";
+
     /**
      * 字段名称
+     *
      * @return
      */
     String viewName() default "";
@@ -36,13 +40,34 @@ public @interface Input {
 
     /**
      * 附加参数，jsonObj格式，这里会进行转换成jsonObj
+     *
      * @return
      */
     String parm() default "";
 
+//    /**
+//     * 该项参数是否必填
+//     *
+//     * @return
+//     */
+//    boolean required() default false;
+
     /**
-     * 该项参数是否必填
+     * 该项参数的校验方式
+     *
      * @return
      */
-    boolean required() default false;
+    int verify() default 0;
+    /**
+     * 该项参数校验失败后的提示语
+     *
+     * @return
+     */
+    String verifyWarning() default "";
+
+    int Verify_AllowNull = 0;
+    int Verify_NotNull = 1;
+    int Verify_Mobile = 2;
+    int Verify_Email = 3;
+    int Verify_IDCard18 = 4;
 }

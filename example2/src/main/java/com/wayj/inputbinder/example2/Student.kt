@@ -11,14 +11,19 @@ import java.util.Date
  */
 class Student {
     var studentId: Int = 0
-    @Input(viewId = R.id.edit_name)
+
+    @Input(requestKey="student.name",viewId = R.id.edit_name,verify= Input.Verify_AllowNull,verifyWarning="")
     var name: String? = null
-    @Input
-    var isBoy: Boolean = false
+
+    @Input(type = InputItemType.CheckBox)
+    var isBoy: Int = 0
+
     @Input(type = InputItemType.Date)
     private var birthday: String? = null
+
     @Input
     var comeDay: Date? = null
+
     @Input
     var more: String? = null
     @Input(type = InputItemType.Optional, parm = "{'optionalKeys':['0.6','0.8','1.0']}", requestKey = "vision")
@@ -26,7 +31,7 @@ class Student {
     @Input(type = InputItemType.Optional, parm = "{'optionalKeys':['0.6','0.8','1.0'],'optionalValues':['6','8','10']}", requestKey = "student.vision2")
     var vision2: String? = null//视力
 
-    @Input(type = InputItemType.MultiOptional, parm = "{'optionalKeys':['语文','数学','英语']}")
+    @Input(type = InputItemType.MultiOptional, parm = "{'optionalKeys':['语文','数学','英语'],'optionalValues':['1','2','3']}")
     var multi: String? = null
 
 
@@ -43,15 +48,13 @@ class Student {
     @Input
     var address: String? = null
 
-    //@Input 对于复杂对象，这里暂时不错处理
-    var master: Teacher? = null
+
 
     @Input(requestKey="master.id")
     var masterId: Int =0
 
     @Input(type = InputItemType.Extend, requestKey="teacher.id",parm = "{'dicName':'教师名字'}")
     var teacher:Teacher? = null
-
 
 
 }

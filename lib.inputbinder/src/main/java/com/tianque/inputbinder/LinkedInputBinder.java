@@ -1,8 +1,6 @@
 package com.tianque.inputbinder;
 
-import android.util.SparseArray;
-
-import com.tianque.inputbinder.function.PushMapFunc;
+import com.tianque.inputbinder.function.ContainerFunc;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,15 +33,14 @@ public class LinkedInputBinder {
 
     }
 
-    public void doPush(PushMapFunc func){
+    public void doPush(ContainerFunc func){
         Map<String,String> map=new HashMap<>();
         if(engineMap!=null&&engineMap.size()>0){
-            Iterator<InputBinderEngine> iterator=engineMap.values().iterator();
-            while (iterator.hasNext()){
-                map.putAll(iterator.next().getRequestParams());
+            for (InputBinderEngine inputBinderEngine : engineMap.values()) {
+                map.putAll(inputBinderEngine.getRequestParams());
             }
         }
-        func.doUpdate(map);
+        func.onPutOut(map);
     }
 
 

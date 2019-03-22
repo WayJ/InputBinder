@@ -42,7 +42,7 @@ public class InputBinderEngine {
 
 
     private InputReaderInf inputReader;
-    private CallBack callBack;
+//    private CallBack callBack;
 
     private ItemConvertHelper convertHelper = new ItemConvertHelper();
     private InputValidateHelper inputValidateHelper = new InputValidateHelper();
@@ -68,8 +68,8 @@ public class InputBinderEngine {
         if (inputReader == null) {
             throw new RuntimeException("inputReader is null");
         }
-        if (callBack != null)
-            callBack.onStart(this);
+//        if (callBack != null)
+//            callBack.onStart(this);
         setUp(inputReader.read());
         binderView();
     }
@@ -133,8 +133,6 @@ public class InputBinderEngine {
                 item.onStart();
                 //添加缓存数据
                 putRequestParams(item);
-                if(attr!=null&&attr.required)
-                    inputValidateHelper.add(item);
             } else {
                 ToastUtils.showDebugToast("item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
                 Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
@@ -257,8 +255,8 @@ public class InputBinderEngine {
         }
     }
 
-    public boolean validateRequestParams() {
-        return inputValidateHelper.validateRequestParams(getRequestParams());
+    public boolean verifyIsRegular() {
+        return inputValidateHelper.validateRequestParams(inputItems.values());
     }
 
 //    /**
@@ -339,27 +337,6 @@ public class InputBinderEngine {
         view.setClickable(enable);
     }
 
-//    public String getTempPrefix() {
-//        return mTempPrefix;
-//    }
-
-//    public void setTempPrefix(String tempPrefix) {
-//        this.mTempPrefix = tempPrefix;
-//    }
-
-//    public String getModelLoaderPrefix() {
-//        return mModelLoader.getPrefix();
-//    }
-
-
-    public CallBack getCallBack() {
-        return callBack;
-    }
-
-    public void setCallBack(CallBack callBack) {
-        this.callBack = callBack;
-    }
-
     public void addTypeConvert(ItemTypeConvert itemTypeConvert) {
         convertHelper.addTypeConvert(itemTypeConvert);
     }
@@ -371,14 +348,19 @@ public class InputBinderEngine {
     }
 
 
-    public interface CallBack {
-        void onStart(InputBinderEngine engine);
-    }
-
     protected InputItemHand inputItemHand = new InputItemHand() {
         @Override
         public InputItem findInputItemByViewName(String viewName) {
             return inputItems.get(viewName);
+        }
+
+        @Override
+        public InputItem findInputItemByViewId(int viewId) {
+            for (InputItem item : inputItems.values()) {
+                if(item.getResourceId()==viewId)
+                    return item;
+            }
+            return null;
         }
 
         @Override

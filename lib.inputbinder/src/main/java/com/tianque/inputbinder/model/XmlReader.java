@@ -101,7 +101,7 @@ public class XmlReader implements InputReaderInf{
 //                config.requestDefault = requestDefault.trim().length() == 0 ? null : requestDefault;
 //                config.type = TextUtils.isEmpty(type)? InputItemType.Text.getValue():type;//fixme 这里扩展type未处理
                 config.type = InputItemType.get(TextUtils.isEmpty(type)?"text":type).getValue();
-                config.required = required;
+//                config.verify = required;
 //                config.requiredRemind = requiredRemind;
 //                config.validateMethoid = validateMethod;
 //                config.optionalCallback = optionalCallback;

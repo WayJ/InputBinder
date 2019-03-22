@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.Window;
 
 import com.tianque.inputbinder.convert.ItemTypeConvert;
-import com.tianque.inputbinder.function.PushMapFunc;
+import com.tianque.inputbinder.function.ContainerFunc;
 import com.tianque.inputbinder.inf.InputBinderStyleAction;
 import com.tianque.inputbinder.item.ButtonInputItem;
 import com.tianque.inputbinder.item.CheckInputItem;
@@ -134,7 +134,7 @@ public class InputBinder {
         InputBinder.inputBinderStyleAction = inputBinderStyleAction;
     }
 
-    public <T> void doPull(T obj){
+    public <T> void putIn(T obj){
         try {
             if(getEngine().getInputReader().isSafe(obj)){
                 getEngine().readStore(obj);
@@ -144,11 +144,17 @@ public class InputBinder {
         }
     }
 
-    public void doPull(Map<String,String> map) {
+    public void putIn(Map<String,String> map) {
         addSavedRequestMap(map);
     }
 
-    public void doPush(PushMapFunc func) {
+
+    public void putOut(ContainerFunc func) {
+        if(!verifyIsRegular()) {
+//          func.onVerifyFailed();
+            return;
+        }
+
         Map<String, String> map = getRequestMap();
         if (removedRequestParameters != null && removedRequestParameters.size() > 0) {
             Iterator<String> iterator = removedRequestParameters.keySet().iterator();
@@ -161,7 +167,7 @@ public class InputBinder {
         if (addedRequestParameters != null && addedRequestParameters.size() > 0) {
             map.putAll(addedRequestParameters);
         }
-        func.doUpdate(map);
+        func.onPutOut(map);
     }
 
 
@@ -186,10 +192,17 @@ public class InputBinder {
         getEngine().refreshView();
     }
 
-    public boolean validateInputs() {
-        return getEngine().validateRequestParams();
+    public boolean verifyIsRegular() {
+        return getEngine().verifyIsRegular();
     }
 
+
+    public InputItem findInputByViewId(int viewId){
+        return getEngine().inputItemHand.findInputItemByViewId(viewId);
+    }
+    public InputItem findInputByViewName(String viewName){
+        return getEngine().inputItemHand.findInputItemByViewName(viewName);
+    }
 
     public static class Build {
         Context context;
