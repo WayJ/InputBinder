@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public interface InputReaderInf <T>{
-    List<ViewAttribute> read();
+    List<InputItemProfile> read() throws Exception;
 
     boolean isSafe(T obj);
 }

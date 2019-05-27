@@ -1,13 +1,16 @@
 package com.tianque.inputbinder.model;
 
 
+import com.tianque.inputbinder.convert.ItemTypeConvert;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 /**
  * Created by way on 2018/3/5.
  */
 
-public class ViewAttribute {
+public class InputItemProfile {
 
     /**
      * 对应的实体类中的变量名
@@ -22,7 +25,7 @@ public class ViewAttribute {
     public String requestKey = null;
 //    public String requestDefault = null;
 
-    public String type;
+//    public String type;
 //    public Boolean optionalCallback = false;
 //    public String requiredRemind = "";
     public String validateMethod = "";
@@ -37,6 +40,7 @@ public class ViewAttribute {
 //    public Class fieldClz; //从bean转换过来的，对应了item的变量类型
     public Field field; //从bean转换过来的，对应了item的变量
 
+    private ItemTypeConvert itemTypeConvert;
 
     @Override
     public boolean equals(Object o) {
@@ -44,12 +48,24 @@ public class ViewAttribute {
             return true;
         }
 
-        if (o instanceof ViewAttribute) {
-            if (((ViewAttribute) o).key.equals(key)) {
+        if (o instanceof InputItemProfile) {
+            if (((InputItemProfile) o).key.equals(key)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public ItemTypeConvert getItemTypeConvert() {
+        return itemTypeConvert;
+    }
+
+    public void setItemTypeConvert(ItemTypeConvert itemTypeConvert) {
+        this.itemTypeConvert = itemTypeConvert;
+    }
+
+    public Annotation getAnnotation(Class clz){
+        return field.getAnnotation(clz);
     }
 }

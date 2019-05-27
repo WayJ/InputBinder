@@ -23,7 +23,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tianque.inputbinder.inf.ViewProxyInterface;
+import com.tianque.inputbinder.viewer.ViewContentProxy;
 import com.tianque.inputbinder.style.R;
 
 
@@ -32,7 +32,7 @@ import com.tianque.inputbinder.style.R;
  *
  * @author Ray
  */
-public abstract class ItemBoxBase<T> extends LinearLayout implements ViewProxyInterface<T> {
+public abstract class ItemBoxBase<T> extends LinearLayout implements ViewContentProxy<T> {
     protected final static int MARGIN = 5;
     protected final String nameSpace = "http://schemas.android.com/apk/res/android";
     protected Context mContext = null;
@@ -350,4 +350,5 @@ public abstract class ItemBoxBase<T> extends LinearLayout implements ViewProxyIn
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
 }

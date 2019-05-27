@@ -1,20 +1,32 @@
 package com.tianque.inputbinder.item;
 
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
+
 import com.tianque.inputbinder.InputBinder;
-import com.tianque.inputbinder.inf.ViewProxyInterface;
+import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.rxjava.SimpleObserver;
+import com.tianque.inputbinder.viewer.ViewContentProxy;
 import com.tianque.inputbinder.util.Logging;
-import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class MultiOptionalInputItem extends ButtonInputItem {
-    public static final String ParmTag_keys="optionalKeys";
-    public static final String ParmTag_values="optionalValues";
+import io.reactivex.Observable;
+import io.reactivex.functions.Action;
 
-    private String[] optionalTexts;
-    private String[] optionalValues;
-    private boolean[] selectedIndex;
+public class MultiOptionalInputItem extends ButtonInputItem implements RequestValueContract.RequestValueObserver {
+
+    private MultiOptionalData multiOptionalData;
+
+    public MultiOptionalData getMultiOptionalData() {
+        return multiOptionalData;
+    }
+
+    public void setMultiOptionalData(MultiOptionalData multiOptionalData) {
+        this.multiOptionalData = multiOptionalData;
+    }
 
     public MultiOptionalInputItem(int resourceId) {
         super(resourceId);
@@ -23,36 +35,11 @@ public class MultiOptionalInputItem extends ButtonInputItem {
     @Override
     public void onStart() {
         super.onStart();
-        String keysStr = getConfigParm(ParmTag_keys);
-        String valuesStr = getConfigParm(ParmTag_values);
-        if(!TextUtils.isEmpty(keysStr)){
-            try{
-                JSONArray jsonArray=new JSONArray(keysStr);
-                optionalTexts = new String[jsonArray.length()];
-                for(int i=0;i<jsonArray.length();i++){
-                    optionalTexts[i]=jsonArray.getString(i);
-                }
-                if(!TextUtils.isEmpty(valuesStr)){
-                    jsonArray=new JSONArray(valuesStr);
-                    optionalValues = new String[jsonArray.length()];
-                    for(int i=0;i<jsonArray.length();i++){
-                        optionalValues[i]=jsonArray.getString(i);
-                    }
-                    if(optionalTexts.length!=optionalValues.length)
-                        throw new RuntimeException("keys values 的个数不同");
-                }else{
-                    optionalValues=optionalTexts;
-                }
-                selectedIndex=new boolean[optionalTexts.length];
-            }catch (Exception e){
-                Logging.e(e);
-            }
-        }
 
-        if(multiOptionalDialogAction==null){
-            if(InputBinder.getInputBinderStyleAction()!=null) {
+        if (multiOptionalDialogAction == null) {
+            if (InputBinder.getInputBinderStyleAction() != null) {
                 multiOptionalDialogAction = InputBinder.getInputBinderStyleAction().getMultiOptionalDialogAction();
-            }else{
+            } else {
                 throw new RuntimeException("InputBinder.getInputBinderStyleAction() is null");
             }
         }
@@ -60,9 +47,9 @@ public class MultiOptionalInputItem extends ButtonInputItem {
         getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(multiOptionalDialogAction!=null)
+                if (multiOptionalDialogAction != null)
                     multiOptionalDialogAction.showDialog(MultiOptionalInputItem.this);
-                else{
+                else {
                     Logging.e(new Exception("optionalDialogAction is null"));
                 }
             }
@@ -71,115 +58,170 @@ public class MultiOptionalInputItem extends ButtonInputItem {
 
     @Override
     public String getContent() {
-        return getData(optionalTexts,selectedIndex);
+        if (multiOptionalData == null || multiOptionalData.selectedIndexs == null || multiOptionalData.selectedIndexs.length == 0) {
+            return null;
+        } else {
+            StringBuilder sb = new StringBuilder();
+            String[] selectedValues = multiOptionalData.getOptionalTexts();
+            boolean[] selectedIndex = multiOptionalData.selectedIndexs;
+
+            boolean first=true;
+            for (int i = 0; i < selectedValues.length; i++) {
+                if (selectedIndex[i]) {
+                    if(!first)
+                        sb.append(SEPARATOR);
+                    else
+                        first=false;
+                    sb.append(selectedValues[i]);
+                }
+            }
+            return sb.toString().trim();
+        }
     }
 
     @Override
     public String getRequestValue() {
-        return getData(optionalValues,selectedIndex);
+        return getData(multiOptionalData);
     }
 
     @Override
-    public void setRequestValue(String value) {
-        if (value == null) {
-            return;
-        }
-        String[] ids = value.split(SEPARATOR);
-        if (ids == null || ids.length == 0 || optionalValues == null || optionalValues.length == 0) {
-            return;
-        }
-
-        //每次设置值需要清空原来的缓存数据
-        selectedIndex=new boolean[optionalValues.length];
-
-        for(int j=0;j<ids.length;j++){
-            for(int i=0;i<optionalValues.length;i++){
-                if(optionalValues[i].equals(ids[j])){
-                    selectedIndex[i]=true;
-                    break;
-                }
-            }
-        }
-        if(isStarted)
-            refreshView();
-    }
-
-    @Override
-    public ViewProxyInterface initDefaultViewProxy(View view) {
+    public ViewContentProxy initDefaultViewProxy(View view) {
         return null;
     }
 
-    public String[] getSelectTexts() {
-        return optionalTexts;
-    }
+//    public void setSelectedIndex(int index){
+//        selectedIndex[index]=true;
+//    }
 
-    public void setOptionalTexts(String[] optionalTexts) {
-        this.optionalTexts = optionalTexts;
-    }
-
-    public String[] getOptionalValues() {
-        return optionalValues;
-    }
-
-    public void setOptionalValues(String[] optionalValues) {
-        this.optionalValues = optionalValues;
-    }
-
-    public void setOptionalTexts(List<String> texts) {
-        setOptionalTexts(texts.toArray(new String[texts.size()]));
-    }
-
-    public void setOptionalValues(List<String> values) {
-        setOptionalValues(values.toArray(new String[values.size()]));
-    }
-
-    public void setSelectedIndex(int index){
-        selectedIndex[index]=true;
-    }
-
-    public void setSelectedIndexes(boolean[] indexs){
-        if(optionalTexts.length!=indexs.length)
+    public void setSelectedIndexes(boolean[] indexs) {
+        if (multiOptionalData.dataList.size() != indexs.length)
             throw new RuntimeException("error size");
-        selectedIndex = indexs;
-        if(isStarted)
+        multiOptionalData.selectedIndexs = indexs;
+        if (isStarted)
             refreshView();
     }
 
-    public void setUnSelectedIndex(int index){
-        selectedIndex[index]=false;
-    }
+//    public void setUnSelectedIndex(int index){
+//        selectedIndex[index]=false;
+//    }
+//
+//    public boolean[] getSelectedIndex() {
+//        return selectedIndex;
+//    }
 
-    public boolean[] getSelectedIndex() {
-        return selectedIndex;
-    }
 
-
-    private String getData(String[] selectTexts,boolean[] selectedIndexs) {
-        StringBuffer stringBuffer = new StringBuffer();
-        if (selectTexts == null || selectTexts.length == 0
-                || selectedIndexs == null || selectedIndexs.length == 0) {
+    private String getData(MultiOptionalData multiOptionalData) {
+        StringBuilder sb = new StringBuilder();
+        if (multiOptionalData == null || multiOptionalData.dataList.size() == 0) {
             return null;
         } else {
-            for (int i=0;i < selectedIndexs.length;i++) {
-                if (selectedIndexs[i]) {
-                    stringBuffer.append(selectTexts[i] + SEPARATOR);
-                }
+            List selectedValues = multiOptionalData.getSelectedValue();
+            boolean first=true;
+            for (int i = 0; i < selectedValues.size(); i++) {
+                if(!first)
+                    sb.append(SEPARATOR);
+                else
+                    first=false;
+                sb.append(selectedValues.get(i));
             }
-            String value = stringBuffer.toString();
-            if (value == null) {
-                return null;
-            }
-            if (value.length() > 0) {
-                return value.substring(0, value.length() - 1);
-            } else {
-                return "";
-            }
+            return sb.toString().trim();
         }
     }
 
 
-    MultiOptionalDialogAction multiOptionalDialogAction;
-    public interface MultiOptionalDialogAction{
+    private MultiOptionalDialogAction multiOptionalDialogAction;
+
+    @Override
+    public void onRequestValue(Observable observable) {
+        multiOptionalData.onRequestValue(observable.doOnComplete(new Action() {
+            @Override
+            public void run() throws Exception {
+                if (isStarted)
+                    refreshView();
+            }
+        }));
+    }
+
+    public interface MultiOptionalDialogAction {
         void showDialog(MultiOptionalInputItem inputItem);
+    }
+
+    public static class MultiOptionalData<RV> implements RequestValueContract.RequestValueObserver<List<RV>> {
+        private List<Pair<String, RV>> dataList = new ArrayList<>();
+        //        private String[] optionalTexts;
+        //设置默认值
+        private boolean[] selectedIndexs;
+
+        public boolean[] getSelectedIndexs() {
+            return selectedIndexs;
+        }
+
+        public void setSelectedIndexs(boolean[] selectedIndexs) {
+            this.selectedIndexs = selectedIndexs;
+        }
+
+        public String[] getOptionalTexts() {
+            String[] optionalTexts = new String[dataList.size()];
+            int i = 0;
+            for (Pair<String, RV> pair : dataList) {
+                optionalTexts[i] = pair.first;
+                i++;
+            }
+            return optionalTexts;
+        }
+
+        public void add(String display, RV data) {
+            dataList.add(new Pair<String, RV>(display, data));
+        }
+
+        public void add(int index, String display, RV data) {
+            dataList.add(new Pair<String, RV>(display, data));
+        }
+
+        @Override
+        public void onRequestValue(Observable<List<RV>> observable) {
+            observable.subscribe(new SimpleObserver<List<RV>>() {
+                @Override
+                public void onNext(List<RV> values) {
+                    if (values == null || values.size() == 0) {
+                        return;
+                    }
+//                    String[] ids = value.split(SEPARATOR);
+//                    if (ids.length == 0 || multiOptionalData == null || multiOptionalData.dataList.size() == 0) {
+//                        return;
+//                    }
+
+                    //每次设置值需要清空原来的缓存数据
+                    selectedIndexs = new boolean[dataList.size()];
+                    for (int i = 0; i < dataList.size(); i++) {
+                        Pair<String, RV> pair = dataList.get(i);
+                        for (int j = 0; j < values.size(); j++) {
+                            if (pair.equals(values.get(j))) {
+                                selectedIndexs[i] = true;
+                                break;
+                            }
+                        }
+
+
+                    }
+                }
+            });
+        }
+
+        public List<RV> getSelectedValue() {
+            if (dataList == null || dataList.size() == 0) {
+                return null;
+            } else {
+                List<RV> rvs = new ArrayList<>();
+
+                for (int i = 0; i < selectedIndexs.length; i++) {
+                    if (selectedIndexs[i]) {
+                        rvs.add(dataList.get(i).second);
+                    }
+                }
+                return rvs;
+            }
+        }
+
     }
 }

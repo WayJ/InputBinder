@@ -4,22 +4,24 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tianque.inputbinder.inf.InputItemHand;
-import com.tianque.inputbinder.model.ViewAttribute;
-import com.tianque.inputbinder.inf.ViewProxyInterface;
+import com.tianque.inputbinder.model.InputItemProfile;
+import com.tianque.inputbinder.viewer.ViewContentProxy;
 import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.ToastUtils;
 
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 
 /**
- * Created by way on 17/5/18.
+ * Created by way on 17/5/18.<BR/>
+ * 这里的InputItem<T>的泛型应该是给View使用来设置显示的值的
  */
-
 public abstract class InputItem<T> {
 
     public static final String SEPARATOR = ",";
@@ -30,12 +32,12 @@ public abstract class InputItem<T> {
 
     private int resourceId;
 
-    private ViewProxyInterface<T> viewProxy;
+    private ViewContentProxy<T> viewProxy;
     private InputItemHand inputItemHand;
 //    private String resourceName;
 
     private String requestKey;
-    protected ViewAttribute viewAttribute;
+    protected InputItemProfile inputItemProfile;
     private Map<String,String> configParmMap;//配置的参数的map
     private View view;
 
@@ -67,7 +69,7 @@ public abstract class InputItem<T> {
 
     public abstract String getRequestValue();
 
-    public abstract void setRequestValue(String value);
+//    public abstract void setRequestValue(String value);
 
     public String getRequestKey() {
         return requestKey;
@@ -77,20 +79,19 @@ public abstract class InputItem<T> {
         this.requestKey = requestKey;
     }
 
-
-    public ViewAttribute getViewAttribute() {
-        return viewAttribute;
+    public InputItemProfile getInputItemProfile() {
+        return inputItemProfile;
     }
 
-    public void setViewAttribute(ViewAttribute viewAttribute) {
-        this.viewAttribute = viewAttribute;
+    public void setInputItemProfile(InputItemProfile inputItemProfile) {
+        this.inputItemProfile = inputItemProfile;
     }
 
-    public ViewProxyInterface<T> getViewProxy() {
+    public ViewContentProxy<T> getViewProxy() {
         return viewProxy;
     }
 
-    public void setViewProxy(ViewProxyInterface<T> viewProxy) {
+    public void setViewProxy(ViewContentProxy<T> viewProxy) {
         this.viewProxy = viewProxy;
     }
 
@@ -128,13 +129,13 @@ public abstract class InputItem<T> {
 //        if(getViewAttribute()!=null)
 //            setViewVisibleStatus(getViewAttribute().visible, view);
         if(viewProxy==null){
-            if(getView() instanceof ViewProxyInterface){
-                viewProxy=(ViewProxyInterface<T>) getView();
+            if(getView() instanceof ViewContentProxy){
+                viewProxy=(ViewContentProxy<T>) getView();
             }else
                 viewProxy = initDefaultViewProxy(getView());
         }
-        if(getViewAttribute()!=null&& !TextUtils.isEmpty(getViewAttribute().parm)){
-            String  parmStr = getViewAttribute().parm;
+        if(getInputItemProfile()!=null&& !TextUtils.isEmpty(getInputItemProfile().parm)){
+            String  parmStr = getInputItemProfile().parm;
             try{
                 JSONObject jsonObject=new JSONObject(parmStr);
                 Iterator<String> keys =  jsonObject.keys();
@@ -151,7 +152,7 @@ public abstract class InputItem<T> {
         refreshView();
     }
 
-    public abstract ViewProxyInterface<T> initDefaultViewProxy(View view);
+    public abstract ViewContentProxy<T> initDefaultViewProxy(View view);
 
     public View getView() {
         return view;
@@ -179,5 +180,26 @@ public abstract class InputItem<T> {
 
     public void setInputItemHand(InputItemHand inputItemHand) {
         this.inputItemHand = inputItemHand;
+    }
+
+    public VerifySet verifySet(){
+        return new VerifySet();
+    }
+
+    public class VerifySet{
+
+        public VerifySet and(int... inputVerifyType) {
+            Arrays.asList(inputVerifyType);
+            return this;
+        }
+
+        public VerifySet and(List<Integer> inputVerifyType) {
+            return this;
+        }
+
+        public VerifySet or(int... inputVerifyType) {
+            Arrays.asList(inputVerifyType);
+            return this;
+        }
     }
 }

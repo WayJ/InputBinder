@@ -29,14 +29,7 @@ dependencies {
     compileOnly 'com.android.support:support-annotations:28.0.0'
 }
 
-//添加
-//publish {
-//    userOrg = 'wayj'//bintray.com用户名
-//    groupId = 'com.wayj'//jcenter上的路径
-//    publishVersion = '0.1.0'//版本号
-//    desc = 'aaaaa,oooooo'//描述，不重要
-//    website = 'https://github.com/WayJ/InputBinder'//网站，不重要；尽量模拟github上的地址，例如我这样的；当然你有地址最好了
-//}
+
 publish {
     artifactId = 'inputbinder-style'//项目名称
     userOrg = rootProject.userOrg

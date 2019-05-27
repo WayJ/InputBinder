@@ -1,24 +1,16 @@
 package com.wayj.inputbinder.example2
 
 import com.tianque.inputbinder.convert.ItemTypeConvert
+import com.tianque.inputbinder.convert.impl.OptionalInputItemConvert
 import com.tianque.inputbinder.item.OptionalInputItem
-import com.tianque.inputbinder.model.ViewAttribute
 
-class TeacherItemConvert : ItemTypeConvert<Teacher, OptionalInputItem>() {
-    override fun setItemValue(item: OptionalInputItem?, teacher: Teacher?) {
-        item!!.requestValue = teacher!!.id.toString()
+class TeacherItemConvert : OptionalInputItemConvert<Teacher>() {
+    override fun initOptionalData(optionalInputItem: OptionalInputItem?): OptionalInputItem.OptionalData<Teacher> {
+        val data = OptionalInputItem.OptionalData<Teacher>();
+        data.add("张老师",Teacher(1,"张三"))
+        data.add("李老师", Teacher(2,"李四"))
+        data.add("王五",Teacher(3,"王五"))
+        return data
     }
 
-    override fun newInputItem(resId: Int, viewAttribute: ViewAttribute?): OptionalInputItem {
-        var teacherItem = OptionalInputItem(resId)
-        teacherItem.optionalTexts = arrayOf("How", "Are", "You")
-        teacherItem.optionalValues = arrayOf("1", "2", "3")
-
-        //dd
-        //dd = getDD
-        //
-        teacherItem.optionalTexts = arrayOf("男", "女")
-        teacherItem.optionalValues = arrayOf("1", "2")
-        return teacherItem
-    }
 }

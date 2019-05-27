@@ -1,11 +1,14 @@
 package com.tianque.inputbinder.item;
 
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.tianque.inputbinder.inf.ViewProxyInterface;
+import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.rxjava.SimpleObserver;
+import com.tianque.inputbinder.viewer.ViewContentProxy;
 import com.tianque.inputbinder.util.ContextUtils;
 import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.ResourceUtils;
@@ -14,12 +17,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckInputItem extends InputItem<Boolean> {
+import io.reactivex.Observable;
+import io.reactivex.functions.Action;
+
+public class CheckInputItem extends InputItem<Boolean> implements RequestValueContract.RequestValueObserver{
     public static final String ParmTag_dependent = "dependent";
     public static final String ParmTag_dependent_inversion = "dependent_inversion";
 
     private CheckBox.OnCheckedChangeListener onCheckedChangeListener;
-    private boolean isChecked;
+
     private List<Integer> mDependedView;//依赖该inputItem来控制是否显示的view的集合,该控件为true时，这个集合中控件都显示
     private List<Integer> mDependedInversionView;//依赖该inputItem来控制是否显示的view的集合，该控件为true时，这个集合中控件都不显示
 
@@ -27,19 +33,19 @@ public class CheckInputItem extends InputItem<Boolean> {
      * 该inputItem获得提交参数时候，选中不选中各对应的传递的值
      * 默认： {FALSE,TRUE}即 checkValues[0]= false,checkValues[1]=true
      */
-    private static final String defaultCheckValues1 = "0" + SEPARATOR + "1";
-    private static final String defaultCheckValues2 = "false" + SEPARATOR + "true";
-    private static final String defaultCheckValues3 = "FALSE" + SEPARATOR + "TRUE";
-    private String[] checkValues;
+
+
+//    private String[] checkValues;
+    private CheckData checkDataDelegate=new CheckData();
 
     public CheckInputItem(int resourceId) {
         super(resourceId);
     }
 
-    public CheckInputItem(int resourceId, boolean isChecked) {
-        this(resourceId);
-        setChecked(isChecked);
-    }
+//    public CheckInputItem(int resourceId, boolean isChecked) {
+//        this(resourceId);
+//        setChecked(isChecked);
+//    }
 
     @Override
     public void onStart() {
@@ -53,7 +59,7 @@ public class CheckInputItem extends InputItem<Boolean> {
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener=new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean checked) {
-                isChecked=checked;
+                checkDataDelegate.isChecked=checked;
                 if(isStarted)
                     refreshDependedView();
             }
@@ -127,14 +133,14 @@ public class CheckInputItem extends InputItem<Boolean> {
             for (Integer id : mDependedView) {
                 View view = getInputItemHand().findViewById(id);
                 if (view != null)
-                    view.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                    view.setVisibility(checkDataDelegate.isChecked ? View.VISIBLE : View.GONE);
             }
         }
         if (getInputItemHand() != null && mDependedInversionView != null && mDependedInversionView.size() > 0) {
             for (Integer id : mDependedInversionView) {
                 View view = getInputItemHand().findViewById(id);
                 if (view != null)
-                    view.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
+                    view.setVisibility(!checkDataDelegate.isChecked ? View.VISIBLE : View.GONE);
             }
         }
     }
@@ -146,45 +152,23 @@ public class CheckInputItem extends InputItem<Boolean> {
 
     @Override
     public String getRequestValue() {
-        isChecked = getViewProxy().getContent();
-        if (checkValues != null) {
-            return isChecked ? checkValues[1] : checkValues[0];
+        boolean check = getViewProxy().getContent();
+        if (checkDataDelegate != null) {
+            return String.valueOf(checkDataDelegate.getRequestValue(check));
         } else
-            return Boolean.valueOf(isChecked).toString();
+            return Boolean.valueOf(check).toString();
     }
 
-    @Override
-    public void setRequestValue(String value) {
-        if (TextUtils.isEmpty(value))
-            return;
-        if (checkValues == null) {
-            initDefaultCheckValuesWithValue(value);
-        }
-        if (checkValues != null) {
-            if (value.equals(checkValues[0]))
-                setChecked(false);
-            else if (value.equals(checkValues[1]))
-                setChecked(true);
-
-        }
-    }
 
     public boolean isChecked() {
-        return isChecked;
-    }
-
-    private void initDefaultCheckValuesWithValue(String value) {
-        if (defaultCheckValues1.contains(value)) {
-            checkValues = defaultCheckValues1.split(SEPARATOR);
-        } else if (defaultCheckValues2.contains(value)) {
-            checkValues = defaultCheckValues2.split(SEPARATOR);
-        } else if (defaultCheckValues3.contains(value)) {
-            checkValues = defaultCheckValues3.split(SEPARATOR);
-        }
+        if(checkDataDelegate==null)
+            return false;
+        else
+            return checkDataDelegate.isChecked;
     }
 
     public void setChecked(boolean checked) {
-        isChecked = checked;
+        checkDataDelegate.isChecked = checked;
         if (isStarted)
             refreshView();
     }
@@ -198,13 +182,21 @@ public class CheckInputItem extends InputItem<Boolean> {
         return this;
     }
 
-    public CheckInputItem setCheckValues(String trueValue, String falseValue) {
-        if (checkValues == null)
-            checkValues = new String[2];
-        this.checkValues[0] = trueValue;
-        this.checkValues[1] = falseValue;
-        return this;
+    public CheckData getCheckData() {
+        return checkDataDelegate;
     }
+
+    public void setCheckData(CheckData checkData) {
+        this.checkDataDelegate = checkData;
+    }
+
+    //    public CheckInputItem setCheckValues(String trueValue, String falseValue) {
+//        if (checkValues == null)
+//            checkValues = new String[2];
+//        this.checkValues[0] = trueValue;
+//        this.checkValues[1] = falseValue;
+//        return this;
+//    }
 
     @Override
     public String getRequestKey() {
@@ -236,8 +228,8 @@ public class CheckInputItem extends InputItem<Boolean> {
 
 
     @Override
-    public ViewProxyInterface<Boolean> initDefaultViewProxy(View view) {
-        return new ViewProxyInterface<Boolean>() {
+    public ViewContentProxy<Boolean> initDefaultViewProxy(View view) {
+        return new ViewContentProxy<Boolean>() {
 
             @Override
             public Boolean getContent() {
@@ -252,5 +244,53 @@ public class CheckInputItem extends InputItem<Boolean> {
             }
 
         };
+    }
+
+    @Override
+    public void onRequestValue(Observable observable) {
+        checkDataDelegate.onRequestValue(observable.doOnComplete(new Action() {
+            @Override
+            public void run() throws Exception {
+                setChecked(checkDataDelegate.isChecked);
+            }
+        }));
+    }
+
+
+    public static class CheckData<RV> implements RequestValueContract.RequestValueObserver<RV> {
+        private Pair<RV,RV> data; // 这里，first为false，second为true
+        private boolean isChecked;
+
+        public void setCheckData(RV trueValue,RV falseValue){
+            data = new Pair<>(falseValue,trueValue);
+        }
+
+        public void setTrueValue(RV trueValue){
+            data=new Pair<>(data.first,trueValue);
+        }
+
+        public void setFalseValue(RV falseValue){
+            data=new Pair<>(falseValue,data.second);
+        }
+
+        @Override
+        public void onRequestValue(Observable<RV> observable) {
+            observable.subscribe(new SimpleObserver<RV>() {
+                @Override
+                public void onNext(RV rv) {
+                    if(rv.equals(data.first))
+                        isChecked = false;
+                    else if(rv.equals(data.second))
+                        isChecked = true;
+                }
+            });
+        }
+
+        public RV getRequestValue(boolean isChecked) {
+            if(isChecked)
+                return data.second;
+            else
+                return data.first;
+        }
     }
 }

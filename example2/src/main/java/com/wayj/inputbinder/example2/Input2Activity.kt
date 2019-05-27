@@ -13,7 +13,6 @@ import com.tianque.inputbinder.function.ContainerFunc
 import com.tianque.inputbinder.item.ButtonInputItem
 import com.tianque.inputbinder.item.InputItem
 import com.tianque.inputbinder.item.OptionalInputItem
-import com.tianque.inputbinder.model.ViewAttribute
 
 
 /**
@@ -29,19 +28,7 @@ class Input2Activity : AppCompatActivity() {
 
         //初始化
         inputBinder = InputBinder.Build(this)
-                .addTypeConvert(TeacherItemConvert())
-                .addTypeConvert(object:ItemTypeConvert<Student,OptionalInputItem>(){
-                    override fun setItemValue(item: OptionalInputItem?, value: Student?) {
-//                        item.requestValue=value.name
-                        //将putIn方法的入参object传递与此，对具体的控件进行赋值
-
-                    }
-                    //返回一个InputItem类型，可自己集成父类来扩展
-                    override fun newInputItem(resId: Int, viewAttribute: ViewAttribute?): OptionalInputItem {
-                        return OptionalInputItem(resId)
-                    }
-                })
-                .bindBean(Student::class.java)
+                .readProfile(Student::class.java)
                 .create()
 
         //添加or控制 一个特殊的输入项
@@ -50,7 +37,6 @@ class Input2Activity : AppCompatActivity() {
 
         inputBinder.addInputItem(buttonInputItem)
                 .start()
-
 
         //模拟请求接口获得数据并显示
         doRequestAndShow()

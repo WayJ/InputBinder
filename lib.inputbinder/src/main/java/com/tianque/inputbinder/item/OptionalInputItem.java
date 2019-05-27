@@ -1,91 +1,69 @@
 package com.tianque.inputbinder.item;
 
-import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 
 import com.tianque.inputbinder.InputBinder;
-import com.tianque.inputbinder.inf.ViewProxyInterface;
+import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.rxjava.SimpleObserver;
+import com.tianque.inputbinder.viewer.ViewContentProxy;
 import com.tianque.inputbinder.util.Logging;
 
-import org.json.JSONArray;
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Action;
 
 
 /**
  * Created by way on 17/5/18.
  */
-public class OptionalInputItem extends ButtonInputItem {
-    public static final String ParmTag_keys="optionalKeys";
-    public static final String ParmTag_values="optionalValues";
-    protected String displayText = "";
+public class OptionalInputItem extends ButtonInputItem implements RequestValueContract.RequestValueObserver {
 
-    private String[] optionalTexts;
-    private String[] optionalValues;
-    //设置默认值
-    private int selectedIndex = -1;
+    private OptionalData optionalData;
+    private OptionalDialogAction optionalDialogAction;
+
+    public OptionalData getOptionalData() {
+        return optionalData;
+    }
+
+    public void setOptionalData(OptionalData optionalData) {
+        this.optionalData = optionalData;
+    }
+
+    @Override
+    public void onRequestValue(Observable observable) {
+        optionalData.onRequestValue(observable.doOnComplete(new Action() {
+            @Override
+            public void run() throws Exception {
+                if (isStarted&&optionalData.selectedIndex>=0)
+                    setSelectedIndex(optionalData.selectedIndex);
+            }
+        }));
+    }
 
 
     public OptionalInputItem(int resourceId) {
         super(resourceId);
     }
 
-
-    @Override
-    public String getContent() {
-        return displayText;
-    }
-
     @Override
     public String getRequestValue() {
-        if (optionalValues == null || optionalValues.length == 0 || selectedIndex == -1) {
+        if (optionalData == null || optionalData.selectedIndex < 0) {
             return null;
         } else
-            return optionalValues[selectedIndex];
-    }
-
-    @Override
-    public void setRequestValue(String value) {
-        if (!TextUtils.isEmpty(value) && optionalValues != null) {
-            for (int i = 0; i < optionalValues.length; i++) {
-                if (optionalValues[i].equals(value)) {
-                    setSelectedIndex(i);
-                    break;
-                }
-            }
-        }
+            return String.valueOf(optionalData.getSelectedValue());
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        String optionalKeys = getConfigParm(ParmTag_keys);
-        String optionalValues = getConfigParm(ParmTag_values);
-        if(!TextUtils.isEmpty(optionalKeys)){
-            try{
-                JSONArray jsonArray=new JSONArray(optionalKeys);
-                optionalTexts = new String[jsonArray.length()];
-                for(int i=0;i<jsonArray.length();i++){
-                    optionalTexts[i]=jsonArray.getString(i);
-                }
-                if(!TextUtils.isEmpty(optionalValues)){
-                    jsonArray=new JSONArray(optionalValues);
-                    this.optionalValues = new String[jsonArray.length()];
-                    for(int i=0;i<jsonArray.length();i++){
-                        this.optionalValues[i]=jsonArray.getString(i);
-                    }
-                    if(optionalTexts.length!= this.optionalValues.length)
-                        throw new RuntimeException("keys values 的个数不同");
-                }else{
-                    this.optionalValues = optionalTexts;
-                }
-            }catch (Exception e){
-                Logging.e(e);
-            }
-        }
 
-        if(optionalDialogAction==null){
-            if(InputBinder.getInputBinderStyleAction()!=null) {
+        if (optionalDialogAction == null) {
+            if (InputBinder.getInputBinderStyleAction() != null) {
                 optionalDialogAction = InputBinder.getInputBinderStyleAction().getOptionalDialogAction();
-            }else{
+            } else {
                 throw new RuntimeException("InputBinder.getInputBinderStyleAction() is null");
             }
         }
@@ -93,9 +71,9 @@ public class OptionalInputItem extends ButtonInputItem {
         getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(optionalDialogAction!=null)
+                if (optionalDialogAction != null)
                     optionalDialogAction.showDialog(OptionalInputItem.this);
-                else{
+                else {
                     Logging.e(new Exception("optionalDialogAction is null"));
                 }
             }
@@ -103,51 +81,76 @@ public class OptionalInputItem extends ButtonInputItem {
     }
 
     @Override
-    public ViewProxyInterface initDefaultViewProxy(View view) {
+    public ViewContentProxy initDefaultViewProxy(View view) {
         return null;
     }
 
-    public String[] getOptionalTexts() {
-        return optionalTexts;
-    }
-
-    public void setOptionalTexts(String[] optionalTexts) {
-        this.optionalTexts = optionalTexts;
-    }
-
-    public String[] getOptionalValues() {
-        return optionalValues;
-    }
-
-    public void setOptionalValues(String[] optionalValues) {
-        this.optionalValues = optionalValues;
-    }
 
     public int getSelectedIndex() {
-        return selectedIndex;
+        return optionalData.selectedIndex;
     }
 
     public void setSelectedIndex(int selectedIndex) {
         if (selectedIndex < 0)
             return;
-        this.selectedIndex = selectedIndex;
-        if (optionalTexts == null || optionalTexts.length == 0) {
-            return;
+        optionalData.selectedIndex = selectedIndex;
+        if (optionalData.dataList == null || optionalData.dataList.size() == 0) {
+            throw new RuntimeException("dataList 为空，selectedIndex = " + selectedIndex);
         } else {
-            this.displayText = optionalTexts[selectedIndex];
+            setDisplayText(optionalData.getOptionalTexts()[selectedIndex]);
         }
-        if(isStarted)
-            refreshView();
     }
 
-    public void setSimpleOptional(String[] selectTexts) {
-        this.optionalTexts = selectTexts;
-        this.optionalValues = selectTexts;
+    public interface OptionalDialogAction {
+        void showDialog(OptionalInputItem inputItem);
     }
 
-    OptionalDialogAction optionalDialogAction;
-    public interface OptionalDialogAction{
-         void showDialog(OptionalInputItem inputItem);
+    public static class OptionalData<RV> implements RequestValueContract.RequestValueObserver<RV> {
+        private List<Pair<String, RV>> dataList = new ArrayList<>();
+        //        private String[] optionalTexts;
+        //设置默认值
+        private int selectedIndex = -1;
+
+        public String[] getOptionalTexts() {
+            String[] optionalTexts = new String[dataList.size()];
+            int i = 0;
+            for (Pair<String, RV> pair : dataList) {
+                optionalTexts[i] = pair.first;
+                i++;
+            }
+            return optionalTexts;
+        }
+
+        public void add(String display, RV data) {
+            dataList.add(new Pair<String, RV>(display, data));
+        }
+
+        public void add(int index, String display, RV data) {
+            dataList.add(new Pair<String, RV>(display, data));
+        }
+
+        @Override
+        public void onRequestValue(Observable<RV> observable) {
+            observable.subscribe(new SimpleObserver<RV>() {
+                @Override
+                public void onNext(RV value) {
+                    for (int i = 0; i < dataList.size(); i++) {
+                        if (dataList.get(i).second.equals(value)) {
+                            selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        public RV getSelectedValue() {
+            if (dataList == null || dataList.size() == 0 || selectedIndex == -1) {
+                return null;
+            } else
+                return dataList.get(selectedIndex).second;
+        }
+
     }
 
 }

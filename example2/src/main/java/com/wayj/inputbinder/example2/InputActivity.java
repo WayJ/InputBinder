@@ -38,7 +38,7 @@ public class InputActivity extends Activity {
             }
         });
         inputBinder = new InputBinder.Build(this)
-                .bindBean(Student.class)
+                .readProfile(Student.class)
                 .create();
 
         ButtonInputItem buttonInputItem = new ButtonInputItem(R.id.input_btn, "点我一下，代码赋值");
@@ -57,6 +57,12 @@ public class InputActivity extends Activity {
             doRequestAndShow();
         }
         inputBinder.start();
+
+
+
+
+        ButtonInputItem buttonInputItem2  = inputBinder.<ButtonInputItem>findInputByViewId(R.id.input_btn);
+
     }
 
     private void doRequestAndShow() {

@@ -14,7 +14,7 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.tianque.inputbinder.item.MultiOptionalInputItem;
-import com.tianque.inputbinder.model.ViewAttribute;
+import com.tianque.inputbinder.model.InputItemProfile;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +35,7 @@ public class MultiOptionalDialog implements AdapterView.OnItemClickListener {
     private MultiOptionalInputItem multiOptionalInputItem;
 
     public MultiOptionalDialog(Context context, MultiOptionalInputItem inputItem, View showView,
-                               ViewAttribute attrs) {
+                               InputItemProfile attrs) {
         mContext = context;
         this.multiOptionalInputItem = inputItem;
         this.showView = showView;
@@ -43,15 +43,16 @@ public class MultiOptionalDialog implements AdapterView.OnItemClickListener {
         lv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         lv.setBackgroundColor(Color.TRANSPARENT);
         lv.setCacheColorHint(Color.TRANSPARENT);
-        selecteds = inputItem.getSelectedIndex();
-        SelectorAdapter sAdapter = new SelectorAdapter(inputItem.getSelectTexts(), showView);
+        selecteds = inputItem.getMultiOptionalData().getSelectedIndexs();
+        SelectorAdapter sAdapter = new SelectorAdapter(inputItem.getMultiOptionalData().getOptionalTexts(), showView);
         lv.setAdapter(sAdapter);
         lv.setOnItemClickListener(this);
-        initDailog();
+        initDialog();
     }
 
-    private void initDailog() {
+    private void initDialog() {
         builder = new AlertDialog.Builder(mContext);
+
         builder.setTitle("类型选择")
                 .setView(lv)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -68,7 +69,7 @@ public class MultiOptionalDialog implements AdapterView.OnItemClickListener {
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(showView.getWindowToken(), 0); //强制隐藏键盘
         if (builder == null) {
-            initDailog();
+            initDialog();
         }
         builder.show();
     }

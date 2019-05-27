@@ -1,2 +1,3 @@
-include  ':lib.inputbinder', ':lib.inputbinder.style', ':example2'
+include  ':lib.inputbinder', ':lib.inputbinder.style'
+//, ':example2'
 //':example',

@@ -18,7 +18,6 @@ import com.tianque.inputbinder.item.MultiOptionalInputItem;
 import com.tianque.inputbinder.item.OptionalInputItem;
 import com.tianque.inputbinder.item.TextInputItem;
 import com.tianque.inputbinder.model.BeanReader;
-import com.tianque.inputbinder.model.XmlReader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,18 +30,7 @@ import java.util.Map;
  */
 
 public class InputBinder {
-    public static Map<String, Class<? extends InputItem>> inputTypeStoreMap;
     private static InputBinderStyleAction inputBinderStyleAction;
-
-    static {
-        inputTypeStoreMap = new HashMap<>();
-        inputTypeStoreMap.put(InputItemType.Text.getValue(), TextInputItem.class);
-        inputTypeStoreMap.put(InputItemType.Button.getValue(), ButtonInputItem.class);
-        inputTypeStoreMap.put(InputItemType.CheckBox.getValue(), CheckInputItem.class);
-        inputTypeStoreMap.put(InputItemType.Date.getValue(), DateInputItem.class);
-        inputTypeStoreMap.put(InputItemType.Optional.getValue(), OptionalInputItem.class);
-        inputTypeStoreMap.put(InputItemType.MultiOptional.getValue(), MultiOptionalInputItem.class);
-    }
 
     private Context context;
     private InputBinderEngine engine;
@@ -91,19 +79,18 @@ public class InputBinder {
         return this;
     }
 
-    private InputBinder bindXml(int redId, String nodeName) {
-        engine.setInputReader(new XmlReader(redId, nodeName));
-        return this;
-    }
-
-    private InputBinder bindBean(Class modelCls) {
+    private InputBinder readProfile(Class modelCls) {
         engine.setInputReader(new BeanReader(modelCls));
         return this;
     }
 
     public void start() {
         engine.addInputItems(inputItems);
-        engine.start();
+        try {
+            engine.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Map<String, String> getRequestMap() {
@@ -199,8 +186,8 @@ public class InputBinder {
     }
 
 
-    public InputItem findInputByViewId(int viewId){
-        return getEngine().inputItemHand.findInputItemByViewId(viewId);
+    public <T extends InputItem> T findInputByViewId(int viewId){
+        return (T)getEngine().inputItemHand.findInputItemByViewId(viewId);
     }
     public InputItem findInputByViewName(String viewName){
         return getEngine().inputItemHand.findInputItemByViewName(viewName);
@@ -223,19 +210,13 @@ public class InputBinder {
                     .attachView(view);
         }
 
-        public Build addTypeConvert(ItemTypeConvert itemTypeConvert) {
-            inputBinder.getEngine().addTypeConvert(itemTypeConvert);
-            return this;
-        }
+//        public Build addTypeConvert(ItemTypeConvert itemTypeConvert) {
+//            inputBinder.getEngine().addTypeConvert(itemTypeConvert);
+//            return this;
+//        }
 
-
-        public Build bindXml(int redId, String nodeName) {
-            inputBinder.bindXml(redId, nodeName);
-            return this;
-        }
-
-        public Build bindBean(Class modelCls) {
-            inputBinder.bindBean(modelCls);
+        public Build readProfile(Class modelCls) {
+            inputBinder.readProfile(modelCls);
             return this;
         }
 

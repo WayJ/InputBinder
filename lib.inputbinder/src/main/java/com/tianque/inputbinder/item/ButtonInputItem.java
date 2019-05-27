@@ -2,7 +2,9 @@ package com.tianque.inputbinder.item;
 
 import android.view.View;
 
-public class ButtonInputItem extends TextInputItem {
+import com.tianque.inputbinder.item.base.BaseTextDisplayInputItem;
+
+public class ButtonInputItem extends BaseTextDisplayInputItem {
     private View.OnClickListener onClickListener;
 
     public ButtonInputItem(int resourceId) {
@@ -10,8 +12,7 @@ public class ButtonInputItem extends TextInputItem {
     }
 
     public ButtonInputItem(int resourceId, String displayText) {
-        this(resourceId);
-        setDisplayText(displayText);
+        super(resourceId,displayText);
     }
 
     public ButtonInputItem setOnClickListener(View.OnClickListener onClickListener) {

@@ -6,13 +6,11 @@ import android.view.View;
 import com.tianque.inputbinder.inf.Input;
 import com.tianque.inputbinder.inf.InputVerifyFailedException;
 import com.tianque.inputbinder.item.InputItem;
-import com.tianque.inputbinder.model.ViewAttribute;
-import com.tianque.inputbinder.util.ToastUtils;
+import com.tianque.inputbinder.model.InputItemProfile;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +40,7 @@ class InputValidateHelper {
             View view = inputItem.getView();
             if (view.getVisibility() != View.VISIBLE) continue;
 
-            ViewAttribute attr = inputItem.getViewAttribute();
+            InputItemProfile attr = inputItem.getInputItemProfile();
 
             InputVerifyFailedException exception=verifyInput(attr.verify,inputItem);
             if(exception!=null)

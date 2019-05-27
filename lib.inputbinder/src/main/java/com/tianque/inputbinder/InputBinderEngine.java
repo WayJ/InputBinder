@@ -6,13 +6,14 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.tianque.inputbinder.convert.ItemTypeConvert;
+import com.tianque.inputbinder.exception.InputItemConvertException;
 import com.tianque.inputbinder.inf.InputItemHand;
 import com.tianque.inputbinder.inf.InputVerifyFailedException;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.model.BeanReader;
 import com.tianque.inputbinder.model.InputReaderInf;
-import com.tianque.inputbinder.model.ItemConvertHelper;
-import com.tianque.inputbinder.model.ViewAttribute;
+import com.tianque.inputbinder.convert.ItemConvertHelper;
+import com.tianque.inputbinder.model.InputItemProfile;
 import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.ResourceUtils;
 import com.tianque.inputbinder.util.ToastUtils;
@@ -39,8 +40,6 @@ public class InputBinderEngine {
 
     private InputReaderInf inputReader;
 //    private CallBack callBack;
-
-    private ItemConvertHelper convertHelper = new ItemConvertHelper();
     private InputValidateHelper inputValidateHelper = new InputValidateHelper();
 
     /**
@@ -57,7 +56,7 @@ public class InputBinderEngine {
         this.rootView = rootView;
     }
 
-    public void start() {
+    public void start() throws Exception {
         if (rootView == null) {
             throw new RuntimeException("rootview is null");
         }
@@ -104,22 +103,28 @@ public class InputBinderEngine {
         this.inputItems.put(key, inputItem);
     }
 
-    private void setUp(List<ViewAttribute> attrs) {
-        Logging.d(Tag, attrs.toString());
-        for (ViewAttribute attr : attrs) {
-            attr.viewId = ResourceUtils.findIdByName(mContext, attr.viewName != null ? attr.viewName : attr.key);
-            if (attr.viewId <= 0) {
-                Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
+    private void setUp(List<InputItemProfile> profiles) {
+        Logging.d(Tag, profiles.toString());
+        for (InputItemProfile profile : profiles) {
+            profile.viewId = ResourceUtils.findIdByName(mContext, profile.viewName != null ? profile.viewName : profile.key);
+            if (profile.viewId <= 0) {
+                Logging.e(Tag, "item:" + profile.key + "；viewName:" + profile.viewName + ",无法找到对应视图");
                 continue;
             }
-            inputItems.put(attr.key, convertHelper.convert(attr, inputItems.get(attr.key)));
+
+            if(profile.getItemTypeConvert()==null){
+//                throw new InputItemConvertException("初始化InputItem错误, viewName:"+profile.viewName);
+            }else{
+                InputItem inputItem = profile.getItemTypeConvert().create(profile.viewId,profile);
+                inputItems.put(profile.key,inputItem);
+            }
         }
     }
 
     private void binderView() {
         for (Map.Entry<String, InputItem> entry : inputItems.entrySet()) {
             InputItem item = entry.getValue();
-            ViewAttribute attr = item.getViewAttribute();
+            InputItemProfile profile = item.getInputItemProfile();
             View view = rootView.findViewById(item.getResourceId());
             if (view != null) {
 //                execute(view, attr, item);
@@ -130,8 +135,8 @@ public class InputBinderEngine {
                 //添加缓存数据
                 putRequestParams(item);
             } else {
-                ToastUtils.showDebugToast("item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
-                Logging.e(Tag, "item:" + attr.key + "；viewName:" + attr.viewName + ",无法找到对应视图");
+                ToastUtils.showDebugToast("item:" + profile.key + "；viewName:" + profile.viewName + ",无法找到对应视图");
+                Logging.e(Tag, "item:" + profile.key + "；viewName:" + profile.viewName + ",无法找到对应视图");
             }
         }
         if (inputItems != null)
@@ -210,11 +215,11 @@ public class InputBinderEngine {
                 continue;
             String requestValue = inputItem.getRequestValue();
             String requestKey = inputItem.getRequestKey();
-            //以防止某些参数值为空时不传,导致后台报错,例如出租房的证件类型
-            if (requestValue == null) {
-                requestValue = "";
-                inputItem.setRequestValue(requestValue);
-            }
+//            //以防止某些参数值为空时不传,导致后台报错,例如出租房的证件类型
+//            if (requestValue == null) {
+//                requestValue = "";
+//                inputItem.setRequestValue(requestValue);
+//            }
             if (TextUtils.isEmpty(requestKey)) {
                 continue;
             }
@@ -247,7 +252,8 @@ public class InputBinderEngine {
             return;
         if (temRequest.containsKey(inputItem.getRequestKey())) {
             String value = temRequest.get(inputItem.getRequestKey());
-            inputItem.setRequestValue(value);
+            //Todo fix
+//            inputItem.setRequestValue(value);
         }
     }
 
@@ -333,13 +339,13 @@ public class InputBinderEngine {
         view.setClickable(enable);
     }
 
-    public void addTypeConvert(ItemTypeConvert itemTypeConvert) {
-        convertHelper.addTypeConvert(itemTypeConvert);
-    }
+//    public void addTypeConvert(ItemTypeConvert itemTypeConvert) {
+//        convertHelper.addTypeConvert(itemTypeConvert);
+//    }
 
     public <T> void readStore(T obj) {
         if (getInputReader() instanceof BeanReader) {
-            ((BeanReader) getInputReader()).readStore(obj, inputItems, convertHelper);
+            ((BeanReader) getInputReader()).readStore(obj, inputItems);
         }
     }
 
