@@ -22,6 +22,10 @@
 ```
     api 'com.wayj.inputbinder:inputbinder:+'
     api 'com.wayj.inputbinder:inputbinder-style:+'
+    
+    //私有maven    
+    api 'com.tianque.android:inputbinder:+'
+    api 'com.tianque.android:inputbinder-style:+'
 ```
 
 * inputbinder：核心代码

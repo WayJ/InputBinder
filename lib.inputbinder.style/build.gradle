@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
-
+//apply plugin: 'com.novoda.bintray-release'
+apply from: 'maven_push.gradle'
 android {
     compileSdkVersion 28
 
@@ -30,13 +30,13 @@ dependencies {
 }
 
 
-publish {
-    artifactId = 'inputbinder-style'//项目名称
-    userOrg = rootProject.userOrg
-    groupId = rootProject.groupId
-    uploadName = rootProject.uploadName
-    publishVersion = rootProject.publishVersion
-    desc = rootProject.desc
-    website = rootProject.website
-    licences = rootProject.licences
-}
+//publish {
+//    artifactId = 'inputbinder-style'//项目名称
+//    userOrg = rootProject.userOrg
+//    groupId = rootProject.groupId
+//    uploadName = rootProject.uploadName
+//    publishVersion = rootProject.publishVersion
+//    desc = rootProject.desc
+//    website = rootProject.website
+//    licences = rootProject.licences
+//}

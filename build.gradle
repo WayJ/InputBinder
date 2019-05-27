@@ -16,6 +16,26 @@ buildscript {
     }
 }
 
+def parseLocalProperties(){
+    File file = rootProject.file('local.properties')
+    if(file.exists()){
+        InputStream inputStream = rootProject.file('local.properties').newDataInputStream();
+        Properties properties = new Properties()
+        properties.load(inputStream)
+
+        if(properties.containsKey("MAVEN_REPO_SNAPSHOT_URL")){
+            ext.MAVEN_REPO_SNAPSHOT_URL = properties.getProperty("MAVEN_REPO_SNAPSHOT_URL")
+//            println 'MAVEN_REPO_SNAPSHOT_URL:'+project["MAVEN_REPO_SNAPSHOT_URL"]
+            ext.MAVEN_REPO_RELEASE_URL = properties.getProperty("MAVEN_REPO_RELEASE_URL")
+            ext.GROUP = properties.getProperty("GROUP")
+            ext.GROUP_ID = properties.getProperty("GROUP_ID")
+            ext.TYPE = properties.getProperty("TYPE")
+            ext.DESCRIPTION = properties.getProperty("DESCRIPTION")
+            ext.NEXUS_USERNAME = properties.getProperty("NEXUS_USERNAME")
+            ext.NEXUS_PASSWORD = properties.getProperty("NEXUS_PASSWORD")
+        }
+    }
+}
 allprojects {
     repositories {
         google()
@@ -23,6 +43,7 @@ allprojects {
         maven{ url "https://dl.bintray.com/wayj/maven/" }
 
     }
+    parseLocalProperties()
     //加上这些
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')

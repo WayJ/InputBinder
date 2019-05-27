@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+//apply plugin: 'com.novoda.bintray-release'
+apply from: 'maven_push.gradle'
 
 android {
     compileSdkVersion 28
@@ -26,14 +27,14 @@ dependencies {
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
 }
-
-publish {
-    artifactId = 'inputbinder'
-    userOrg = rootProject.userOrg
-    groupId = rootProject.groupId
-    uploadName = rootProject.uploadName
-    publishVersion = rootProject.publishVersion
-    desc = rootProject.desc
-    website = rootProject.website
-    licences = rootProject.licences
-}
+//
+//publish {
+//    artifactId = 'inputbinder'
+//    userOrg = rootProject.userOrg
+//    groupId = rootProject.groupId
+//    uploadName = rootProject.uploadName
+//    publishVersion = rootProject.publishVersion
+//    desc = rootProject.desc
+//    website = rootProject.website
+//    licences = rootProject.licences
+//}
