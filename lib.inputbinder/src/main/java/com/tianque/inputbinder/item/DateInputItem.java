@@ -40,25 +40,24 @@ public class DateInputItem extends ButtonInputItem {
 
     @Override
     public void onStart() {
-        super.onStart();
-        if(dateDialogAction==null){
-            if(InputBinder.getInputBinderStyleAction()!=null) {
-                dateDialogAction = InputBinder.getInputBinderStyleAction().getDateDialogAction();
-            }else{
-                throw new RuntimeException("InputBinder.getInputBinderStyleAction() is null");
-            }
-        }
-
-        getView().setOnClickListener(new View.OnClickListener() {
+        setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(dateDialogAction!=null)
                     dateDialogAction.showDialog(DateInputItem.this);
                 else{
-                    Logging.e(new Exception("optionalDialogAction is null"));
+                    Logging.e("未找到 DateInputItem 的点击操作需要执行的dialog");
                 }
             }
         });
+        super.onStart();
+        if(dateDialogAction==null){
+            if(InputBinder.getInputBinderStyleAction()!=null) {
+                dateDialogAction = InputBinder.getInputBinderStyleAction().getDateDialogAction();
+            }else{
+                Logging.e("InputBinder.getInputBinderStyleAction()为空，如果不设置，DateInputItem将没有点击效果");
+            }
+        }
     }
 
     public String getFormat() {

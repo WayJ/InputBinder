@@ -2,7 +2,7 @@ package com.tianque.inputbinder.convert.impl;
 
 import com.tianque.inputbinder.convert.ItemTypeConvert;
 import com.tianque.inputbinder.convert.OptionalInput;
-import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.inf.RequestDataContract;
 import com.tianque.inputbinder.item.OptionalInputItem;
 import com.tianque.inputbinder.model.InputItemProfile;
 
@@ -10,7 +10,7 @@ import java.lang.annotation.Annotation;
 
 import io.reactivex.Observable;
 
-public abstract class OptionalInputItemConvert<In> extends ItemTypeConvert<In, OptionalInputItem> implements RequestValueContract.RequestValueObservable<In, In> {
+public abstract class OptionalInputItemConvert<In> extends ItemTypeConvert<In, OptionalInputItem> implements RequestDataContract.IObjectDataConvert<In, In> {
 
     @Override
     public OptionalInputItem loadProfile(OptionalInputItem inputItem, InputItemProfile profile) {
@@ -21,8 +21,18 @@ public abstract class OptionalInputItemConvert<In> extends ItemTypeConvert<In, O
     protected abstract OptionalInputItem.OptionalData<In> initOptionalData(OptionalInputItem optionalInputItem);
 
     @Override
-    public Observable<In> requestValue(In value) {
+    public Observable<In> requestConvertValueFromObject(In value) {
         return Observable.just(value);
+    }
+
+    /**
+     * 这里用不到这个方法
+     * @param in
+     * @return
+     */
+    @Override
+    public In requestObjectValue(In in) {
+        return in;
     }
 
     public static class AdapterInt extends OptionalInputItemConvert<Integer> {

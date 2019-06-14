@@ -122,10 +122,25 @@ public class InputBinder {
         InputBinder.inputBinderStyleAction = inputBinderStyleAction;
     }
 
+    @Deprecated
     public <T> void putIn(T obj){
+        bind(obj);
+    }
+
+    public <T> void bind(T obj){
         try {
             if(getEngine().getInputReader().isSafe(obj)){
                 getEngine().readStore(obj);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public <T> void putOutToObject(T obj){
+        try {
+            if(getEngine().getInputReader().isSafe(obj)){
+                getEngine().writeStore(obj);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -137,44 +152,44 @@ public class InputBinder {
     }
 
 
-    public void putOut(ContainerFunc func) {
-        List<InputVerifyFailedException> exceptionList=verifyIsRegular();
-        if(exceptionList!=null&&exceptionList.size()>0) {
-          func.onVerifyFailed(exceptionList);
-            return;
-        }
+//    public void putOut(ContainerFunc func) {
+//        List<InputVerifyFailedException> exceptionList=verifyIsRegular();
+//        if(exceptionList!=null&&exceptionList.size()>0) {
+//          func.onVerifyFailed(exceptionList);
+//            return;
+//        }
+//
+//        Map<String, String> map = getRequestMap();
+//        if (removedRequestParameters != null && removedRequestParameters.size() > 0) {
+//            Iterator<String> iterator = removedRequestParameters.keySet().iterator();
+//            while (iterator.hasNext()) {
+//                String key = iterator.next();
+//                if (map.containsKey(key))
+//                    map.remove(key);
+//            }
+//        }
+//        if (addedRequestParameters != null && addedRequestParameters.size() > 0) {
+//            map.putAll(addedRequestParameters);
+//        }
+//        func.onPutOut(map);
+//    }
 
-        Map<String, String> map = getRequestMap();
-        if (removedRequestParameters != null && removedRequestParameters.size() > 0) {
-            Iterator<String> iterator = removedRequestParameters.keySet().iterator();
-            while (iterator.hasNext()) {
-                String key = iterator.next();
-                if (map.containsKey(key))
-                    map.remove(key);
-            }
-        }
-        if (addedRequestParameters != null && addedRequestParameters.size() > 0) {
-            map.putAll(addedRequestParameters);
-        }
-        func.onPutOut(map);
-    }
 
-
-    private Map<String, String> addedRequestParameters;
-
-    public void addRequestParameter(String key, String value) {
-        if (addedRequestParameters == null)
-            addedRequestParameters = new HashMap<>();
-        addedRequestParameters.put(key, value);
-    }
-
-    private Map<String, String> removedRequestParameters;
-
-    public void removeRequestParameter(String key) {
-        if (removedRequestParameters == null)
-            removedRequestParameters = new HashMap<>();
-        removedRequestParameters.put(key, null);
-    }
+//    private Map<String, String> addedRequestParameters;
+//
+//    public void addRequestParameter(String key, String value) {
+//        if (addedRequestParameters == null)
+//            addedRequestParameters = new HashMap<>();
+//        addedRequestParameters.put(key, value);
+//    }
+//
+//    private Map<String, String> removedRequestParameters;
+//
+//    public void removeRequestParameter(String key) {
+//        if (removedRequestParameters == null)
+//            removedRequestParameters = new HashMap<>();
+//        removedRequestParameters.put(key, null);
+//    }
 
 
     public void updateView(){
@@ -189,9 +204,13 @@ public class InputBinder {
     public <T extends InputItem> T findInputByViewId(int viewId){
         return (T)getEngine().inputItemHand.findInputItemByViewId(viewId);
     }
-    public InputItem findInputByViewName(String viewName){
-        return getEngine().inputItemHand.findInputItemByViewName(viewName);
+    public <T extends InputItem> T findInputByViewName(String viewName){
+        return (T)getEngine().inputItemHand.findInputItemByViewName(viewName);
     }
+
+//    public InputItem findInputByViewName(String viewName){
+//        return getEngine().inputItemHand.findInputItemByViewName(viewName);
+//    }
 
     public static class Build {
         Context context;

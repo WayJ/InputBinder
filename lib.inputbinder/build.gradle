@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 //apply plugin: 'com.novoda.bintray-release'
-apply from: 'maven_push.gradle'
+// apply from: 'maven_push.gradle'
 
 android {
     compileSdkVersion 28

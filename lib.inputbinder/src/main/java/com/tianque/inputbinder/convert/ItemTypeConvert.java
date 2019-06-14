@@ -1,12 +1,19 @@
 package com.tianque.inputbinder.convert;
 
+import android.text.TextUtils;
+
 import com.tianque.inputbinder.exception.InputItemConvertException;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.model.InputItemProfile;
+import com.tianque.inputbinder.util.Logging;
+import com.tianque.inputbinder.util.ToastUtils;
+
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Iterator;
 
 /**
  * 输入项 类型转换器<BR/>
@@ -56,6 +63,23 @@ public abstract class ItemTypeConvert<In, Out extends InputItem> {
                 inputItem = (Out) c.newInstance(resId);
                 inputItem.setRequestKey(profile.requestKey);
                 inputItem.setInputItemProfile(profile);
+
+                if(!TextUtils.isEmpty(profile.parm)){
+                    String  parmStr = profile.parm;
+                    try{
+                        JSONObject jsonObject=new JSONObject(parmStr);
+                        Iterator<String> keys =  jsonObject.keys();
+                        while (keys.hasNext()){
+                            String key = keys.next();
+                            inputItem.addConfigParm(key,jsonObject.getString(key));
+                        }
+                    }catch (Exception e){
+                        Logging.e(e);
+                        ToastUtils.showDebugToast("转换JSON出错："+parmStr);
+                    }
+                }
+
+
                 inputItem = loadProfile(inputItem, profile);
             }
             if (inputItem == null)

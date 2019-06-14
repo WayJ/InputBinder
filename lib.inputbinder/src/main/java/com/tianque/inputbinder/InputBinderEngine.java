@@ -2,6 +2,7 @@ package com.tianque.inputbinder;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 
@@ -113,6 +114,7 @@ public class InputBinderEngine {
             }
 
             if(profile.getItemTypeConvert()==null){
+                Log.e(Tag,"转化器未找到：" + profile.key + "；viewName:" + profile.viewName);
 //                throw new InputItemConvertException("初始化InputItem错误, viewName:"+profile.viewName);
             }else{
                 InputItem inputItem = profile.getItemTypeConvert().create(profile.viewId,profile);
@@ -372,4 +374,9 @@ public class InputBinderEngine {
     };
 
 
+    public <T> void writeStore(T obj) {
+        if (getInputReader() instanceof BeanReader) {
+            ((BeanReader) getInputReader()).writeStore(obj, inputItems);
+        }
+    }
 }

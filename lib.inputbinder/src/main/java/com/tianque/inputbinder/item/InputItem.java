@@ -134,20 +134,6 @@ public abstract class InputItem<T> {
             }else
                 viewProxy = initDefaultViewProxy(getView());
         }
-        if(getInputItemProfile()!=null&& !TextUtils.isEmpty(getInputItemProfile().parm)){
-            String  parmStr = getInputItemProfile().parm;
-            try{
-                JSONObject jsonObject=new JSONObject(parmStr);
-                Iterator<String> keys =  jsonObject.keys();
-                while (keys.hasNext()){
-                    String key = keys.next();
-                    addConfigParm(key,jsonObject.getString(key));
-                }
-            }catch (Exception e){
-                Logging.e(e);
-                ToastUtils.showDebugToast("转换JSON出错："+parmStr);
-            }
-        }
         isStarted=true;
         refreshView();
     }

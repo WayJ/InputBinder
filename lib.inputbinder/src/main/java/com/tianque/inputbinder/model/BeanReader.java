@@ -2,13 +2,18 @@ package com.tianque.inputbinder.model;
 
 import android.text.TextUtils;
 
+import com.tianque.inputbinder.convert.CheckInput;
 import com.tianque.inputbinder.convert.ItemConvertHelper;
 import com.tianque.inputbinder.convert.ItemTypeConvert;
+import com.tianque.inputbinder.convert.OptionalInput;
+import com.tianque.inputbinder.function.InputObserve;
+import com.tianque.inputbinder.function.InputObserveImpl;
 import com.tianque.inputbinder.inf.Input;
 import com.tianque.inputbinder.inf.InputConvert;
-import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.inf.RequestDataContract;
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.item.InputItemType;
+import com.tianque.inputbinder.util.Logging;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -18,10 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
-
-/**
- * Created by way on 2018/3/5.
- */
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class BeanReader<T> implements InputReaderInf<T> {
     private Class<T> targetEntity;
@@ -35,13 +39,11 @@ public class BeanReader<T> implements InputReaderInf<T> {
         if (targetEntity == null) {
             throw new RuntimeException("read a null Class");
         }
-        List<InputItemProfile> attributes = new ArrayList<>();
-        Field[] fields = targetEntity.getDeclaredFields();
-//
-        for (Field f : fields) {
-            //派出$change
-            if(f.getName().startsWith("$"))
-                continue;
+        List<InputItemProfile> inputItemProfiles = new ArrayList<>();
+        List<Field> fieldList=new ArrayList<>();
+        getFields(targetEntity,fieldList);
+
+        for (Field f : fieldList) {
 
             //获取字段中包含fieldMeta的注解
             Annotation[] annotations = f.getAnnotations();
@@ -54,11 +56,10 @@ public class BeanReader<T> implements InputReaderInf<T> {
                 readAnnotation(annotation, profile);
             }
 
-
 //            profile.verifyWarning = input.verifyWarning();
-            attributes.add(profile);
+            inputItemProfiles.add(profile);
         }
-        return attributes;
+        return inputItemProfiles;
     }
 
     @Override
@@ -75,22 +76,26 @@ public class BeanReader<T> implements InputReaderInf<T> {
                 if (attr == null || attr.field == null)
                     continue;
                 attr.field.setAccessible(true);
+
                 Object value = attr.field.get(obj);
                 if (value != null) {
-//                    if (TextUtils.isEmpty(attr.type) || attr.type.equals(InputItemType.Extend.getValue())) {
-//                        convertHelper.setExtendItemValue(item, value);
-//                    } else {
                     Observable observable= null;
 
-                    if(item.getInputItemProfile().getItemTypeConvert() instanceof RequestValueContract.RequestValueObservable){
-                        observable = ((RequestValueContract.RequestValueObservable) item.getInputItemProfile().getItemTypeConvert()).requestValue(value);
+                    if(item.getInputItemProfile().getItemTypeConvert() instanceof RequestDataContract.IObjectDataConvert){
+                        observable = ((RequestDataContract.IObjectDataConvert) item.getInputItemProfile().getItemTypeConvert()).requestConvertValueFromObject(value);
                     }
 
-                    if(item instanceof RequestValueContract.RequestValueObserver &&observable!=null){
-                        ((RequestValueContract.RequestValueObserver)item).onRequestValue(observable);
+                    if(item instanceof RequestDataContract.RequestDataObserver &&observable!=null){
+                        ((RequestDataContract.RequestDataObserver)item).postData(observable);
                     }
-
                 }
+
+                //add DataObserver 单项数据绑定  view-》pojo
+                if(item instanceof RequestDataContract.RequestDataObservable){
+                    ((RequestDataContract.RequestDataObservable)item).observe(new InputObserveImpl(attr.field,obj));
+                }
+
+
                 //添加缓存数据
 //                putRequestParams(item);
             } catch (Exception e) {
@@ -101,40 +106,90 @@ public class BeanReader<T> implements InputReaderInf<T> {
     }
 
 
+    public void writeStore(T obj, Map<String, InputItem> inputItems) {
+        for (Map.Entry<String, InputItem> entry : inputItems.entrySet()) {
+            InputItem item = entry.getValue();
+            InputItemProfile attr = item.getInputItemProfile();
+
+            try {
+                if (attr == null || attr.field == null)
+                    continue;
+
+                if(item instanceof RequestDataContract.getObjectValueFromInput){
+                    Object o = ((RequestDataContract.getObjectValueFromInput)item).requestData();
+                    attr.field.set(obj,o);
+                }else
+                    attr.field.set(obj,item.getContent());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Logging.e(e);
+            }
+
+        }
+    }
+
+    private void getFields(Class clz,List<Field> fieldList){
+        if(clz==null)
+            return;
+        Field[] fields = clz.getDeclaredFields();
+        for (Field field : fields) {
+            //派出$change
+            if (field.getName().startsWith("$"))
+                continue;
+            Input input = field.getAnnotation(Input.class);
+            if(input!=null){
+                fieldList.add(field);
+            }
+
+        }
+        if(clz.getSuperclass()!=null){
+            getFields(clz.getSuperclass(),fieldList);
+        }
+    }
+
+
     private void readAnnotation(Annotation annotation, InputItemProfile profile) throws Exception {
         if (annotation instanceof Input) {
             Input input = (Input) annotation;
-            String conver2type = TextUtils.isEmpty(input.type().getValue()) ? input.typeExt() : input.type().getValue();
+            String convertTo = TextUtils.isEmpty(input.type().getValue()) ? input.typeExt() : input.type().getValue();
 
-            String convertIn="";
-            String convertTo = conver2type;
+            String convertIn=profile.field.getType().getSimpleName();
+
+            if(TextUtils.isEmpty(convertTo)) {
+                if (profile.field.getAnnotation(CheckInput.class) != null)
+                    convertTo = InputItemType.CheckBox.getValue();
+                else if (profile.field.getAnnotation(OptionalInput.class) != null)
+                    convertTo = InputItemType.Optional.getValue();
+            }
+
 
             if(profile.field.getType() == String.class){
                 convertIn="String";
-                if(TextUtils.isEmpty(conver2type))
+                if(TextUtils.isEmpty(convertTo))
                     convertTo = InputItemType.Text.getValue();
             }else if(profile.field.getType() == double.class || profile.field.getType() == Double.class){
                 convertIn="Double";
-                if(TextUtils.isEmpty(conver2type))
+                if(TextUtils.isEmpty(convertTo))
                     convertTo = InputItemType.Text.getValue();
             }else if(profile.field.getType() == long.class || profile.field.getType() == Long.class){
                 convertIn="Long";
-                if(TextUtils.isEmpty(conver2type))
+                if(TextUtils.isEmpty(convertTo))
                     convertTo = InputItemType.Text.getValue();
             }else if(profile.field.getType() == int.class || profile.field.getType() == Integer.class){
                 convertIn="Integer";
-                if(TextUtils.isEmpty(conver2type))
+                if(TextUtils.isEmpty(convertTo))
                     convertTo = InputItemType.Text.getValue();
             }else if(profile.field.getType() == boolean.class || profile.field.getType() == Boolean.class){
                 convertIn="Boolean";
-                if(TextUtils.isEmpty(conver2type))
+                if(TextUtils.isEmpty(convertTo))
                     convertTo = InputItemType.CheckBox.getValue();
             }else if(profile.field.getType() == Date.class){
                 convertIn="Date";
-                if(TextUtils.isEmpty(conver2type))
+                if(TextUtils.isEmpty(convertTo))
                     convertTo = InputItemType.Date.getValue();
             }
-            profile.setItemTypeConvert( ItemConvertHelper.getInputItemConvert(convertTo+" adapter "+convertIn));
+            profile.setItemTypeConvert( ItemConvertHelper.getInputItemConvert(convertTo+"-adapter-"+convertIn));
 
             profile.requestKey = TextUtils.isEmpty(input.requestKey()) ? profile.field.getName() : input.requestKey();
             profile.viewName = TextUtils.isEmpty(input.viewName()) ? profile.field.getName() : input.viewName();

@@ -4,11 +4,14 @@ import android.util.Pair;
 import android.view.View;
 
 import com.tianque.inputbinder.InputBinder;
-import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.function.InputObserve;
+import com.tianque.inputbinder.inf.RequestDataContract;
+import com.tianque.inputbinder.item.base.BaseButtonInputItem;
 import com.tianque.inputbinder.rxjava.SimpleObserver;
-import com.tianque.inputbinder.viewer.ViewContentProxy;
 import com.tianque.inputbinder.util.Logging;
+import com.tianque.inputbinder.viewer.ViewContentProxy;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +19,7 @@ import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 
 
-/**
- * Created by way on 17/5/18.
- */
-public class OptionalInputItem extends ButtonInputItem implements RequestValueContract.RequestValueObserver {
+public class OptionalInputItem extends BaseButtonInputItem implements RequestDataContract.RequestDataObserver, RequestDataContract.getObjectValueFromInput,RequestDataContract.RequestDataObservable {
 
     private OptionalData optionalData;
     private OptionalDialogAction optionalDialogAction;
@@ -33,8 +33,8 @@ public class OptionalInputItem extends ButtonInputItem implements RequestValueCo
     }
 
     @Override
-    public void onRequestValue(Observable observable) {
-        optionalData.onRequestValue(observable.doOnComplete(new Action() {
+    public void postData(Observable observable) {
+        optionalData.postData(observable.doOnComplete(new Action() {
             @Override
             public void run() throws Exception {
                 if (isStarted&&optionalData.selectedIndex>=0)
@@ -43,6 +43,10 @@ public class OptionalInputItem extends ButtonInputItem implements RequestValueCo
         }));
     }
 
+    @Override
+    public Object requestData() {
+        return optionalData.requestData();
+    }
 
     public OptionalInputItem(int resourceId) {
         super(resourceId);
@@ -78,11 +82,10 @@ public class OptionalInputItem extends ButtonInputItem implements RequestValueCo
                 }
             }
         });
-    }
 
-    @Override
-    public ViewContentProxy initDefaultViewProxy(View view) {
-        return null;
+        if(optionalData!=null){
+            optionalData.setViewProxy(getViewProxy());
+        }
     }
 
 
@@ -99,17 +102,26 @@ public class OptionalInputItem extends ButtonInputItem implements RequestValueCo
         } else {
             setDisplayText(optionalData.getOptionalTexts()[selectedIndex]);
         }
+        if(isStarted)
+            dataObserve.onNext(optionalData.requestData());
+    }
+
+    InputObserve dataObserve;
+    @Override
+    public void observe(InputObserve observe) {
+        dataObserve = observe;
     }
 
     public interface OptionalDialogAction {
         void showDialog(OptionalInputItem inputItem);
     }
 
-    public static class OptionalData<RV> implements RequestValueContract.RequestValueObserver<RV> {
+    public static class OptionalData<RV> implements RequestDataContract.RequestDataObserver<RV>, RequestDataContract.getObjectValueFromInput<RV> {
         private List<Pair<String, RV>> dataList = new ArrayList<>();
         //        private String[] optionalTexts;
         //设置默认值
         private int selectedIndex = -1;
+        private WeakReference<ViewContentProxy<String>> viewProxy;
 
         public String[] getOptionalTexts() {
             String[] optionalTexts = new String[dataList.size()];
@@ -129,19 +141,37 @@ public class OptionalInputItem extends ButtonInputItem implements RequestValueCo
             dataList.add(new Pair<String, RV>(display, data));
         }
 
+
+        public void delayInitDataFinish(){
+            if(delayValueRead!=null)
+                postData(delayValueRead);
+        }
+
+        Observable<RV> delayValueRead;
         @Override
-        public void onRequestValue(Observable<RV> observable) {
+        public void postData(Observable<RV> observable) {
+            if(dataList==null||dataList.size()==0){
+                delayValueRead = observable;
+                return;
+            }
             observable.subscribe(new SimpleObserver<RV>() {
                 @Override
                 public void onNext(RV value) {
                     for (int i = 0; i < dataList.size(); i++) {
                         if (dataList.get(i).second.equals(value)) {
                             selectedIndex = i;
+                            if(viewProxy!=null&&viewProxy.get()!=null)
+                                viewProxy.get().setContent(dataList.get(i).first);
                             break;
                         }
                     }
                 }
             });
+        }
+
+        @Override
+        public RV requestData() {
+            return getSelectedValue();
         }
 
         public RV getSelectedValue() {
@@ -151,6 +181,9 @@ public class OptionalInputItem extends ButtonInputItem implements RequestValueCo
                 return dataList.get(selectedIndex).second;
         }
 
+        public void setViewProxy(ViewContentProxy<String> viewProxy) {
+            this.viewProxy = new WeakReference<>(viewProxy);
+        }
     }
 
 }

@@ -2,17 +2,20 @@ package com.tianque.inputbinder.convert.impl;
 
 import com.tianque.inputbinder.convert.ItemTypeConvert;
 import com.tianque.inputbinder.convert.OptionalInput;
-import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.inf.RequestDataContract;
 import com.tianque.inputbinder.item.MultiOptionalInputItem;
-import com.tianque.inputbinder.item.OptionalInputItem;
 import com.tianque.inputbinder.model.InputItemProfile;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
 
 import io.reactivex.Observable;
 
-public abstract class MultiOptionalInputItemConvert<In> extends ItemTypeConvert<In, MultiOptionalInputItem> implements RequestValueContract.RequestValueObservable<In, In> {
+public abstract class MultiOptionalInputItemConvert<In> extends ItemTypeConvert<In, MultiOptionalInputItem> implements RequestDataContract.IObjectDataConvert<In, In> {
+
+    @Override
+    public In requestObjectValue(In in) {
+        return in;
+    }
 
     @Override
     public MultiOptionalInputItem loadProfile(MultiOptionalInputItem inputItem, InputItemProfile profile) {
@@ -23,7 +26,7 @@ public abstract class MultiOptionalInputItemConvert<In> extends ItemTypeConvert<
     protected abstract MultiOptionalInputItem.MultiOptionalData<In> initMultiOptionalData(MultiOptionalInputItem optionalInputItem);
 
     @Override
-    public Observable<In> requestValue(In value) {
+    public Observable<In> requestConvertValueFromObject(In value) {
         return Observable.just(value);
     }
 

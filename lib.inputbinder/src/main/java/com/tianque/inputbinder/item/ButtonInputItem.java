@@ -1,11 +1,14 @@
 package com.tianque.inputbinder.item;
 
-import android.view.View;
+import com.tianque.inputbinder.inf.RequestDataContract;
+import com.tianque.inputbinder.item.base.BaseButtonInputItem;
 
-import com.tianque.inputbinder.item.base.BaseTextDisplayInputItem;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
-public class ButtonInputItem extends BaseTextDisplayInputItem {
-    private View.OnClickListener onClickListener;
+public class ButtonInputItem extends BaseButtonInputItem implements RequestDataContract.RequestDataObserver<String> {
+
 
     public ButtonInputItem(int resourceId) {
         super(resourceId);
@@ -15,17 +18,29 @@ public class ButtonInputItem extends BaseTextDisplayInputItem {
         super(resourceId,displayText);
     }
 
-    public ButtonInputItem setOnClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-        return this;
-    }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getView() != null && onClickListener != null) {
-            getView().setOnClickListener(onClickListener);
-        }
-    }
+    public void postData(Observable<String> observable) {
+        observable.subscribe(new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
+            }
+
+            @Override
+            public void onNext(String s) {
+                setDisplayText(s);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
 }

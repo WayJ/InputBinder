@@ -17,14 +17,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.tianque.inputbinder.inf.EditViewAbility;
 import com.tianque.inputbinder.style.R;
 
 
-public class EditItemBox extends ItemBoxBase<String> implements View.OnClickListener {
+public class EditItemBox extends ItemBoxBase<String> implements View.OnClickListener, EditViewAbility {
 
     private OnClickListener mOnClickListener;
-    private CallBackEdit mCallBackEdit;
-    private CallBackFinish mCallBackFinish;
+
     private KeyListener mKeyListener;
 
     public EditItemBox(Context context) {
@@ -150,9 +150,7 @@ public class EditItemBox extends ItemBoxBase<String> implements View.OnClickList
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                if (mCallBackEdit != null) {
-                    mCallBackEdit.getValue(getExpansionView().getText().toString().trim());
-                }
+
             }
 
             @Override
@@ -162,8 +160,8 @@ public class EditItemBox extends ItemBoxBase<String> implements View.OnClickList
 
             @Override
             public void afterTextChanged(Editable arg0) {
-                if (mCallBackFinish != null) {
-                    mCallBackFinish.afterTextChanged(arg0.toString());
+                if (onTextChangedListener != null) {
+                    onTextChangedListener.onTextChanged(arg0.toString());
                 }
             }
         });
@@ -188,9 +186,6 @@ public class EditItemBox extends ItemBoxBase<String> implements View.OnClickList
         return mExpansionView;
     }
 
-    public void setmCallBackFinish(CallBackFinish mCallBackFinish) {
-        this.mCallBackFinish = mCallBackFinish;
-    }
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.mOnClickListener = onClickListener;
@@ -234,9 +229,6 @@ public class EditItemBox extends ItemBoxBase<String> implements View.OnClickList
         getExpansionView().setError(error);
     }
 
-    public void setCallBackEdit(CallBackEdit mCallBackEdit) {
-        this.mCallBackEdit = mCallBackEdit;
-    }
 
     @Override
     public void setEnabled(boolean enabled) {
@@ -279,11 +271,18 @@ public class EditItemBox extends ItemBoxBase<String> implements View.OnClickList
         this.mKeyListener = keyListener;
     }
 
-    public interface CallBackEdit {
-        void getValue(String txt);
+    OnTextChangedListener onTextChangedListener;
+    @Override
+    public void addTextChangedListener(OnTextChangedListener onTextChangedListener) {
+        this.onTextChangedListener = onTextChangedListener;
     }
 
-    public interface CallBackFinish {
-        void afterTextChanged(String txt);
+    @Override
+    public void setEditType(int type) {
+        if(type==0){
+            getExpansionView().setInputType(InputType.TYPE_CLASS_TEXT);
+        } else if(type==1){
+            getExpansionView().setInputType(InputType.TYPE_CLASS_NUMBER);
+        }
     }
 }

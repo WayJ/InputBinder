@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.inf.RequestDataContract;
 import com.tianque.inputbinder.rxjava.SimpleObserver;
 import com.tianque.inputbinder.viewer.ViewContentProxy;
 import com.tianque.inputbinder.util.ContextUtils;
@@ -20,7 +20,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 
-public class CheckInputItem extends InputItem<Boolean> implements RequestValueContract.RequestValueObserver{
+public class CheckInputItem extends InputItem<Boolean> implements RequestDataContract.RequestDataObserver, RequestDataContract.getObjectValueFromInput{
     public static final String ParmTag_dependent = "dependent";
     public static final String ParmTag_dependent_inversion = "dependent_inversion";
 
@@ -159,6 +159,10 @@ public class CheckInputItem extends InputItem<Boolean> implements RequestValueCo
             return Boolean.valueOf(check).toString();
     }
 
+    @Override
+    public Object requestData() {
+        return checkDataDelegate.requestData();
+    }
 
     public boolean isChecked() {
         if(checkDataDelegate==null)
@@ -247,8 +251,8 @@ public class CheckInputItem extends InputItem<Boolean> implements RequestValueCo
     }
 
     @Override
-    public void onRequestValue(Observable observable) {
-        checkDataDelegate.onRequestValue(observable.doOnComplete(new Action() {
+    public void postData(Observable observable) {
+        checkDataDelegate.postData(observable.doOnComplete(new Action() {
             @Override
             public void run() throws Exception {
                 setChecked(checkDataDelegate.isChecked);
@@ -257,7 +261,7 @@ public class CheckInputItem extends InputItem<Boolean> implements RequestValueCo
     }
 
 
-    public static class CheckData<RV> implements RequestValueContract.RequestValueObserver<RV> {
+    public static class CheckData<RV> implements RequestDataContract.RequestDataObserver<RV>, RequestDataContract.getObjectValueFromInput<RV>{
         private Pair<RV,RV> data; // 这里，first为false，second为true
         private boolean isChecked;
 
@@ -274,7 +278,7 @@ public class CheckInputItem extends InputItem<Boolean> implements RequestValueCo
         }
 
         @Override
-        public void onRequestValue(Observable<RV> observable) {
+        public void postData(Observable<RV> observable) {
             observable.subscribe(new SimpleObserver<RV>() {
                 @Override
                 public void onNext(RV rv) {
@@ -291,6 +295,11 @@ public class CheckInputItem extends InputItem<Boolean> implements RequestValueCo
                 return data.second;
             else
                 return data.first;
+        }
+
+        @Override
+        public RV requestData() {
+            return getRequestValue(isChecked);
         }
     }
 }

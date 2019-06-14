@@ -10,9 +10,7 @@ import com.tianque.inputbinder.viewer.ViewContentProxy;
 
 import java.lang.reflect.Method;
 
-public class BaseTextDisplayInputItem extends InputItem<String> {
-
-    private String displayText;
+public abstract class BaseTextDisplayInputItem extends InputItem<String> {
 
     public BaseTextDisplayInputItem(int resourceId) {
         super(resourceId);
@@ -24,26 +22,25 @@ public class BaseTextDisplayInputItem extends InputItem<String> {
     }
 
     public void setDisplayText(String displayText) {
-        this.displayText = displayText;
+//        this.displayText = displayText;
+        getViewProxy().setContent(displayText);
         if(isStarted)
             refreshView();
     }
 
     @Override
     public String getContent() {
-        return displayText;
+        return getViewProxy().getContent();
     }
 
     @Override
     public String getRequestValue() {
         //try get new requestValue from view
         String content = getViewProxy().getContent();
-        if(TextUtils.isEmpty(content)){
-            displayText="";
-        }else if (!content.equals(displayText)) {
-            displayText = content;
+        if(content==null){
+            content="";
         }
-        return displayText;
+        return content;
     }
 
 

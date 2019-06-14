@@ -2,25 +2,19 @@ package com.tianque.inputbinder.convert.impl;
 
 import com.tianque.inputbinder.convert.ItemTypeConvert;
 import com.tianque.inputbinder.inf.RequestDataContract;
-import com.tianque.inputbinder.item.TextInputItem;
+import com.tianque.inputbinder.item.ButtonInputItem;
 import com.tianque.inputbinder.model.InputItemProfile;
 
 import io.reactivex.Observable;
 
-public abstract class TextInputConvert<In> extends ItemTypeConvert<In, TextInputItem> implements RequestDataContract.IObjectDataConvert<In, String> {
+public abstract class ButtonInputConvert<In> extends ItemTypeConvert<In, ButtonInputItem> implements RequestDataContract.IObjectDataConvert<In, String> {
 
     @Override
-    public TextInputItem loadProfile(TextInputItem inputItem, InputItemProfile profile) {
+    public ButtonInputItem loadProfile(ButtonInputItem inputItem, InputItemProfile profile) {
         return inputItem;
     }
 
-    public static class AdapterInt extends TextInputConvert<Integer> {
-
-        @Override
-        public TextInputItem loadProfile(TextInputItem inputItem, InputItemProfile profile) {
-            inputItem.setEditType(1);
-            return super.loadProfile(inputItem, profile);
-        }
+    public static class AdapterInt extends ButtonInputConvert<Integer> {
 
         @Override
         public Observable<String> requestConvertValueFromObject(Integer value) {
@@ -31,10 +25,9 @@ public abstract class TextInputConvert<In> extends ItemTypeConvert<In, TextInput
         public Integer requestObjectValue(String s) {
             return Integer.valueOf(s);
         }
-
     }
 
-    public static class AdapterString extends TextInputConvert<String> {
+    public static class AdapterString extends ButtonInputConvert<String> {
 
         @Override
         public Observable<String> requestConvertValueFromObject(String value) {
@@ -47,13 +40,7 @@ public abstract class TextInputConvert<In> extends ItemTypeConvert<In, TextInput
         }
     }
 
-    public static class AdapterLong extends TextInputConvert<Long> {
-
-        @Override
-        public TextInputItem loadProfile(TextInputItem inputItem, InputItemProfile profile) {
-            inputItem.setEditType(1);
-            return super.loadProfile(inputItem, profile);
-        }
+    public static class AdapterLong extends ButtonInputConvert<Long> {
 
         @Override
         public Observable<String> requestConvertValueFromObject(Long value) {
@@ -66,13 +53,7 @@ public abstract class TextInputConvert<In> extends ItemTypeConvert<In, TextInput
         }
     }
 
-    public static class AdapterDouble extends TextInputConvert<Double> {
-
-        @Override
-        public TextInputItem loadProfile(TextInputItem inputItem, InputItemProfile profile) {
-            inputItem.setEditType(1);
-            return super.loadProfile(inputItem, profile);
-        }
+    public static class AdapterDouble extends ButtonInputConvert<Double> {
 
         @Override
         public Observable<String> requestConvertValueFromObject(Double value) {

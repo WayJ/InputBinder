@@ -1,11 +1,11 @@
 package com.tianque.inputbinder.item;
 
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 
 import com.tianque.inputbinder.InputBinder;
-import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.inf.RequestDataContract;
+import com.tianque.inputbinder.item.base.BaseButtonInputItem;
 import com.tianque.inputbinder.rxjava.SimpleObserver;
 import com.tianque.inputbinder.viewer.ViewContentProxy;
 import com.tianque.inputbinder.util.Logging;
@@ -16,7 +16,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 
-public class MultiOptionalInputItem extends ButtonInputItem implements RequestValueContract.RequestValueObserver {
+public class MultiOptionalInputItem extends BaseButtonInputItem implements RequestDataContract.RequestDataObserver {
 
     private MultiOptionalData multiOptionalData;
 
@@ -132,8 +132,8 @@ public class MultiOptionalInputItem extends ButtonInputItem implements RequestVa
     private MultiOptionalDialogAction multiOptionalDialogAction;
 
     @Override
-    public void onRequestValue(Observable observable) {
-        multiOptionalData.onRequestValue(observable.doOnComplete(new Action() {
+    public void postData(Observable observable) {
+        multiOptionalData.postData(observable.doOnComplete(new Action() {
             @Override
             public void run() throws Exception {
                 if (isStarted)
@@ -146,7 +146,7 @@ public class MultiOptionalInputItem extends ButtonInputItem implements RequestVa
         void showDialog(MultiOptionalInputItem inputItem);
     }
 
-    public static class MultiOptionalData<RV> implements RequestValueContract.RequestValueObserver<List<RV>> {
+    public static class MultiOptionalData<RV> implements RequestDataContract.RequestDataObserver<List<RV>> {
         private List<Pair<String, RV>> dataList = new ArrayList<>();
         //        private String[] optionalTexts;
         //设置默认值
@@ -179,7 +179,7 @@ public class MultiOptionalInputItem extends ButtonInputItem implements RequestVa
         }
 
         @Override
-        public void onRequestValue(Observable<List<RV>> observable) {
+        public void postData(Observable<List<RV>> observable) {
             observable.subscribe(new SimpleObserver<List<RV>>() {
                 @Override
                 public void onNext(List<RV> values) {

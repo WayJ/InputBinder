@@ -1,11 +1,8 @@
 package com.tianque.inputbinder.convert.impl;
 
-import android.util.Pair;
-
 import com.tianque.inputbinder.convert.CheckInput;
 import com.tianque.inputbinder.convert.ItemTypeConvert;
-import com.tianque.inputbinder.convert.OptionalInput;
-import com.tianque.inputbinder.inf.RequestValueContract;
+import com.tianque.inputbinder.inf.RequestDataContract;
 import com.tianque.inputbinder.item.CheckInputItem;
 import com.tianque.inputbinder.model.InputItemProfile;
 
@@ -13,7 +10,7 @@ import java.lang.annotation.Annotation;
 
 import io.reactivex.Observable;
 
-public abstract class CheckInputItemConvert<In> extends ItemTypeConvert<In, CheckInputItem> implements RequestValueContract.RequestValueObservable<In, In>{
+public abstract class CheckInputItemConvert<In> extends ItemTypeConvert<In, CheckInputItem> implements RequestDataContract.IObjectDataConvert<In, In> {
 
     private static final String ParmTag_dependent = "dependent";
     private static final String ParmTag_dependent_inversion = "dependent_inversion";
@@ -30,7 +27,12 @@ public abstract class CheckInputItemConvert<In> extends ItemTypeConvert<In, Chec
     public abstract void initCheckData(CheckInputItem inputItem);
 
     @Override
-    public Observable<In> requestValue(In value) {
+    public In requestObjectValue(In in) {
+        return in;
+    }
+
+    @Override
+    public Observable<In> requestConvertValueFromObject(In value) {
         return Observable.just(value);
     }
 
@@ -42,6 +44,8 @@ public abstract class CheckInputItemConvert<In> extends ItemTypeConvert<In, Chec
             checkData.setCheckData(true,false);
             inputItem.setCheckData(checkData);
         }
+
+
     }
 
     public static class AdapterInt extends CheckInputItemConvert<Integer> {
