@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.inf.InputBinderStyleAction;
+import com.tianque.inputbinder.inf.InputConvert;
 import com.tianque.inputbinder.item.DateInputItem;
 import com.tianque.inputbinder.item.MultiOptionalInputItem;
 import com.tianque.inputbinder.item.OptionalInputItem;
@@ -23,13 +24,17 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        InputBinder.addDefaultItemConvert("Teacher",TeacherItemConvert.class);
+
+        //设置默认弹窗
         InputBinderStyleAction inputBinderStyleAction=new InputBinderStyleAction();
         inputBinderStyleAction.setOptionalDialogAction(new OptionalInputItem.OptionalDialogAction(){
 
             @Override
             public void showDialog(final OptionalInputItem inputItem) {
                 List<String> textList = new ArrayList<>();
-                for (String str : inputItem.getOptionalTexts()) {
+                for (String str : inputItem.getOptionalData().getOptionalTexts()) {
                     textList.add(str+"  ");
                 }
                 OptionalDialog optionalDialog = new OptionalDialog(inputItem.getView().getContext());
@@ -52,7 +57,7 @@ public class MyApplication extends Application {
             @Override
             public void showDialog(MultiOptionalInputItem inputItem) {
 
-                MultiOptionalDialog muDialog = new MultiOptionalDialog(inputItem.getView().getContext(), inputItem, inputItem.getView(), inputItem.getViewAttribute());
+                MultiOptionalDialog muDialog = new MultiOptionalDialog(inputItem.getView().getContext(), inputItem, inputItem.getView(), inputItem.getInputItemProfile());
                 muDialog.show();
             }
         });

@@ -115,22 +115,13 @@ class Student {
 具体例子见[这里](https://github.com/WayJ/InputBinder/blob/master/example2/src/main/java/com/wayj/inputbinder/example2/Input2Activity.kt)
 
 ```kotlin
-inputBinder = InputBinder.Build(this)
-     .addTypeConvert(TeacherItemConvert())
-     .addTypeConvert(object:ItemTypeConvert<Student,OptionalInputItem>(){
-        override fun setItemValue(item: OptionalInputItem?, value: Student?) {
-
-                    }
-
-        override fun newInputItem(resId: Int, viewAttribute: ViewAttribute?): OptionalInputItem {
-               return OptionalInputItem(resId)
-            }
-       })
-      .bindBean(Student::class.java)
-      .create()
-
-inputBinder.addInputItem(buttonInputItem)
-           .start()
+mInputBinder = InputBinder.Build(this)
+      .readProfile(getFormVO().getClass())
+      .create()；
+mInputBinder.addInputItem(buttonInputItem)
+           .start()；
+//绑定VO，即导入数据 + 数据单项绑定
+mInputBinder.bind(getFormVO());
 ```
 
 导入数据（查看详情、修改等时候用到）
@@ -140,14 +131,15 @@ inputBinder.addInputItem(buttonInputItem)
 var student = Student()
 student.address="sadas"
 student.teacher = Teacher(2,"zhang san")
-//导入
+//导入而不绑定
 inputBinder.putIn(student)
 ```
 
 导出数据
 
 ```java
-inputBinder.getRequestMap()
+inputBinder.getRequestMap()；
+inputBinder.putOutToObject(new Student());
 ```
 
 刷新视图
@@ -165,49 +157,15 @@ inputBinder.getEngine().setAllViewEnable(false)
 自定义类型示例：类型转换器 将对应的复杂类型的输入项的数据转换成对应的InputItem
 
 ```kotlin
-class TeacherItemConvert : ItemTypeConvert<Teacher, OptionalInputItem>() {
-    override fun setItemValue(item: OptionalInputItem?, value: Teacher?) {
-        item!!.requestValue = value!!.id.toString()
-    }
-
-    override fun newInputItem(resId:Int,viewAttribute: ViewAttribute?): OptionalInputItem {
-        var teacherItem = OptionalInputItem(resId)
-        teacherItem.optionalTexts=arrayOf("How", "Are", "You")
-        teacherItem.optionalValues= arrayOf("1","2","3")
-        return teacherItem
+class TeacherItemConvert : OptionalInputItemConvert<Teacher>() {
+    override fun initOptionalData(optionalInputItem: OptionalInputItem?): OptionalInputItem.OptionalData<Teacher> {
+        val data = OptionalInputItem.OptionalData<Teacher>();
+        data.add("张老师",Teacher(1,"张三"))
+        data.add("李老师", Teacher(2,"李四"))
+        data.add("王五",Teacher(3,"王五"))
+        return data
     }
 }
-```
-
-自己创建InputItem添加入控制链中
-
-```
-inputBinder.addInputItem(buttonInputItem)
-```
-
-放入数据
-
-```
-val student = Student()
-student.address="sadas"
-student.roomNumber=21412
-student.teacher = Teacher(2,"zhang san")
-inputBinder.putIn(student)
-```
-
-取出数据，会先进行数据合格校验，验证必填项、手机号码、身份证号码是否合格等
-
-```
-inputBinder.putOut(object :ContainerFunc{
-	//数据合格校验成功的回调
-    override fun onPutOut(map: MutableMap<String, String>?) {
-
-    }
-	//数据合格校验失败的回调
-    override fun onVerifyFailed(inputItems: MutableList<InputItem<Any>>?) {
-
-    }
-})
 ```
 
 找到某个InputItem进行操作

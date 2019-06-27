@@ -58,19 +58,12 @@ class Input2Activity : AppCompatActivity() {
         student.address="sadas"
         student.roomNumber=21412
         student.teacher = Teacher(2,"zhang san")
-        inputBinder.putIn(student)
+        // 不绑定数据，只读取数据
+        // inputBinder.putIn(student)
+        // 会单项绑定，用户输入的数据会自动变更到bind 的object
+        inputBinder.bind(student)
 
-//        inputBinder.putOut(object :ContainerFunc{
-//            override fun onPutOut(map: MutableMap<String, String>?) {
-//
-//            }
-//
-//            override fun onVerifyFailed(inputItems: MutableList<InputItem<Any>>?) {
-//
-//            }
-//        })
-
-        inputBinder.updateView()
+//        inputBinder.updateView()
 
     }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.Window;
 
+import com.tianque.inputbinder.convert.ItemConvertHelper;
 import com.tianque.inputbinder.convert.ItemTypeConvert;
 import com.tianque.inputbinder.function.ContainerFunc;
 import com.tianque.inputbinder.inf.InputBinderStyleAction;
@@ -242,5 +243,14 @@ public class InputBinder {
         public InputBinder create() {
             return inputBinder;
         }
+    }
+
+
+    /**
+     *
+     * @param fieldTypeName 复杂类型，自己的类型，传递SimpleName，如PropertyDict
+     */
+    public static void addDefaultItemConvert(String  fieldTypeName,Class<? extends ItemTypeConvert> clz){
+        ItemConvertHelper.addDefaultItemConvert(fieldTypeName,  clz);
     }
 }
