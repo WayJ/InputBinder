@@ -9,7 +9,7 @@ import com.tianque.inputbinder.inf.RequestDataContract;
 import com.tianque.inputbinder.item.base.BaseButtonInputItem;
 import com.tianque.inputbinder.rxjava.SimpleObserver;
 import com.tianque.inputbinder.util.Logging;
-import com.tianque.inputbinder.viewer.ViewContentProxy;
+import com.tianque.inputbinder.viewer.InputViewer;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -121,7 +121,7 @@ public class OptionalInputItem extends BaseButtonInputItem implements RequestDat
         //        private String[] optionalTexts;
         //设置默认值
         private int selectedIndex = -1;
-        private WeakReference<ViewContentProxy<String>> viewProxy;
+        private WeakReference<InputViewer<String>> viewProxy;
 
         public String[] getOptionalTexts() {
             String[] optionalTexts = new String[dataList.size()];
@@ -181,7 +181,7 @@ public class OptionalInputItem extends BaseButtonInputItem implements RequestDat
                 return dataList.get(selectedIndex).second;
         }
 
-        public void setViewProxy(ViewContentProxy<String> viewProxy) {
+        public void setViewProxy(InputViewer<String> viewProxy) {
             this.viewProxy = new WeakReference<>(viewProxy);
         }
     }

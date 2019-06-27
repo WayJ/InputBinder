@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.tianque.inputbinder.item.InputItem;
 import com.tianque.inputbinder.util.Logging;
-import com.tianque.inputbinder.viewer.ViewContentProxy;
+import com.tianque.inputbinder.viewer.InputViewer;
 
 import java.lang.reflect.Method;
 
@@ -53,8 +53,8 @@ public abstract class BaseTextDisplayInputItem extends InputItem<String> {
     }
 
     @Override
-    public ViewContentProxy initDefaultViewProxy(View view) {
-        return new ViewContentProxy<String>() {
+    public InputViewer initDefaultViewProxy(View view) {
+        return new InputViewer<String>() {
 
             @Override
             public void setContent(String content) {

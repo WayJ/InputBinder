@@ -23,7 +23,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tianque.inputbinder.viewer.ViewContentProxy;
+import com.tianque.inputbinder.viewer.InputViewer;
 import com.tianque.inputbinder.style.R;
 
 
@@ -32,7 +32,7 @@ import com.tianque.inputbinder.style.R;
  *
  * @author Ray
  */
-public abstract class ItemBoxBase<T> extends LinearLayout implements ViewContentProxy<T> {
+public abstract class ItemBoxBase<T> extends LinearLayout implements InputViewer<T> {
     protected final static int MARGIN = 5;
     protected final String nameSpace = "http://schemas.android.com/apk/res/android";
     protected Context mContext = null;

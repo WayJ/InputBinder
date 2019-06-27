@@ -1,19 +1,13 @@
 package com.tianque.inputbinder.item;
 
-import android.text.TextUtils;
 import android.view.View;
 
 import com.tianque.inputbinder.inf.InputItemHand;
 import com.tianque.inputbinder.model.InputItemProfile;
-import com.tianque.inputbinder.viewer.ViewContentProxy;
-import com.tianque.inputbinder.util.Logging;
-import com.tianque.inputbinder.util.ToastUtils;
-
-import org.json.JSONObject;
+import com.tianque.inputbinder.viewer.InputViewer;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +26,7 @@ public abstract class InputItem<T> {
 
     private int resourceId;
 
-    private ViewContentProxy<T> viewProxy;
+    private InputViewer<T> viewProxy;
     private InputItemHand inputItemHand;
 //    private String resourceName;
 
@@ -87,11 +81,11 @@ public abstract class InputItem<T> {
         this.inputItemProfile = inputItemProfile;
     }
 
-    public ViewContentProxy<T> getViewProxy() {
+    public InputViewer<T> getViewProxy() {
         return viewProxy;
     }
 
-    public void setViewProxy(ViewContentProxy<T> viewProxy) {
+    public void setViewProxy(InputViewer<T> viewProxy) {
         this.viewProxy = viewProxy;
     }
 
@@ -129,8 +123,8 @@ public abstract class InputItem<T> {
 //        if(getViewAttribute()!=null)
 //            setViewVisibleStatus(getViewAttribute().visible, view);
         if(viewProxy==null){
-            if(getView() instanceof ViewContentProxy){
-                viewProxy=(ViewContentProxy<T>) getView();
+            if(getView() instanceof InputViewer){
+                viewProxy=(InputViewer<T>) getView();
             }else
                 viewProxy = initDefaultViewProxy(getView());
         }
@@ -138,7 +132,7 @@ public abstract class InputItem<T> {
         refreshView();
     }
 
-    public abstract ViewContentProxy<T> initDefaultViewProxy(View view);
+    public abstract InputViewer<T> initDefaultViewProxy(View view);
 
     public View getView() {
         return view;

@@ -7,7 +7,7 @@ import com.tianque.inputbinder.InputBinder;
 import com.tianque.inputbinder.inf.RequestDataContract;
 import com.tianque.inputbinder.item.base.BaseButtonInputItem;
 import com.tianque.inputbinder.rxjava.SimpleObserver;
-import com.tianque.inputbinder.viewer.ViewContentProxy;
+import com.tianque.inputbinder.viewer.InputViewer;
 import com.tianque.inputbinder.util.Logging;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class MultiOptionalInputItem extends BaseButtonInputItem implements Reque
     }
 
     @Override
-    public ViewContentProxy initDefaultViewProxy(View view) {
+    public InputViewer initDefaultViewProxy(View view) {
         return null;
     }
 

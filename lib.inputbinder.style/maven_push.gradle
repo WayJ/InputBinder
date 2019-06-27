@@ -1,7 +1,7 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-def VERSION="0.5.3"
+def VERSION="0.5.4"
 def ARTIFACT_ID="inputbinder-style"
 
 configurations {

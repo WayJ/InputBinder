@@ -8,7 +8,7 @@ import android.widget.CompoundButton;
 
 import com.tianque.inputbinder.inf.RequestDataContract;
 import com.tianque.inputbinder.rxjava.SimpleObserver;
-import com.tianque.inputbinder.viewer.ViewContentProxy;
+import com.tianque.inputbinder.viewer.InputViewer;
 import com.tianque.inputbinder.util.ContextUtils;
 import com.tianque.inputbinder.util.Logging;
 import com.tianque.inputbinder.util.ResourceUtils;
@@ -232,8 +232,8 @@ public class CheckInputItem extends InputItem<Boolean> implements RequestDataCon
 
 
     @Override
-    public ViewContentProxy<Boolean> initDefaultViewProxy(View view) {
-        return new ViewContentProxy<Boolean>() {
+    public InputViewer<Boolean> initDefaultViewProxy(View view) {
+        return new InputViewer<Boolean>() {
 
             @Override
             public Boolean getContent() {
